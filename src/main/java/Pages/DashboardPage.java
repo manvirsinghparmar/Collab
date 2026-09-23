@@ -1,0 +1,14 @@
+package Pages;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+
+public class DashboardPage {
+
+    private WebDriver wd;
+
+    public DashboardPage(WebDriver wd) {
+        this.wd = wd;
+        PageFactory.initElements(wd, this);
+    }
+}
