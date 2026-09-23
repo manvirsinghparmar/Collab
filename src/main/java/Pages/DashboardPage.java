@@ -11,5 +11,6 @@ public class DashboardPage {
         PageFactory.initElements(wd, this);
     }
 
+    //Elements and methods for DashboardPage can be added here
 
 }

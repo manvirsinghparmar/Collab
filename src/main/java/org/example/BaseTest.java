@@ -64,7 +64,7 @@ public class BaseTest {
     public void teardown() {
 
         if (wd != null) {
-            wd.close();
+                wd.quit();
             wd = null;
         }
     }

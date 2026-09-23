@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class LoginPageTest extends BaseTest {
 
     @Test
-    public void validateUserIsAbleToLoginWithValidCredential() {
+    public void validateUserIsAbleToLoginWithValidCredentials() {
 
         LoginPage login = new LoginPage(wd);
 
@@ -16,7 +16,7 @@ public class LoginPageTest extends BaseTest {
     }
 
     @Test
-    public void validateUserIsNotAbleToLoginWithInvalidCredential() {
+    public void validateUserIsNotAbleToLoginWithInvalidCredentials() {
 
         LoginPage login = new LoginPage(wd);
 
