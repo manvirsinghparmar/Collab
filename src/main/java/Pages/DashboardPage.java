@@ -8,7 +8,8 @@ public class DashboardPage {
     private WebDriver wd;
 
     public DashboardPage(WebDriver wd) {
-        this.wd = wd;
         PageFactory.initElements(wd, this);
     }
+
+
 }

@@ -31,7 +31,7 @@ public class LoginPage {
 
 
 
-    public void enterEmail(String emailID) {
+    public void enterEmailTextBox(String emailID) {
         wait.until(ExpectedConditions.visibilityOf(usernameInput));
         usernameInput.sendKeys(emailID);
     }
@@ -43,7 +43,7 @@ public class LoginPage {
 
     public DashboardPage clickOnlogin(String email, String pwd) {
 
-        enterEmail(email);
+        enterEmailTextBox(email);
         enterPassword(pwd);
 
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
