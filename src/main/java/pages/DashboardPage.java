@@ -14,10 +14,10 @@ public class DashboardPage extends BaseTest {
     }
 
     @FindBy(xpath = "(//a[@class='oxd-main-menu-item'])[2]")
-    private WebElement pimLink;
+    private WebElement pimLinkFromDashboard;
 
     public PimPage clickOnPIMLink() {
-        WaitUtils.waitForElementClickable(pimLink).click();
+        WaitUtils.waitForElementClickable(pimLinkFromDashboard).click();
         return new PimPage(wd);
     }
 

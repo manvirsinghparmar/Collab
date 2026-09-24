@@ -16,7 +16,7 @@ public class PersonalDetailsPage extends BaseTest {
     @FindBy(xpath = "//a[text()='Contact Details']")
     private WebElement contactDetailsLink;
 
-    public ContactDetailsPage clickContactDetailsLink() {
+    public ContactDetailsPage clickcontactdetailslink() {
         WaitUtils.waitForElementClickable(contactDetailsLink).click();
         return new ContactDetailsPage(wd);
     }

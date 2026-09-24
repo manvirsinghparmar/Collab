@@ -27,7 +27,7 @@ public class ContactDetailsPage extends BaseTest {
     private WebElement stateInput;
 
     @FindBy(xpath = "//input[@fdprocessedid='m7rj']")
-    private WebElement zipCodeInput;
+    private WebElement zipCodeInputTextBox;
 
     @FindBy(xpath = "//div[text()='-- Select --']")
     private WebElement countryDropdown;
@@ -67,8 +67,8 @@ public class ContactDetailsPage extends BaseTest {
     }
 
     public void enterZipCode(String zipCode) {
-        WaitUtils.waitForElementClickable(zipCodeInput);
-        zipCodeInput.sendKeys(zipCode);
+        WaitUtils.waitForElementClickable(zipCodeInputTextBox);
+        zipCodeInputTextBox.sendKeys(zipCode);
     }
 
 

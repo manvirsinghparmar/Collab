@@ -15,7 +15,7 @@ public class PimPage extends BaseTest {
     }
 
     @FindBy(xpath = "(//input[@placeholder=\"Type for hints...\"])[1]")
-    private WebElement employeeNameInput;
+    private WebElement employeeNameInputTextBox;
 
     @FindBy(xpath = "//button[@type=\"submit\"]")
     private WebElement submitButton;
@@ -24,8 +24,8 @@ public class PimPage extends BaseTest {
     private WebElement editButton;
 
     public void enterEmployeeName(String employeeName) {
-        WaitUtils.waitForElementClickable(employeeNameInput);
-        employeeNameInput.sendKeys(employeeName);
+        WaitUtils.waitForElementClickable(employeeNameInputTextBox);
+        employeeNameInputTextBox.sendKeys(employeeName);
     }
 
     public void clickSubmitButton() {

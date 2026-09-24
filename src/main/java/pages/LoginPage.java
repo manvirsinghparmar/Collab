@@ -23,10 +23,10 @@ public class LoginPage {
     private WebDriverWait wait;
 
     @FindBy(xpath = "//input[@name='username']")
-    private WebElement usernameInput;
+    private WebElement usernameInputTextBox;
 
     @FindBy(xpath = "//input[@name='password']")
-    private WebElement passwordInput;
+    private WebElement passwordInputTextBox;
 
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement loginButton;
@@ -34,13 +34,13 @@ public class LoginPage {
 
 
     public void enterEmailTextBox(String emailID) {
-        WaitUtils.waitForElementClickable(usernameInput);
-        usernameInput.sendKeys(emailID);
+        WaitUtils.waitForElementClickable(usernameInputTextBox);
+        usernameInputTextBox.sendKeys(emailID);
     }
 
     public void enterPasswordTexBox(String password) {
-        WaitUtils.waitForElementClickable(passwordInput);
-        passwordInput.sendKeys(password);
+        WaitUtils.waitForElementClickable(passwordInputTextBox);
+        passwordInputTextBox.sendKeys(password);
     }
 
     public DashboardPage clickOnlogin(String email, String pwd) {

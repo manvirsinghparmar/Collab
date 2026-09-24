@@ -46,13 +46,9 @@ public class WaitUtils extends BaseTest {
         return getWait().until(ExpectedConditions.visibilityOfAllElements(elements)).size() > 0;
     }
 
-    public static boolean waitForElementNotVisible(WebElement element) {
-        return getWait().until(ExpectedConditions.invisibilityOf(element));
-    }
-
-    public static boolean waitForElementNotPresent(WebElement element) {
-        return getWait().until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element)));
-    }
+    //public static boolean waitForElementNotVisible(WebElement element) {
+       // return getWait().until(ExpectedConditions.invisibilityOf(element));
+    //}
 
     public static String waitForPageSource() {
         return getWait().until(wd -> {

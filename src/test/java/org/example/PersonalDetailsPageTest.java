@@ -32,7 +32,7 @@ public class PersonalDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("Ashley") String empName) {
+    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("Charles") String empName) {
         LoginPage login = new LoginPage(wd);
         DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboard.clickOnPIMLink();

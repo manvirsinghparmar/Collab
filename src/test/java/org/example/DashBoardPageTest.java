@@ -23,7 +23,7 @@ public class DashBoardPageTest extends BaseTest {
 
 
     @Test
-    public void validateUserIsAbleToClickOnPIMLink() {
+    public void validateUserIsAbleToClickOnPIMLinkOnDashboard() {
 
         LoginPage login = new LoginPage(wd);
 

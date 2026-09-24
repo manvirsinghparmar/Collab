@@ -39,7 +39,7 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
         element.clear();
         element.sendKeys(text);
     }
-    public static void enterText(WebElement element, String text) {
+    public static void enterTextIntoInputBox(WebElement element, String text) {
         WaitUtils.waitForElementVisible(element);
         element.sendKeys(text);
     }

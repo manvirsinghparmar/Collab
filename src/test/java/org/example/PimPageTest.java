@@ -44,7 +44,7 @@ public class PimPageTest extends BaseTest {
 
     @Test(priority=2)
     @Parameters("empName")
-    public void validateUserIsAbleToEditEmployeeDetails(@Optional("Charles") String empName){
+    public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName){
 
         LoginPage login = new LoginPage(wd);
 

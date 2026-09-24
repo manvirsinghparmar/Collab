@@ -31,14 +31,14 @@ public class ContactDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToUpdateContactDetails(@Optional("Ashley") String empName) throws InterruptedException {
+    public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Ashley") String empName) throws InterruptedException {
         LoginPage login = new LoginPage(wd);
         DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboard.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
         personalDetailsPage = pimPage.clickEditButton();
-        contactDetailsPage = personalDetailsPage.clickContactDetailsLink();
+        contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
         contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "abcd@gmail.com", "0987654321");
         softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
         softAssert.assertAll();

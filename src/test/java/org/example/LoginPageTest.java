@@ -31,7 +31,7 @@ public class LoginPageTest extends BaseTest {
     }
 
     @Test
-    public void validateUserIsNotAbleToLoginWithInvalidCredentials() {
+    public void validateUserIsNotAbleToLoginWithInvalidCredential() {
 
         LoginPage login = new LoginPage(wd);
 
