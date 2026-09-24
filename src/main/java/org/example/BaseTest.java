@@ -4,22 +4,25 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.asserts.SoftAssert;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseTest {
 
-    protected WebDriver wd;
+    protected static WebDriver wd;
+
+    public static WebDriverWait wait;
+
+    SoftAssert softAssert = new SoftAssert();
 
     private final String defaultBrowser = "CHROME";
 
     private final String url =
             "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
 
-    @BeforeMethod
     public void initialization() {
 
         switch (defaultBrowser) {
@@ -60,7 +63,6 @@ public class BaseTest {
         wd.get(url);
     }
 
-    @AfterMethod
     public void teardown() {
 
         if (wd != null) {

@@ -1,4 +1,4 @@
-package Pages;
+package pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -6,10 +6,12 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utilities.WaitUtils;
 
 import java.time.Duration;
 
 public class LoginPage {
+
 
     public LoginPage(WebDriver wd) {
         this.wd = wd;
@@ -32,12 +34,12 @@ public class LoginPage {
 
 
     public void enterEmailTextBox(String emailID) {
-        wait.until(ExpectedConditions.visibilityOf(usernameInput));
+        WaitUtils.waitForElementClickable(usernameInput);
         usernameInput.sendKeys(emailID);
     }
 
     public void enterPasswordTexBox(String password) {
-        wait.until(ExpectedConditions.visibilityOf(passwordInput));
+        WaitUtils.waitForElementClickable(passwordInput);
         passwordInput.sendKeys(password);
     }
 
@@ -45,6 +47,7 @@ public class LoginPage {
 
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
+        WaitUtils.waitForElementClickable(loginButton);
 
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         loginButton.click();
