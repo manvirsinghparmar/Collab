@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utilities.SelUtils;
-import utilities.WaitUtils;
 
 public class PimPage extends BaseTest {
 
@@ -20,7 +19,7 @@ public class PimPage extends BaseTest {
     @FindBy(xpath = "//button[@type=\"submit\"]")
     private WebElement submitButton;
 
-    @FindBy(xpath = "//button[@type=\"button\"]//i[@class=\"oxd-icon bi-pencil-fill\"]")
+    @FindBy(xpath = "(//button[contains(@class,'oxd-table-cell-action-space')])[1]")
     private WebElement editButton;
 
     public void enterEmployeeName(String employeeName) {
@@ -34,11 +33,11 @@ public class PimPage extends BaseTest {
     }
 
     public void scrollToEditButton() {
-        SelUtils.scrollIntoView(editButton);
+        SelUtils.scrollToBottom();
     }
 
     public PersonalDetailsPage clickEditButton() {
-        WaitUtils.waitForElementClickable(editButton);
+        WaitUtils.waitForElementVisible(editButton);
         editButton.click();
         return new PersonalDetailsPage(wd);
     }

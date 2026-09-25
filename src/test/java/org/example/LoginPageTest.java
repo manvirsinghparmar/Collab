@@ -6,6 +6,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static pages.DashboardPage.DASHBOARD_URL;
+
 public class LoginPageTest extends BaseTest {
 
     private LoginPage login;
@@ -26,7 +28,7 @@ public class LoginPageTest extends BaseTest {
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
-        softAssert.assertEquals(wd.getCurrentUrl(), "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index");
+        softAssert.assertEquals(wd.getCurrentUrl(), DASHBOARD_URL);
         softAssert.assertAll();
     }
 

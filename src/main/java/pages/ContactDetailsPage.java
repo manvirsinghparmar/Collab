@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utilities.WaitUtils;
+import utilities.SelUtils;
 
 public class ContactDetailsPage extends BaseTest {
     public ContactDetailsPage(WebDriver wd) {
@@ -42,32 +42,32 @@ public class ContactDetailsPage extends BaseTest {
     private WebElement saveButton;
 
     @FindBy(xpath = "//div[@class=\"oxd-toast-content oxd-toast-content--success\"]")
-    private WebElement successMessage;
+    private WebElement contactDetailsUpdatedSuccessMessage;
 
 
     public void enterStreet1(String street1) {
-        WaitUtils.waitForElementClickable(street1Input);
+        SelUtils.waitForElementClickable(street1Input);
         street1Input.sendKeys(street1);
     }
 
 
     public void enterStreet2(String street2) {
-        WaitUtils.waitForElementClickable(street2Input);
+        SelUtils.waitForElementClickable(street2Input);
         street2Input.sendKeys(street2);
     }
 
     public void enterCity(String city) {
-        WaitUtils.waitForElementClickable(cityInput);
+        SelUtils.waitForElementClickable(cityInput);
         cityInput.sendKeys(city);
     }
 
     public void enterState(String state) {
-        WaitUtils.waitForElementClickable(stateInput);
+        SelUtils.waitForElementClickable(stateInput);
         stateInput.sendKeys(state);
     }
 
     public void enterZipCode(String zipCode) {
-        WaitUtils.waitForElementClickable(zipCodeInputTextBox);
+        SelUtils.waitForElementClickable(zipCodeInputTextBox);
         zipCodeInputTextBox.sendKeys(zipCode);
     }
 
@@ -86,17 +86,17 @@ public class ContactDetailsPage extends BaseTest {
     }
 
 public void enterMobilePhone(String mobilePhone) {
-        WaitUtils.waitForElementClickable(mobilePhoneInput);
+        SelUtils.waitForElementClickable(mobilePhoneInput);
         mobilePhoneInput.sendKeys(mobilePhone);
     }
 
     public void enterWorkEmail(String workEmail) {
-        WaitUtils.waitForElementClickable(workEmailInput);
+        SelUtils.waitForElementClickable(workEmailInput);
         workEmailInput.sendKeys(workEmail);
     }
 
     public void clickSaveButton() {
-        WaitUtils.waitForElementClickable(saveButton);
+        SelUtils.waitForElementClickable(saveButton);
         saveButton.click();
     }
 
@@ -113,8 +113,8 @@ public void enterMobilePhone(String mobilePhone) {
     }
 
     public String getSuccessMessage() {
-        WaitUtils.waitForElementVisible(successMessage);
-        return successMessage.getText();
+        SelUtils.waitForElementVisible(contactDetailsUpdatedSuccessMessage);
+        return contactDetailsUpdatedSuccessMessage.getText();
     }
 
 

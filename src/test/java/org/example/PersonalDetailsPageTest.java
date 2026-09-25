@@ -32,12 +32,13 @@ public class PersonalDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("Charles") String empName) {
+    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("aniket") String empName) {
         LoginPage login = new LoginPage(wd);
         DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboard.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
+        pimPage.scrollToEditButton();
         pimPage.clickEditButton();
         String actualUrl = wd.getCurrentUrl();
         softAssert.assertTrue( actualUrl.contains("/pim/viewPersonalDetails/empNumber/"),
