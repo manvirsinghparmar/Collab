@@ -15,14 +15,14 @@ public class LoginPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         initialization();
-        login=new LoginPage(wd);
+        login=new LoginPage();
 
     }
 
     @Test
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage login = new LoginPage();
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
@@ -33,7 +33,7 @@ public class LoginPageTest extends BaseTest {
     @Test
     public void validateUserIsNotAbleToLoginWithInvalidCredential() {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage login = new LoginPage();
 
         login.clickOnlogin("Admin", "admin1234");
     }

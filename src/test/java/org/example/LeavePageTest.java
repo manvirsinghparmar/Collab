@@ -1,11 +1,12 @@
 package org.example;
 
 
-import Pages.DashboardPage;
-import Pages.LeavePage;
-import Pages.LoginPage;
-import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import pages.DashboardPage;
+import pages.LeavePage;
+import pages.LoginPage;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LeavePageTest extends BaseTest {
@@ -14,9 +15,14 @@ public class LeavePageTest extends BaseTest {
     LeavePage leavePage;
     LoginPage loginPage;
 
+    @BeforeMethod
+    public void setUp() {
+        initialization();
+        loginPage = new LoginPage();
+    }
+
     @Test
     public void validIfThereAreNOLeavesPendingApproval(){
-        loginPage = new LoginPage(wd);
         dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
         leavePage = dashboardPage.clickOnLeaveMenu();
         leavePage.enterFromDate("2026-09-23");
@@ -24,12 +30,10 @@ public class LeavePageTest extends BaseTest {
         leavePage.enterEmployeeName("Amelia");
         leavePage.clickSearchButton();
         Assert.assertTrue(leavePage.isTableEmpty(), "There are leaves pending approval.");
-
-
     }
 
-
-
-
-
+    @AfterMethod
+    public void tearDown() {
+        super.teardown();
+    }
 }

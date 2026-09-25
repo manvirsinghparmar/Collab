@@ -1,26 +1,20 @@
-package Pages;
+package pages;
 
+import org.example.BaseTest;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
-public class LeavePage {
-
-    private WebDriver wd;
-    private WebDriverWait wait;
+public class LeavePage extends BaseTest {
 
 
-    public LeavePage(WebDriver wd) {
-        this.wd = wd;
-        this.wait = new WebDriverWait(wd, Duration.ofSeconds(20));
+
+    public LeavePage() {
         PageFactory.initElements(wd, this);
     }
 
@@ -64,13 +58,7 @@ public class LeavePage {
     public void enterEmployeeName(String employeeFirstName) {
         wait.until(ExpectedConditions.visibilityOf(employeeNameField));
         employeeNameField.sendKeys(employeeFirstName);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Interrupted while waiting after entering employee name", e);
-        }
-
+        sleep();
         new Actions(wd).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
     }
 

@@ -22,7 +22,7 @@ public class PimPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage(wd);
+        loginPage=new LoginPage();
 
     }
 
@@ -30,7 +30,7 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName){
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage login = new LoginPage();
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
@@ -46,7 +46,7 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName){
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage login = new LoginPage();
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
