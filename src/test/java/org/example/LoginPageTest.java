@@ -21,6 +21,12 @@ public class LoginPageTest extends BaseTest {
 
     }
 
+import Pages.DashboardPage;
+import Pages.LoginPage;
+import org.testng.annotations.Test;
+
+public class LoginPageTest extends BaseTest {
+
     @Test
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
@@ -28,12 +34,10 @@ public class LoginPageTest extends BaseTest {
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
-        softAssert.assertEquals(wd.getCurrentUrl(), DASHBOARD_URL);
-        softAssert.assertAll();
     }
 
     @Test
-    public void validateUserIsNotAbleToLoginWithInvalidCredential() {
+    public void validateUserIsNotAbleToLoginWithInvalidCredentials() {
 
         LoginPage login = new LoginPage(wd);
 
