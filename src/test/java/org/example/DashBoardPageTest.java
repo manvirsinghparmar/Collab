@@ -13,13 +13,13 @@ public class DashBoardPageTest extends BaseTest {
     private DashboardPage dashboardPage;
     private PimPage pimPage;
 
+
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage(wd);
+        loginPage = new LoginPage(wd);
 
     }
-
 
 
     @Test

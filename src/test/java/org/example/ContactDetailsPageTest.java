@@ -16,11 +16,10 @@ public class ContactDetailsPageTest extends BaseTest {
     private ContactDetailsPage contactDetailsPage;
 
 
-
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage(wd);
+        loginPage = new LoginPage(wd);
     }
 
     @AfterMethod
@@ -31,7 +30,7 @@ public class ContactDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Ashley") String empName) throws InterruptedException {
+    public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Charles") String empName) throws InterruptedException {
         LoginPage login = new LoginPage(wd);
         DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboard.clickOnPIMLink();

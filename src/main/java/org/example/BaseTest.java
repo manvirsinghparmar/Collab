@@ -7,10 +7,26 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BaseTest {
+
+    // Strong references keep the configured log levels from being garbage collected.
+    private static final Logger CDP_VERSION_FINDER_LOGGER =
+            Logger.getLogger("org.openqa.selenium.devtools.CdpVersionFinder");
+
+    private static final Logger CHROMIUM_DRIVER_LOGGER =
+            Logger.getLogger("org.openqa.selenium.chromium.ChromiumDriver");
+
+    static {
+        // Chrome ships newer CDP versions than Selenium bundles; the warning is harmless.
+        CDP_VERSION_FINDER_LOGGER.setLevel(Level.SEVERE);
+        CHROMIUM_DRIVER_LOGGER.setLevel(Level.SEVERE);
+    }
 
     protected static WebDriver wd;
 
@@ -60,6 +76,7 @@ public class BaseTest {
         }
 
         wd.manage().window().maximize();
+        wait = new WebDriverWait(wd, Duration.ofSeconds(20));
         wd.get(url);
     }
 

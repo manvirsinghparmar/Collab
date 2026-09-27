@@ -17,11 +17,10 @@ public class PersonalDetailsPageTest extends BaseTest {
     private PimPage pimPage;
 
 
-
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage(wd);
+        loginPage = new LoginPage(wd);
     }
 
     @AfterMethod
@@ -40,7 +39,7 @@ public class PersonalDetailsPageTest extends BaseTest {
         pimPage.clickSubmitButton();
         pimPage.clickEditButton();
         String actualUrl = wd.getCurrentUrl();
-        softAssert.assertTrue( actualUrl.contains("/pim/viewPersonalDetails/empNumber/"),
+        softAssert.assertTrue(actualUrl.contains("/pim/viewPersonalDetails/empNumber/"),
                 "User did not land on Personal Details page. Actual URL: " + actualUrl);
         softAssert.assertAll();
 

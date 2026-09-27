@@ -1,102 +1,153 @@
 package utilities;
 
 import org.example.BaseTest;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.*;
-import java.util.List;
-import java.util.Set;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor {
+import java.time.Duration;
+import java.util.List;
+
+public final class SelUtils extends BaseTest {
+
+    private static final int WAIT_TIME = 15;
+
     private SelUtils() {
         // Utility class
     }
+
+    private static WebDriverWait getWait() {
+        return new WebDriverWait(wd, Duration.ofSeconds(WAIT_TIME));
+    }
+
+
     public static void clickElement(WebElement element) {
-        WaitUtils.waitForElementVisible(element);
+
         try {
+            getWait().until(ExpectedConditions.visibilityOf(element));
+
             scrollIntoView(element);
-            WaitUtils.waitForElementClickable(element).click();
-        } catch (TimeoutException | ElementClickInterceptedException | StaleElementReferenceException e) {
-            ((JavascriptExecutor) wd).executeScript("arguments[0].click();", element);
 
+            getWait().until(
+                    ExpectedConditions.elementToBeClickable(element)
+            ).click();
 
+        } catch (TimeoutException |
+                 NoSuchElementException |
+                 ElementClickInterceptedException |
+                 StaleElementReferenceException e) {
+
+            ((JavascriptExecutor) wd)
+                    .executeScript("arguments[0].click();", element);
         }
     }
-    public static void scrollIntoView(WebElement element) {
-        ((JavascriptExecutor)wd)
-                .executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
-    }
-    @Override
-    public void get(String url) {
-        WaitUtils.waitForUrlContains(url);
-    }
-    public static void sendKeys(WebElement element, String text) {
-        WaitUtils.waitForElementVisible(element);
-        element.clear();
-        element.sendKeys(text);
-    }
-    public static void clearAndSendKeys(WebElement element, String text) {
-        WaitUtils.waitForElementVisible(element);
-        element.clear();
-        element.sendKeys(text);
-    }
-    public static void enterTextIntoInputBox(WebElement element, String text) {
-        WaitUtils.waitForElementVisible(element);
-        element.sendKeys(text);
-    }
-    @Override
-    public @Nullable String getCurrentUrl() {
 
-        return wd.getCurrentUrl();
+
+    public static void sendKeys(WebElement element, String text) {
+
+        getWait().until(
+                ExpectedConditions.visibilityOf(element)
+        );
+
+        element.clear();
+        element.sendKeys(text);
     }
-    @Override
-    public @Nullable String getTitle() {
-        return wd.getTitle();
+
+    public static void clearAndSendKeys(WebElement element, String text) {
+
+        getWait().until(
+                ExpectedConditions.visibilityOf(element)
+        );
+
+        element.clear();
+        element.sendKeys(text);
     }
-    @Override
-    public List<WebElement> findElements(By element) {
-        return WaitUtils.waitForElementsPresent(element);
+
+    public static void enterTextIntoInputBox(WebElement element, String text) {
+
+        getWait().until(
+                ExpectedConditions.visibilityOf(element)
+        );
+
+        element.sendKeys(text);
     }
-    @Override
-    public WebElement findElement(By element) {
-        return WaitUtils.waitForElementsPresent(element).get(0);
+
+
+    public static WebElement findElement(By locator) {
+
+        return getWait().until(
+                ExpectedConditions.presenceOfElementLocated(locator)
+        );
     }
-    @Override
-    public @Nullable String getPageSource() {
-        return WaitUtils.waitForPageSource();
+
+    public static List<WebElement> findElements(By locator) {
+
+        return getWait().until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(locator)
+        );
     }
-    @Override
-    public void close() {
-        wd.close();
+
+
+    public static boolean isElementVisible(WebElement element) {
+
+        return getWait().until(
+                ExpectedConditions.visibilityOf(element)
+        ).isDisplayed();
     }
-    @Override
-    public void quit() {
+
+    public static List<WebElement> waitForElementsVisible(
+            List<WebElement> elements) {
+
+        return getWait().until(
+                ExpectedConditions.visibilityOfAllElements(elements)
+        );
+
+
     }
-    @Override
-    public Set<String> getWindowHandles() {
-        return Set.of();
+
+
+    public static boolean waitForUrlContains(String partialUrl) {
+
+        return getWait().until(
+                ExpectedConditions.urlContains(partialUrl)
+        );
     }
-    @Override
-    public String getWindowHandle() {
-        return "";
+
+
+    public static boolean waitForElementNotVisible(WebElement element) {
+
+        return getWait().until(
+                ExpectedConditions.invisibilityOf(element)
+        );
     }
-    @Override
-    public TargetLocator switchTo() {
-        return null;
+
+
+    public static String waitForPageSource() {
+
+        return getWait().until(driver -> {
+
+            String pageSource = driver.getPageSource();
+
+            return pageSource != null && !pageSource.isEmpty()
+                    ? pageSource
+                    : null;
+        });
     }
-    @Override
-    public Navigation navigate() {
-        return null;
-    }
-    @Override
-    public Options manage() {
-        return null;
-    }
-    @Override
-    public @Nullable Object executeScript(String script, @Nullable Object... args) {
-        return null;
-    }
-    @Override
-    public @Nullable Object executeAsyncScript(String script, @Nullable Object... args) {
-        return null;
+
+
+    public static void scrollIntoView(WebElement element) {
+
+        getWait().until(ExpectedConditions.visibilityOf(element));
+
+        ((JavascriptExecutor) wd).executeScript(
+                "arguments[0].scrollIntoView({block: 'center', inline: 'center'});",
+                element
+        );
     }
 }

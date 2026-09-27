@@ -9,8 +9,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import utilities.SelUtils;
-import utilities.WaitUtils;
 
 public class PimPageTest extends BaseTest {
 
@@ -22,13 +20,13 @@ public class PimPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage(wd);
+        loginPage = new LoginPage(wd);
 
     }
 
-    @Test(priority=1)
+    @Test(priority = 1)
     @Parameters("empName")
-    public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName){
+    public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName) {
 
         LoginPage login = new LoginPage(wd);
 
@@ -42,9 +40,9 @@ public class PimPageTest extends BaseTest {
 
     }
 
-    @Test(priority=2)
+    @Test(priority = 2)
     @Parameters("empName")
-    public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName){
+    public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
 
         LoginPage login = new LoginPage(wd);
 
@@ -55,8 +53,11 @@ public class PimPageTest extends BaseTest {
 
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
-        pimPage.scrollToEditButton();
-        softAssert.assertEquals(wd.getCurrentUrl(), "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index");
+        pimPage.clickEditButton();
+        softAssert.assertTrue(
+                wd.getCurrentUrl().contains("/pim/viewPersonalDetails/empNumber/"),
+                "Expected Personal Details URL, but actual URL was: " + wd.getCurrentUrl()
+        );
         softAssert.assertAll();
 
     }

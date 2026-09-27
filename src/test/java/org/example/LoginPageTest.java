@@ -15,7 +15,7 @@ public class LoginPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         initialization();
-        login=new LoginPage(wd);
+        login = new LoginPage(wd);
 
     }
 
@@ -26,7 +26,7 @@ public class LoginPageTest extends BaseTest {
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");
-        softAssert.assertEquals(wd.getCurrentUrl(), "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index");
+        softAssert.assertEquals(wd.getCurrentUrl(), DashboardPage.DASHBOARD_URL);
         softAssert.assertAll();
     }
 
