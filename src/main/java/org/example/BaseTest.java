@@ -6,6 +6,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ public class BaseTest {
     private final String url =
             "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
 
+    @BeforeMethod
     public void initialization() {
 
         switch (defaultBrowser) {
@@ -80,8 +83,12 @@ public class BaseTest {
         wd.get(url);
     }
 
+    @AfterMethod
     public void teardown() {
 
-        wd.quit();
+        if (wd != null) {
+                wd.quit();
+            wd = null;
+        }
     }
 }
