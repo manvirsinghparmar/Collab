@@ -27,9 +27,9 @@ public class LeavePageTest extends BaseTest {
         leavePage = dashboardPage.clickOnLeaveMenu();
         leavePage.enterFromDate("2026-09-23");
         leavePage.enterToDate("2026-12-31");
-        leavePage.enterEmployeeName("Amelia");
+        leavePage.enterEmployeeName("Amelia","Amelia Brown");
         leavePage.clickSearchButton();
-        Assert.assertTrue(leavePage.isTableEmpty(), "There are leaves pending approval.");
+        Assert.assertTrue(leavePage.isNoRecordsFoundMessageDisplayed(), "There are leaves pending approval.");
     }
 
     @AfterMethod

@@ -1,9 +1,9 @@
 package pages;
 
 import org.example.BaseTest;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,7 +11,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.List;
 
 public class LeavePage extends BaseTest {
-
 
 
     public LeavePage() {
@@ -39,6 +38,9 @@ public class LeavePage extends BaseTest {
     @FindBy(css = ".oxd-table-body .oxd-table-row")
     private List<WebElement> tableRows;
 
+    @FindBy(xpath = "//span[text()='No Records Found']")
+    private WebElement noRecordsFoundMessage;
+
     public void enterFromDate(String fromDate) {
         wait.until(ExpectedConditions.visibilityOf(fromDateField));
         fromDateField.clear();
@@ -55,11 +57,11 @@ public class LeavePage extends BaseTest {
         toDateField.sendKeys(Keys.TAB);
     }
 
-    public void enterEmployeeName(String employeeFirstName) {
+    public void enterEmployeeName(String employeeFirstName, String employeeFullName) {
         wait.until(ExpectedConditions.visibilityOf(employeeNameField));
         employeeNameField.sendKeys(employeeFirstName);
-        sleep();
-        new Actions(wd).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+        By option = By.xpath("//div[@role='listbox']//span[normalize-space()='" + employeeFullName + "']");
+        wait.until(ExpectedConditions.elementToBeClickable(option)).click();
     }
 
     public void clickSearchButton() {
@@ -69,6 +71,10 @@ public class LeavePage extends BaseTest {
 
     public boolean isTableEmpty() {
         return tableRows.isEmpty();
+    }
+
+    public boolean isNoRecordsFoundMessageDisplayed() {
+        return noRecordsFoundMessage.isDisplayed();
     }
 
 }

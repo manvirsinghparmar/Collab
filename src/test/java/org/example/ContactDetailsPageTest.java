@@ -16,11 +16,10 @@ public class ContactDetailsPageTest extends BaseTest {
     private ContactDetailsPage contactDetailsPage;
 
 
-
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage();
+        loginPage = new LoginPage();
     }
 
     @AfterMethod
