@@ -12,7 +12,6 @@ import utilities.SelUtils;
 import java.time.Duration;
 
 public class LoginPage extends BaseTest {
-    private WebDriver wd;
 
 
     public LoginPage(WebDriver wd) {

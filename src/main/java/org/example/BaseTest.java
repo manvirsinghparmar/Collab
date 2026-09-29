@@ -17,19 +17,6 @@ import java.util.logging.Logger;
 
 public class BaseTest {
 
-    // Strong references keep the configured log levels from being garbage collected.
-    private static final Logger CDP_VERSION_FINDER_LOGGER =
-            Logger.getLogger("org.openqa.selenium.devtools.CdpVersionFinder");
-
-    private static final Logger CHROMIUM_DRIVER_LOGGER =
-            Logger.getLogger("org.openqa.selenium.chromium.ChromiumDriver");
-
-    static {
-        // Chrome ships newer CDP versions than Selenium bundles; the warning is harmless.
-        CDP_VERSION_FINDER_LOGGER.setLevel(Level.SEVERE);
-        CHROMIUM_DRIVER_LOGGER.setLevel(Level.SEVERE);
-    }
-
     protected static WebDriver wd;
 
     public static WebDriverWait wait;
