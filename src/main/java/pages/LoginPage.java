@@ -1,54 +1,50 @@
-package Pages;
+package pages;
 
+import org.example.BaseTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utilities.SelUtils;
 
 import java.time.Duration;
 
-public class LoginPage {
+public class LoginPage extends BaseTest {
+
 
     public LoginPage(WebDriver wd) {
         this.wd = wd;
-        this.wait = new WebDriverWait(wd, Duration.ofSeconds(20));
         PageFactory.initElements(wd, this);
     }
 
-    private WebDriver wd;
-    private WebDriverWait wait;
 
     @FindBy(xpath = "//input[@name='username']")
-    private WebElement usernameInput;
+    private WebElement usernameInputTextBox;
 
     @FindBy(xpath = "//input[@name='password']")
-    private WebElement passwordInput;
+    private WebElement passwordInputTextBox;
 
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement loginButton;
 
 
-
     public void enterEmailTextBox(String emailID) {
-        wait.until(ExpectedConditions.visibilityOf(usernameInput));
-        usernameInput.sendKeys(emailID);
+        SelUtils.clickElement(usernameInputTextBox);
+        usernameInputTextBox.sendKeys(emailID);
     }
 
     public void enterPasswordTexBox(String password) {
-        wait.until(ExpectedConditions.visibilityOf(passwordInput));
-        passwordInput.sendKeys(password);
+        SelUtils.clickElement(passwordInputTextBox);
+        passwordInputTextBox.sendKeys(password);
     }
 
     public DashboardPage clickOnlogin(String email, String pwd) {
 
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
-
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton));
-        loginButton.click();
-
+        SelUtils.clickElement(loginButton);
         return new DashboardPage(wd);
     }
 }
