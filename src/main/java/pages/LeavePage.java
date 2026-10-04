@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import utilities.WaitUtils;
 
 import java.util.List;
 
@@ -38,11 +39,36 @@ public class LeavePage extends BaseTest {
     @FindBy(css = ".oxd-table-body .oxd-table-row")
     private List<WebElement> tableRows;
 
-    @FindBy(xpath = "//span[text()='No Records Found']")
-    private WebElement noRecordsFoundMessage;
+    @FindBy(css = "span[class='oxd-text oxd-text--span']")
+    private WebElement recordsFoundMessage;
+
+    @FindBy(xpath = "//a[text()='Apply']")
+    private WebElement applyButton;
+
+    @FindBy(css = ".oxd-select-text")
+    private WebElement leaveTypeDropdownUnderApplyLeave;
+
+    @FindBy(xpath = "//div[@role='listbox']//span")
+    private List<WebElement> leaveTypeOptions;
+
+    @FindBy(xpath = "//div[@role='listbox']//span[text()='CAN - Vacation']")
+    private WebElement vacationLeave;
+
+    @FindBy(xpath = "(//input[@placeholder='yyyy-dd-mm'])[1]")
+    private WebElement fromDateUnderApplyLeave;
+
+    @FindBy(xpath = "(//input[@placeholder='yyyy-dd-mm'])[2]")
+    private WebElement toDateUnderApplyLeave;
+
+    @FindBy(xpath = "//button[@type='submit']")
+    private WebElement applyButtonForLeave;
+
+    @FindBy(css = ".oxd-toast-content")
+    private WebElement messagePrompt;
+
 
     public void enterFromDate(String fromDate) {
-        wait.until(ExpectedConditions.visibilityOf(fromDateField));
+        WaitUtils.waitForElementVisible(fromDateField);
         fromDateField.clear();
         fromDateField.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         fromDateField.sendKeys(fromDate);
@@ -50,7 +76,7 @@ public class LeavePage extends BaseTest {
     }
 
     public void enterToDate(String toDate) {
-        wait.until(ExpectedConditions.visibilityOf(toDateField));
+        WaitUtils.waitForElementVisible(toDateField);
         toDateField.clear();
         toDateField.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         toDateField.sendKeys(toDate);
@@ -58,14 +84,14 @@ public class LeavePage extends BaseTest {
     }
 
     public void enterEmployeeName(String employeeFirstName, String employeeFullName) {
-        wait.until(ExpectedConditions.visibilityOf(employeeNameField));
+        WaitUtils.waitForElementVisible(employeeNameField);
         employeeNameField.sendKeys(employeeFirstName);
         By option = By.xpath("//div[@role='listbox']//span[normalize-space()='" + employeeFullName + "']");
         wait.until(ExpectedConditions.elementToBeClickable(option)).click();
     }
 
     public void clickSearchButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(searchButton));
+        WaitUtils.waitForElementClickable(searchButton);
         searchButton.click();
     }
 
@@ -73,8 +99,52 @@ public class LeavePage extends BaseTest {
         return tableRows.isEmpty();
     }
 
-    public boolean isNoRecordsFoundMessageDisplayed() {
-        return noRecordsFoundMessage.isDisplayed();
+    public String getRecordsFoundMessage() {
+        WaitUtils.waitForElementVisible(recordsFoundMessage);
+        return recordsFoundMessage.getText();
+    }
+
+    public void clickApplyButton() {
+        WaitUtils.waitForElementClickable(applyButton);
+        applyButton.click();
+    }
+
+    public void selectLeaveType(String leaveType) {
+        WaitUtils.waitForElementClickable(leaveTypeDropdownUnderApplyLeave);
+        leaveTypeDropdownUnderApplyLeave.click();
+        for (WebElement option : leaveTypeOptions) {
+            if (option.getText().equalsIgnoreCase(leaveType)) {
+                WaitUtils.waitForElementClickable(option);
+                option.click();
+                break;
+            }
+        }
+    }
+
+    public void enterFromDateUnderApplyLeave(String fromDate) {
+        WaitUtils.waitForElementVisible(fromDateUnderApplyLeave);
+        fromDateUnderApplyLeave.clear();
+        fromDateUnderApplyLeave.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        fromDateUnderApplyLeave.sendKeys(fromDate);
+        fromDateUnderApplyLeave.sendKeys(Keys.TAB);
+    }
+
+    public void enterToDateUnderApplyLeave(String toDate) {
+        WaitUtils.waitForElementVisible(toDateUnderApplyLeave);
+        toDateUnderApplyLeave.clear();
+        toDateUnderApplyLeave.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        toDateUnderApplyLeave.sendKeys(toDate);
+        toDateUnderApplyLeave.sendKeys(Keys.TAB);
+    }
+
+    public void clickApplyButtonForLeave() {
+        WaitUtils.waitForElementClickable(applyButtonForLeave);
+        applyButtonForLeave.click();
+    }
+
+    public String getMessagePrompt() {
+        WaitUtils.waitForElementVisible(messagePrompt);
+        return messagePrompt.getText();
     }
 
 }
