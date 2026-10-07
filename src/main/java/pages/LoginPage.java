@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utilities.WaitUtils;
+import utilities.SelUtils;
 
 public class LoginPage extends BaseTest {
 
@@ -26,19 +26,19 @@ public class LoginPage extends BaseTest {
 
 
     public void enterEmailTextBox(String emailID) {
-        WaitUtils.waitForElementClickable(usernameInputTextBox);
+        SelUtils.waitForElementClickable(usernameInputTextBox);
         usernameInputTextBox.sendKeys(emailID);
     }
 
     public void enterPasswordTexBox(String password) {
-        WaitUtils.waitForElementClickable(passwordInputTextBox);
+        SelUtils.waitForElementClickable(passwordInputTextBox);
         passwordInputTextBox.sendKeys(password);
     }
 
     public DashboardPage clickOnlogin(String email, String pwd) {
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
-        WaitUtils.waitForElementClickable(loginButton);
+        SelUtils.waitForElementClickable(loginButton);
 
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         loginButton.click();

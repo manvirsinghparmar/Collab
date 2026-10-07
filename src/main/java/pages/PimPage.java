@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utilities.SelUtils;
-import utilities.WaitUtils;
 
 public class PimPage extends BaseTest {
 
@@ -24,12 +23,12 @@ public class PimPage extends BaseTest {
     private WebElement editButton;
 
     public void enterEmployeeName(String employeeName) {
-        WaitUtils.waitForElementClickable(employeeNameInputTextBox);
+        SelUtils.waitForElementClickable(employeeNameInputTextBox);
         employeeNameInputTextBox.sendKeys(employeeName);
     }
 
     public void clickSubmitButton() {
-        WaitUtils.waitForElementClickable(submitButton);
+        SelUtils.waitForElementClickable(submitButton);
         submitButton.click();
     }
 
@@ -38,7 +37,7 @@ public class PimPage extends BaseTest {
     }
 
     public PersonalDetailsPage clickEditButton() {
-        WaitUtils.waitForElementClickable(editButton);
+        SelUtils.waitForElementClickable(editButton);
         editButton.click();
         return new PersonalDetailsPage(wd);
     }

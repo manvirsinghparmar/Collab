@@ -52,12 +52,4 @@ public class BaseTest {
         wd.quit();
     }
 
-    public void sleep(){
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Interrupted while waiting after entering employee name", e);
-        }
-    }
 }

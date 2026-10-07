@@ -9,8 +9,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import utilities.SelUtils;
-import utilities.WaitUtils;
 
 public class PimPageTest extends BaseTest {
 

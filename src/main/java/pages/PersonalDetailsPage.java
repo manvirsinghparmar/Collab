@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utilities.WaitUtils;
+import utilities.SelUtils;
 
 public class PersonalDetailsPage extends BaseTest {
 
@@ -17,7 +17,7 @@ public class PersonalDetailsPage extends BaseTest {
     private WebElement contactDetailsLink;
 
     public ContactDetailsPage clickcontactdetailslink() {
-        WaitUtils.waitForElementClickable(contactDetailsLink).click();
+        SelUtils.waitForElementClickable(contactDetailsLink).click();
         return new ContactDetailsPage(wd);
     }
 

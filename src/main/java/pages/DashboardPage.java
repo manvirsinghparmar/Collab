@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utilities.WaitUtils;
+import utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
 
@@ -20,7 +20,7 @@ public class DashboardPage extends BaseTest {
     private WebElement leaveMenu;
 
     public PimPage clickOnPIMLink() {
-        WaitUtils.waitForElementClickable(pimLinkFromDashboard).click();
+        SelUtils.waitForElementClickable(pimLinkFromDashboard).click();
         return new PimPage(wd);
     }
 
