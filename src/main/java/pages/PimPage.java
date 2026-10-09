@@ -11,25 +11,47 @@ import utilities.SelUtils;
 
 public class PimPage extends BaseTest {
 
-    private static final By FIRST_NAME_HINT =
-            By.xpath("(//div[@role='listbox']//div[@role='option'])[1]");
-
-    private static final By RESULTS_TABLE =
-            By.xpath("//div[@class='oxd-table-body']");
-
-    private static final By FIRST_EDIT_BUTTON =
-            By.xpath("(//div[@class='oxd-table-body']"
-                    + "//i[contains(@class,'bi-pencil-fill')])[1]");
-
     public PimPage(WebDriver wd) {
         PageFactory.initElements(wd, this);
     }
+
+    @FindBy(xpath = "(//div[@role='listbox']//div[@role='option'])[1]")
+    private WebElement firstNameHint;
+
+    @FindBy(xpath = "//div[@class='oxd-table-body']")
+    private WebElement resultsTable;
+
+    @FindBy(xpath = "(//div[@class='oxd-table-body']"
+            + "//i[contains(@class,'bi-pencil-fill')])[1]")
+    private WebElement firstEditButton;
+
+    @FindBy(xpath = "(//div[@class='oxd-table-body']//i[contains(@class,'bi-trash')])[1]")
+    private WebElement deleteButton;
+
+    @FindBy(xpath = "(//button[@type='button'])[9]")
+    private WebElement deleteRecordButton;
+
 
     @FindBy(xpath = "(//input[@placeholder=\"Type for hints...\"])[1]")
     private WebElement employeeNameInputTextBox;
 
     @FindBy(xpath = "//button[@type=\"submit\"]")
     private WebElement submitButton;
+
+    @FindBy(xpath = "//button[@type='reset']")
+    private WebElement resetButton;
+
+    @FindBy(xpath="//a[text()='Add Employee']")
+    private WebElement addEmployeeLink;
+
+    public AddEmployeePage clickAddEmployeeLink() {
+        SelUtils.clickElement(addEmployeeLink);
+        return new AddEmployeePage(wd);
+    }
+
+    public void clickResetButton() {
+        SelUtils.clickElement(resetButton);
+    }
 
     public void enterEmployeeName(String employeeName) {
         SelUtils.clickElement(employeeNameInputTextBox);
@@ -38,13 +60,9 @@ public class PimPage extends BaseTest {
         selectFirstNameHint();
     }
 
-    /**
-     * The employee name field is an autocomplete: unless a hint is picked the
-     * field is flagged "Invalid" and the search never returns any rows.
-     */
     private void selectFirstNameHint() {
         try {
-            SelUtils.clickElement(SelUtils.findElement(FIRST_NAME_HINT));
+            SelUtils.clickElement(firstNameHint);
         } catch (TimeoutException e) {
             // No hints offered (e.g. a partial name); fall back to the raw text.
         }
@@ -52,18 +70,27 @@ public class PimPage extends BaseTest {
 
     public void clickSubmitButton() {
         SelUtils.clickElement(submitButton);
-        SelUtils.findElement(RESULTS_TABLE);
+        SelUtils.isElementVisible(resultsTable);
     }
 
     public void scrollToEditButton() {
-        SelUtils.scrollIntoView(SelUtils.findElement(FIRST_EDIT_BUTTON));
+        SelUtils.scrollIntoView(firstEditButton);
     }
 
     public PersonalDetailsPage clickEditButton() {
-        SelUtils.clickElement(SelUtils.findElement(FIRST_EDIT_BUTTON));
+        SelUtils.clickElement(firstEditButton);
         SelUtils.waitForUrlContains("/pim/viewPersonalDetails/empNumber/");
         return new PersonalDetailsPage(wd);
     }
+
+    public void clickDeleteButton() {
+        SelUtils.clickElement(deleteButton);
+    }
+
+    public void clickDeleteRecordButton() {
+        SelUtils.clickElement(deleteRecordButton);
+    }
+
 
 
 }

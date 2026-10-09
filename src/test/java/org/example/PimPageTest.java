@@ -62,6 +62,42 @@ public class PimPageTest extends BaseTest {
 
     }
 
+    @Test
+    @Parameters("empName")
+    public void validateUserIsAbleToDeleteEmpDetails(@Optional("Ana") String empName) {
+
+        LoginPage login = new LoginPage(wd);
+
+        DashboardPage dashboard =
+                login.clickOnlogin("Admin", "admin123");
+
+        PimPage pimPage = dashboard.clickOnPIMLink();
+
+        pimPage.enterEmployeeName(empName);
+        pimPage.clickSubmitButton();
+        pimPage.clickDeleteButton();
+        pimPage.clickDeleteRecordButton();
+
+    }
+
+    @Test
+    @Parameters("empName")
+    public void validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset(@Optional("Ana") String empName) {
+
+        LoginPage login = new LoginPage(wd);
+
+        DashboardPage dashboard =
+                login.clickOnlogin("Admin", "admin123");
+
+        PimPage pimPage = dashboard.clickOnPIMLink();
+
+        pimPage.enterEmployeeName(empName);
+        pimPage.clickSubmitButton();
+        pimPage.clickResetButton();
+
+
+    }
+
     @AfterMethod
     public void closeBrowser() {
         teardown();
