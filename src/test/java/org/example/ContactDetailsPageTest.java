@@ -30,7 +30,7 @@ public class ContactDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Ashley") String empName) throws InterruptedException {
+    public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Amelia") String empName) throws InterruptedException {
         LoginPage login = new LoginPage();
         DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboard.clickOnPIMLink();
@@ -38,7 +38,7 @@ public class ContactDetailsPageTest extends BaseTest {
         pimPage.clickSubmitButton();
         personalDetailsPage = pimPage.clickEditButton();
         contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
-        contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "abcd@gmail.com", "0987654321");
+        contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "amelia@gmail.com", "0987654321");
         softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
         softAssert.assertAll();
     }

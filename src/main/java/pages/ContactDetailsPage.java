@@ -6,98 +6,100 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
 
 public class ContactDetailsPage extends BaseTest {
-    public ContactDetailsPage(WebDriver wd) {
+
+    public ContactDetailsPage() {
         PageFactory.initElements(wd, this);
     }
 
-    @FindBy(xpath = "//input[@fdprocessedid='pjepde']")
+    @FindBy(xpath = "//label[normalize-space()='Street 1']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement street1Input;
 
-    @FindBy(xpath = "//input[@fdprocessedid='5g0rz']")
+    @FindBy(xpath = "//label[normalize-space()='Street 2']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement street2Input;
 
-    @FindBy(xpath = "//input[@fdprocessedid='xlmmf']")
+    @FindBy(xpath = "//label[normalize-space()='City']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement cityInput;
 
-    @FindBy(xpath = "//input[@fdprocessedid='halq0f']")
+    @FindBy(xpath = "//label[normalize-space()='State/Province']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement stateInput;
 
-    @FindBy(xpath = "//input[@fdprocessedid='m7rj']")
+    @FindBy(xpath = "//label[normalize-space()='Zip/Postal Code']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement zipCodeInputTextBox;
 
-    @FindBy(xpath = "//div[text()='-- Select --']")
+    @FindBy(xpath = "//label[normalize-space()='Country']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]"
+            + "//div[contains(@class,'oxd-select-text')]")
     private WebElement countryDropdown;
 
-    @FindBy(xpath = "//input[@fdprocessedid=\"eg56o\"]")
+    @FindBy(xpath = "//label[normalize-space()='Work Email']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement workEmailInput;
 
-    @FindBy(xpath = "//input[@fdprocessedid=\"tiizd\"]")
+    @FindBy(xpath = "//label[normalize-space()='Mobile']"
+            + "/ancestor::div[contains(@class,'oxd-input-group')]//input")
     private WebElement mobilePhoneInput;
 
-    @FindBy(xpath = "//button[@fdprocessedid=\"fz3c1q\"]")
+    @FindBy(xpath = "//button[@type='submit']")
     private WebElement saveButton;
 
     @FindBy(xpath = "//div[@class=\"oxd-toast-content oxd-toast-content--success\"]")
-    private WebElement successMessage;
+    private WebElement successMessageOnUpdatingContactDetails;
 
 
     public void enterStreet1(String street1) {
-        SelUtils.waitForElementClickable(street1Input);
-        street1Input.sendKeys(street1);
+        SelUtils.clickElement(street1Input);
+        SelUtils.clearAndSendKeys(street1Input, street1);
     }
 
 
     public void enterStreet2(String street2) {
-        SelUtils.waitForElementClickable(street2Input);
-        street2Input.sendKeys(street2);
+        SelUtils.clickElement(street2Input);
+          SelUtils.clearAndSendKeys(street2Input, street2);
     }
 
     public void enterCity(String city) {
-        SelUtils.waitForElementClickable(cityInput);
-        cityInput.sendKeys(city);
+        SelUtils.clickElement(cityInput);
+        SelUtils.clearAndSendKeys(cityInput, city);
     }
 
     public void enterState(String state) {
-        SelUtils.waitForElementClickable(stateInput);
-        stateInput.sendKeys(state);
+        SelUtils.clickElement(stateInput);
+        SelUtils.clearAndSendKeys(stateInput, state);
     }
 
     public void enterZipCode(String zipCode) {
-        SelUtils.waitForElementClickable(zipCodeInputTextBox);
-        zipCodeInputTextBox.sendKeys(zipCode);
+        SelUtils.clickElement(zipCodeInputTextBox);
+        SelUtils.clearAndSendKeys(zipCodeInputTextBox, zipCode);
     }
-
 
 
     public void selectCountry(String country) {
-        countryDropdown.click();
+        SelUtils.clickElement(countryDropdown);
 
-        WebElement option = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.xpath("//div[contains(@class,'oxd-select-option')]//span[normalize-space()='" + country + "']")
-                )
+        SelUtils.clickElement(wd.findElement(By.xpath("//div[@role='listbox']//span[normalize-space()='" + country + "']"))
         );
-
-        option.click();
     }
 
-public void enterMobilePhone(String mobilePhone) {
-        SelUtils.waitForElementClickable(mobilePhoneInput);
-        mobilePhoneInput.sendKeys(mobilePhone);
+    public void enterMobilePhone(String mobilePhone) {
+        SelUtils.clickElement(mobilePhoneInput);
+        SelUtils.clearAndSendKeys(mobilePhoneInput, mobilePhone);
     }
 
     public void enterWorkEmail(String workEmail) {
-        SelUtils.waitForElementClickable(workEmailInput);
-        workEmailInput.sendKeys(workEmail);
+        SelUtils.clickElement(workEmailInput);
+        SelUtils.clearAndSendKeys(workEmailInput, workEmail);
     }
 
     public void clickSaveButton() {
-        SelUtils.waitForElementClickable(saveButton);
-        saveButton.click();
+        SelUtils.clickElement(saveButton);
     }
 
     public void fillContactDetailsAndSave(String street1, String street2, String city, String state, String zipCode, String country, String workEmail, String mobilePhone) {
@@ -113,8 +115,8 @@ public void enterMobilePhone(String mobilePhone) {
     }
 
     public String getSuccessMessage() {
-        SelUtils.waitForElementVisible(successMessage);
-        return successMessage.getText();
+        SelUtils.waitForElementVisible(successMessageOnUpdatingContactDetails);
+        return successMessageOnUpdatingContactDetails.getText();
     }
 
 

@@ -9,6 +9,8 @@ import utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
 
+    public String DashboardUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index";
+
     public DashboardPage() {
         PageFactory.initElements(wd, this);
     }
@@ -21,7 +23,7 @@ public class DashboardPage extends BaseTest {
 
     public PimPage clickOnPIMLink() {
         SelUtils.waitForElementClickable(pimLinkFromDashboard).click();
-        return new PimPage(wd);
+        return new PimPage();
     }
 
     public LeavePage clickOnLeaveMenu() {

@@ -8,34 +8,32 @@ import org.testng.annotations.Test;
 
 public class LoginPageTest extends BaseTest {
 
-    private LoginPage login;
-    private DashboardPage dashboard;
+    private LoginPage loginPage;
+    private DashboardPage dashboardPage;
 
 
     @BeforeMethod
     public void launch() {
         initialization();
-        login=new LoginPage();
+        loginPage = new LoginPage();
 
     }
 
     @Test
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
-        LoginPage login = new LoginPage();
-
-        DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
-        softAssert.assertEquals(wd.getCurrentUrl(), "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index");
+        DashboardPage dashboardPage =
+                loginPage.clickOnlogin("Admin", "admin123");
+        softAssert.assertEquals(wd.getCurrentUrl(), dashboardPage.DashboardUrl);
         softAssert.assertAll();
     }
 
     @Test
     public void validateUserIsNotAbleToLoginWithInvalidCredential() {
 
-        LoginPage login = new LoginPage();
+        LoginPage loginPage = new LoginPage();
 
-        login.clickOnlogin("Admin", "admin1234");
+        loginPage.clickOnlogin("Admin", "admin1234");
     }
 
     @AfterMethod
