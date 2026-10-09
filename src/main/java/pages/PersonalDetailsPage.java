@@ -9,7 +9,7 @@ import utilities.SelUtils;
 
 public class PersonalDetailsPage extends BaseTest {
 
-    public PersonalDetailsPage(WebDriver wd) {
+    public PersonalDetailsPage() {
         PageFactory.initElements(wd, this);
     }
 
@@ -18,7 +18,7 @@ public class PersonalDetailsPage extends BaseTest {
 
     public ContactDetailsPage clickcontactdetailslink() {
         SelUtils.clickElement(contactDetailsLink);
-        return new ContactDetailsPage(wd);
+        return new ContactDetailsPage();
     }
 
 

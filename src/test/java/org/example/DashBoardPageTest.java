@@ -13,19 +13,19 @@ public class DashBoardPageTest extends BaseTest {
     private DashboardPage dashboardPage;
     private PimPage pimPage;
 
-
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage = new LoginPage(wd);
+        loginPage=new LoginPage();
 
     }
+
 
 
     @Test
     public void validateUserIsAbleToClickOnPIMLinkOnDashboard() {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage login = new LoginPage();
 
         DashboardPage dashboard =
                 login.clickOnlogin("Admin", "admin123");

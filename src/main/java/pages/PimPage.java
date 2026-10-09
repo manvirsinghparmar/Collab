@@ -11,7 +11,7 @@ import utilities.SelUtils;
 
 public class PimPage extends BaseTest {
 
-    public PimPage(WebDriver wd) {
+    public PimPage() {
         PageFactory.initElements(wd, this);
     }
 
@@ -46,7 +46,7 @@ public class PimPage extends BaseTest {
 
     public AddEmployeePage clickAddEmployeeLink() {
         SelUtils.clickElement(addEmployeeLink);
-        return new AddEmployeePage(wd);
+        return new AddEmployeePage();
     }
 
     public void clickResetButton() {
@@ -70,7 +70,7 @@ public class PimPage extends BaseTest {
 
     public void clickSubmitButton() {
         SelUtils.clickElement(submitButton);
-        SelUtils.isElementVisible(resultsTable);
+        SelUtils.waitForElementVisible(resultsTable);
     }
 
     public void scrollToEditButton() {
@@ -80,7 +80,7 @@ public class PimPage extends BaseTest {
     public PersonalDetailsPage clickEditButton() {
         SelUtils.clickElement(firstEditButton);
         SelUtils.waitForUrlContains("/pim/viewPersonalDetails/empNumber/");
-        return new PersonalDetailsPage(wd);
+        return new PersonalDetailsPage();
     }
 
     public void clickDeleteButton() {

@@ -10,7 +10,7 @@ import utilities.SelUtils;
 
 public class ContactDetailsPage extends BaseTest {
 
-    public ContactDetailsPage(WebDriver wd) {
+    public ContactDetailsPage() {
         PageFactory.initElements(wd, this);
     }
 
@@ -62,7 +62,7 @@ public class ContactDetailsPage extends BaseTest {
 
     public void enterStreet2(String street2) {
         SelUtils.clickElement(street2Input);
-        SelUtils.clearAndSendKeys(street2Input, street2);
+          SelUtils.clearAndSendKeys(street2Input, street2);
     }
 
     public void enterCity(String city) {
@@ -84,10 +84,8 @@ public class ContactDetailsPage extends BaseTest {
     public void selectCountry(String country) {
         SelUtils.clickElement(countryDropdown);
 
-        SelUtils.clickElement(SelUtils.findElement(
-                By.xpath("//div[contains(@class,'oxd-select-option')]"
-                        + "//span[normalize-space()='" + country + "']")
-        ));
+        SelUtils.clickElement(wd.findElement(By.xpath("//div[@role='listbox']//span[normalize-space()='" + country + "']"))
+        );
     }
 
     public void enterMobilePhone(String mobilePhone) {
@@ -117,7 +115,7 @@ public class ContactDetailsPage extends BaseTest {
     }
 
     public String getSuccessMessage() {
-        SelUtils.isElementVisible(successMessageOnUpdatingContactDetails);
+        SelUtils.waitForElementVisible(successMessageOnUpdatingContactDetails);
         return successMessageOnUpdatingContactDetails.getText();
     }
 

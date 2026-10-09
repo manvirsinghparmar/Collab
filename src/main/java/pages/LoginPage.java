@@ -14,8 +14,7 @@ import java.time.Duration;
 public class LoginPage extends BaseTest {
 
 
-    public LoginPage(WebDriver wd) {
-        this.wd = wd;
+    public LoginPage() {
         PageFactory.initElements(wd, this);
     }
 
@@ -45,6 +44,7 @@ public class LoginPage extends BaseTest {
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
         SelUtils.clickElement(loginButton);
-        return new DashboardPage(wd);
+        return new DashboardPage();
+
     }
 }

@@ -20,7 +20,7 @@ public class PimPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage = new LoginPage(wd);
+        loginPage = new LoginPage();
 
     }
 
@@ -28,12 +28,12 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName) {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage loginPage = new LoginPage();
 
-        DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage =
+                loginPage.clickOnlogin("Admin", "admin123");
 
-        PimPage pimPage = dashboard.clickOnPIMLink();
+        PimPage pimPage = dashboardPage.clickOnPIMLink();
 
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -44,12 +44,12 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage loginPage = new LoginPage();
 
-        DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage =
+                loginPage.clickOnlogin("Admin", "admin123");
 
-        PimPage pimPage = dashboard.clickOnPIMLink();
+        PimPage pimPage = dashboardPage.clickOnPIMLink();
 
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -64,14 +64,14 @@ public class PimPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToDeleteEmpDetails(@Optional("Ana") String empName) {
+    public void validateUserIsAbleToDeleteEmpDetails(@Optional("bala") String empName) {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage loginPage = new LoginPage();
 
-        DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage =
+                loginPage.clickOnlogin("Admin", "admin123");
 
-        PimPage pimPage = dashboard.clickOnPIMLink();
+        PimPage pimPage = dashboardPage.clickOnPIMLink();
 
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -84,12 +84,12 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset(@Optional("Ana") String empName) {
 
-        LoginPage login = new LoginPage(wd);
+        LoginPage loginPage = new LoginPage();
 
-        DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage =
+                loginPage.clickOnlogin("Admin", "admin123");
 
-        PimPage pimPage = dashboard.clickOnPIMLink();
+        PimPage pimPage = dashboardPage.clickOnPIMLink();
 
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
