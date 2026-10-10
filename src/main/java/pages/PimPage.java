@@ -44,10 +44,10 @@ public class PimPage extends BaseTest {
     @FindBy(xpath="//a[text()='Add Employee']")
     private WebElement addEmployeeLink;
 
-    public AddEmployeePage clickAddEmployeeLink() {
-        SelUtils.clickElement(addEmployeeLink);
-        return new AddEmployeePage();
-    }
+//    public AddEmployeePage clickAddEmployeeLink() {
+//        SelUtils.clickElement(addEmployeeLink);
+//        return new AddEmployeePage();
+//    }
 
     public void clickResetButton() {
         SelUtils.clickElement(resetButton);

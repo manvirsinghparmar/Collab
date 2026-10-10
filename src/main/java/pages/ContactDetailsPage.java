@@ -2,7 +2,6 @@ package pages;
 
 import org.example.BaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -62,7 +61,7 @@ public class ContactDetailsPage extends BaseTest {
 
     public void enterStreet2(String street2) {
         SelUtils.clickElement(street2Input);
-          SelUtils.clearAndSendKeys(street2Input, street2);
+        SelUtils.clearAndSendKeys(street2Input, street2);
     }
 
     public void enterCity(String city) {
@@ -83,7 +82,6 @@ public class ContactDetailsPage extends BaseTest {
 
     public void selectCountry(String country) {
         SelUtils.clickElement(countryDropdown);
-
         SelUtils.clickElement(wd.findElement(By.xpath("//div[@role='listbox']//span[normalize-space()='" + country + "']"))
         );
     }
@@ -115,8 +113,7 @@ public class ContactDetailsPage extends BaseTest {
     }
 
     public String getSuccessMessage() {
-        SelUtils.waitForElementVisible(successMessageOnUpdatingContactDetails);
-        return successMessageOnUpdatingContactDetails.getText();
+        return SelUtils.getText(successMessageOnUpdatingContactDetails);
     }
 
 

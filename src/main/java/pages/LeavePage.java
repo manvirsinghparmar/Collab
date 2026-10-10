@@ -84,15 +84,13 @@ public class LeavePage extends BaseTest {
     }
 
     public void enterEmployeeName(String employeeFirstName, String employeeFullName) {
-        SelUtils.waitForElementVisible(employeeNameField);
-        employeeNameField.sendKeys(employeeFirstName);
+        SelUtils.clearAndSendKeys(employeeNameField, employeeFirstName);
         By option = By.xpath("//div[@role='listbox']//span[normalize-space()='" + employeeFullName + "']");
         SelUtils.getWait().until(ExpectedConditions.elementToBeClickable(option)).click();
     }
 
     public void clickSearchButton() {
-        SelUtils.waitForElementClickable(searchButtonForLeaveList);
-        searchButtonForLeaveList.click();
+        SelUtils.clickElement(searchButtonForLeaveList);
     }
 
     public boolean isLeaveListTableEmpty() {
@@ -100,13 +98,11 @@ public class LeavePage extends BaseTest {
     }
 
     public String getRecordsFoundMessage() {
-        SelUtils.waitForElementVisible(recordsFoundMessage);
-        return recordsFoundMessage.getText();
+        return SelUtils.getText(recordsFoundMessage);
     }
 
     public void clickApplyButton() {
-        SelUtils.waitForElementClickable(applyButton);
-        applyButton.click();
+        SelUtils.clickElement(applyButton);
     }
 
     public void selectLeaveType(String leaveType) {
@@ -138,13 +134,11 @@ public class LeavePage extends BaseTest {
     }
 
     public void clickApplyButtonForLeave() {
-        SelUtils.waitForElementClickable(applyButtonForLeave);
-        applyButtonForLeave.click();
+        SelUtils.clickElement(applyButtonForLeave);
     }
 
     public String getMessagePrompt() {
-        SelUtils.waitForElementVisible(messagePrompt);
-        return messagePrompt.getText();
+        return SelUtils.getText(messagePrompt);
     }
 
 }

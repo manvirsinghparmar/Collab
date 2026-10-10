@@ -22,13 +22,12 @@ public class DashboardPage extends BaseTest {
     private WebElement leaveMenu;
 
     public PimPage clickOnPIMLink() {
-        SelUtils.waitForElementClickable(pimLinkFromDashboard).click();
+        SelUtils.clickElement(pimLinkFromDashboard);
         return new PimPage();
     }
 
     public LeavePage clickOnLeaveMenu() {
-        wait.until(ExpectedConditions.elementToBeClickable(leaveMenu));
-        leaveMenu.click();
+        SelUtils.clickElement(leaveMenu);
         return new LeavePage();
     }
 

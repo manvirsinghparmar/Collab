@@ -40,7 +40,6 @@ public class LoginPage extends BaseTest {
     }
 
     public DashboardPage clickOnlogin(String email, String pwd) {
-
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
         SelUtils.clickElement(loginButton);

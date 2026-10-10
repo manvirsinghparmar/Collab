@@ -14,7 +14,7 @@ public class BaseTest {
 
     protected static WebDriver wd;
     public static WebDriverWait wait;
-    SoftAssert softAssert = new SoftAssert();
+    public SoftAssert softAssert = new SoftAssert();
 
     private final String defaultBrowser = "CHROME";
     private final String url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
