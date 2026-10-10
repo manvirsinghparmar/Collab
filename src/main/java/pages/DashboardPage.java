@@ -9,7 +9,7 @@ import utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
 
-    public String DashboardUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index";
+    public String DashboardUrl = config.dashboardUrl();
 
     public DashboardPage() {
         PageFactory.initElements(wd, this);

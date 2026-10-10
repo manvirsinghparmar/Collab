@@ -29,7 +29,7 @@ public class DashBoardPageTest extends BaseTest {
         LoginPage login = new LoginPage();
 
         DashboardPage dashboard =
-                login.clickOnlogin("Admin", "admin123");
+                login.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboard.clickOnPIMLink();
     }
