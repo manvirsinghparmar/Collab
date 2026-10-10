@@ -1,4 +1,4 @@
-package org.example;
+package org.base;
 
 import browser.BrowserUtil;
 import org.openqa.selenium.WebDriver;

@@ -1,6 +1,6 @@
 package org.testPages;
 
-import org.example.BaseTest;
+import org.base.BaseTest;
 import pages.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

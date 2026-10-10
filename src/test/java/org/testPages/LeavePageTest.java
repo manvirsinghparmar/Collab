@@ -1,13 +1,12 @@
 package org.testPages;
 
 
-import org.example.BaseTest;
+import org.base.BaseTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import pages.DashboardPage;
 import pages.LeavePage;
 import pages.LoginPage;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LeavePageTest extends BaseTest {

@@ -1,6 +1,6 @@
 package pages;
 
-import org.example.BaseTest;
+import org.base.BaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
