@@ -31,7 +31,7 @@ public class PimPageTest extends BaseTest {
         LoginPage loginPage = new LoginPage();
 
         DashboardPage dashboardPage =
-                loginPage.clickOnlogin("Admin", "admin123");
+                loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboardPage.clickOnPIMLink();
 
@@ -47,7 +47,7 @@ public class PimPageTest extends BaseTest {
         LoginPage loginPage = new LoginPage();
 
         DashboardPage dashboardPage =
-                loginPage.clickOnlogin("Admin", "admin123");
+                loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboardPage.clickOnPIMLink();
 
@@ -69,7 +69,7 @@ public class PimPageTest extends BaseTest {
         LoginPage loginPage = new LoginPage();
 
         DashboardPage dashboardPage =
-                loginPage.clickOnlogin("Admin", "admin123");
+                loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboardPage.clickOnPIMLink();
 
@@ -87,7 +87,7 @@ public class PimPageTest extends BaseTest {
         LoginPage loginPage = new LoginPage();
 
         DashboardPage dashboardPage =
-                loginPage.clickOnlogin("Admin", "admin123");
+                loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboardPage.clickOnPIMLink();
 

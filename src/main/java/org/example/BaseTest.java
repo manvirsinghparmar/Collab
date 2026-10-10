@@ -1,14 +1,10 @@
 package org.example;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import browser.BrowserUtil;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
-
-import java.util.HashMap;
-import java.util.Map;
+import utilities.ConfigReader;
 
 public class BaseTest {
 
@@ -16,35 +12,14 @@ public class BaseTest {
     public static WebDriverWait wait;
     SoftAssert softAssert = new SoftAssert();
 
-    private final String defaultBrowser = "CHROME";
-    private final String url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
+    protected final ConfigReader config = ConfigReader.getInstance();
 
     public void initialization() {
 
-        switch (defaultBrowser) {
-            case "CHROME":
-
-                WebDriverManager.chromedriver().setup();
-                ChromeOptions options = new ChromeOptions();
-
-                Map<String, Object> prefs = new HashMap<>();
-                prefs.put("autofill.profile_enabled", false);
-                options.setExperimentalOption("prefs", prefs);
-                wd = new ChromeDriver(options);
-                break;
-
-            case "EDGE":
-                wd = WebDriverManager.edgedriver().create();
-                break;
-            case "FIREFOX":
-                wd = WebDriverManager.firefoxdriver().create();
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid Browser");
-        }
+        wd = BrowserUtil.createDriver();
 
         wd.manage().window().maximize();
-        wd.get(url);
+        wd.get(config.loginUrl());
         wait = new WebDriverWait(wd, java.time.Duration.ofSeconds(20));
     }
 

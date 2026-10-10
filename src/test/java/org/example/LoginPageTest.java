@@ -23,7 +23,7 @@ public class LoginPageTest extends BaseTest {
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
         DashboardPage dashboardPage =
-                loginPage.clickOnlogin("Admin", "admin123");
+                loginPage.clickOnlogin(config.username(), config.password());
         softAssert.assertEquals(wd.getCurrentUrl(), dashboardPage.DashboardUrl);
         softAssert.assertAll();
     }
