@@ -1,9 +1,7 @@
 package pages;
 
-import org.example.BaseTest;
-import org.openqa.selenium.By;
+import org.base.BaseTest;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -44,10 +42,10 @@ public class PimPage extends BaseTest {
     @FindBy(xpath="//a[text()='Add Employee']")
     private WebElement addEmployeeLink;
 
-    public AddEmployeePage clickAddEmployeeLink() {
-        SelUtils.clickElement(addEmployeeLink);
-        return new AddEmployeePage();
-    }
+//    public AddEmployeePage clickAddEmployeeLink() {
+//        SelUtils.clickElement(addEmployeeLink);
+//        return new AddEmployeePage();
+//    }
 
     public void clickResetButton() {
         SelUtils.clickElement(resetButton);

@@ -1,5 +1,6 @@
-package org.example;
+package org.testPages;
 
+import org.base.BaseTest;
 import pages.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -14,6 +15,7 @@ public class ContactDetailsPageTest extends BaseTest {
     private DashboardPage dashboardPage;
     private PimPage pimPage;
     private ContactDetailsPage contactDetailsPage;
+
 
 
     @BeforeMethod

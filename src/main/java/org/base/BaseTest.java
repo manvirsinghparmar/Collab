@@ -1,4 +1,4 @@
-package org.example;
+package org.base;
 
 import browser.BrowserUtil;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +10,7 @@ public class BaseTest {
 
     protected static WebDriver wd;
     public static WebDriverWait wait;
-    SoftAssert softAssert = new SoftAssert();
+    public SoftAssert softAssert = new SoftAssert();
 
     protected final ConfigReader config = ConfigReader.getInstance();
 

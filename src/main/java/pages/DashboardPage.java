@@ -1,10 +1,9 @@
 package pages;
 
-import org.example.BaseTest;
+import org.base.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
@@ -22,13 +21,12 @@ public class DashboardPage extends BaseTest {
     private WebElement leaveMenu;
 
     public PimPage clickOnPIMLink() {
-        SelUtils.waitForElementClickable(pimLinkFromDashboard).click();
+        SelUtils.clickElement(pimLinkFromDashboard);
         return new PimPage();
     }
 
     public LeavePage clickOnLeaveMenu() {
-        wait.until(ExpectedConditions.elementToBeClickable(leaveMenu));
-        leaveMenu.click();
+        SelUtils.clickElement(leaveMenu);
         return new LeavePage();
     }
 

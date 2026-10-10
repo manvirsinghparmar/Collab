@@ -1,15 +1,10 @@
 package pages;
 
-import org.example.BaseTest;
-import org.openqa.selenium.WebDriver;
+import org.base.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import utilities.SelUtils;
-
-import java.time.Duration;
 
 public class LoginPage extends BaseTest {
 
@@ -40,7 +35,6 @@ public class LoginPage extends BaseTest {
     }
 
     public DashboardPage clickOnlogin(String email, String pwd) {
-
         enterEmailTextBox(email);
         enterPasswordTexBox(pwd);
         SelUtils.clickElement(loginButton);

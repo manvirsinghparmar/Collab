@@ -1,5 +1,6 @@
-package org.example;
+package org.testPages;
 
+import org.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PersonalDetailsPage;
@@ -15,7 +16,6 @@ public class PersonalDetailsPageTest extends BaseTest {
     private LoginPage loginPage;
     private DashboardPage dashboardPage;
     private PimPage pimPage;
-
 
 
     @BeforeMethod

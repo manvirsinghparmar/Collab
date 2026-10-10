@@ -1,5 +1,6 @@
-package org.example;
+package org.testPages;
 
+import org.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PimPage;

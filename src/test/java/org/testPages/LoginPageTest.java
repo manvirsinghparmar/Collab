@@ -1,5 +1,6 @@
-package org.example;
+package org.testPages;
 
+import org.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
 import org.testng.annotations.AfterMethod;
@@ -11,7 +12,6 @@ public class LoginPageTest extends BaseTest {
     private LoginPage loginPage;
     private DashboardPage dashboardPage;
 
-
     @BeforeMethod
     public void launch() {
         initialization();
@@ -22,8 +22,7 @@ public class LoginPageTest extends BaseTest {
     @Test
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
-        DashboardPage dashboardPage =
-                loginPage.clickOnlogin(config.username(), config.password());
+        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
         softAssert.assertEquals(wd.getCurrentUrl(), dashboardPage.DashboardUrl);
         softAssert.assertAll();
     }
@@ -32,7 +31,6 @@ public class LoginPageTest extends BaseTest {
     public void validateUserIsNotAbleToLoginWithInvalidCredential() {
 
         LoginPage loginPage = new LoginPage();
-
         loginPage.clickOnlogin("Admin", "admin1234");
     }
 

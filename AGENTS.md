@@ -38,7 +38,7 @@ Existing scenarios cover login, dashboard navigation, PIM employee search/edit/d
 | `src/main/java/utilities/ConfigReader.java` | Immutable configuration snapshot, overrides, validation, URL construction |
 | `src/main/java/browser/Browser.java` | Supported browser enum: CHROME, FIREFOX, EDGE |
 | `src/main/java/browser/BrowserUtil.java` | Default browser, runtime selection, driver setup, browser-specific options |
-| `src/main/java/org/example/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown, soft assertions |
+| `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown, soft assertions |
 | `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage` |
 | `src/main/java/utilities/SelUtils.java` | Shared explicit waits, clicking, scrolling, and text entry |
 | `src/main/java/utilities/Utils.java` | Existing sleep helper |
