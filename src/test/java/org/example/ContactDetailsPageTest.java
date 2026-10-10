@@ -32,7 +32,7 @@ public class ContactDetailsPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Amelia") String empName) throws InterruptedException {
         LoginPage login = new LoginPage();
-        DashboardPage dashboard = login.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboard = login.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboard.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();

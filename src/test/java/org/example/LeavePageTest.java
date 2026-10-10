@@ -23,7 +23,7 @@ public class LeavePageTest extends BaseTest {
 
     @Test
     public void validIfThereAreNOLeavesPendingApproval() {
-        dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         leavePage = dashboardPage.clickOnLeaveMenu();
         leavePage.enterFromDate("2026-09-23");
         leavePage.enterToDate("2026-12-31");
@@ -34,7 +34,7 @@ public class LeavePageTest extends BaseTest {
 
     @Test
     public void applyLeave() {
-        dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         leavePage = dashboardPage.clickOnLeaveMenu();
         leavePage.clickApplyButton();
         leavePage.selectLeaveType("CAN - Vacation");
@@ -46,7 +46,7 @@ public class LeavePageTest extends BaseTest {
 
     @Test
     public void applyLeaveForMoreDaysThanAvailable() {
-        dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         leavePage = dashboardPage.clickOnLeaveMenu();
         leavePage.clickApplyButton();
         leavePage.selectLeaveType("CAN - Vacation");
