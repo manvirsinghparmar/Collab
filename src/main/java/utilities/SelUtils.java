@@ -83,6 +83,15 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
         element.sendKeys(text);
     }
 
+    public static void enterDate(WebElement element, String date) {
+        clickElement(element);
+        Keys modifier = Platform.getCurrent().is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
+        element.sendKeys(Keys.chord(modifier, "a"), Keys.BACK_SPACE, date);
+        // Verify replacement before Tab lets the application format the date on blur.
+        getWait().until(ExpectedConditions.domPropertyToBe(element, "value", date));
+        element.sendKeys(Keys.TAB);
+    }
+
     public static void enterTextIntoInputBox(WebElement element, String text) {
         waitForElementVisible(element);
         element.sendKeys(text);

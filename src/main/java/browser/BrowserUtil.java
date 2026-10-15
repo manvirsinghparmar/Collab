@@ -1,6 +1,7 @@
 package browser;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -8,6 +9,8 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.Locale;
 import java.util.Map;
@@ -26,7 +29,7 @@ public final class BrowserUtil {
 
     public static WebDriver createDriver(Browser browser) {
         if (browser == null) {
-            throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, or EDGE");
+            throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, EDGE, or SAFARI");
         }
         return switch (browser) {
             case CHROME -> {
@@ -40,6 +43,13 @@ public final class BrowserUtil {
             case EDGE -> {
                 WebDriverManager.edgedriver().setup();
                 yield new EdgeDriver(edgeOptions());
+            }
+            case SAFARI -> {
+                if (!Platform.getCurrent().is(Platform.MAC)) {
+                    throw new UnsupportedOperationException(
+                            "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
+                }
+                yield new SafariDriver(new SafariOptions());
             }
         };
     }
@@ -60,7 +70,7 @@ public final class BrowserUtil {
         try {
             return Browser.valueOf(value.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid browser override: expected CHROME, FIREFOX, or EDGE");
+            throw new IllegalArgumentException("Invalid browser override: expected CHROME, FIREFOX, EDGE, or SAFARI");
         }
     }
 
