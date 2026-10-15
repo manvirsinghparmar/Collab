@@ -1,9 +1,9 @@
-package org.testPages;
+package org.orangehrm.tests;
 
-import org.base.BaseTest;
-import pages.DashboardPage;
-import pages.LoginPage;
-import pages.PimPage;
+import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.pages.DashboardPage;
+import org.orangehrm.pages.LoginPage;
+import org.orangehrm.pages.PimPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -11,27 +11,24 @@ import org.testng.annotations.Test;
 public class DashBoardPageTest extends BaseTest {
 
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
 
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage();
+        loginPage = new LoginPage();
 
     }
-
 
 
     @Test
     public void validateUserIsAbleToClickOnPIMLinkOnDashboard() {
 
-        LoginPage login = new LoginPage();
-
         DashboardPage dashboard =
-                login.clickOnlogin(config.username(), config.password());
+                loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboard.clickOnPIMLink();
+        softAssert.assertTrue(wd.getCurrentUrl().contains("/pim/viewEmployeeList"), "Expected PIM URL, but actual URL was: " + wd.getCurrentUrl());
+
     }
 
 

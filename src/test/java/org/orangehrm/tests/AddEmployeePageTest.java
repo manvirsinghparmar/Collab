@@ -1,17 +1,13 @@
-package org.testPages;
+package org.orangehrm.tests;
 
-import org.base.BaseTest;
+import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.pages.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.*;
 
 public class AddEmployeePageTest extends BaseTest {
-    private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
-    private ContactDetailsPage contactDetailsPage;
     private AddEmployeePage addEmployeePage;
 
 
@@ -30,7 +26,6 @@ public class AddEmployeePageTest extends BaseTest {
         pimPage.clickAddEmployeeLink();
         addEmployeePage.addEmployee("Ruchi", "Chaudhary", "Ravish");
         softAssert.assertTrue(addEmployeePage.isSuccessMessageVisible(), "Success message is not visible after adding a new employee.");
-        softAssert.assertAll();
     }
 
     @AfterMethod

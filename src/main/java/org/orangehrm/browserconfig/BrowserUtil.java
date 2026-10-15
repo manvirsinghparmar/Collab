@@ -1,4 +1,4 @@
-package browser;
+package org.orangehrm.browserconfig;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -51,8 +51,8 @@ public final class BrowserUtil {
         return resolveBrowser(System::getProperty, System::getenv);
     }
 
-    static Browser resolveBrowser(Function<String, String> systemProperties,
-                                  Function<String, String> environment) {
+    public static Browser resolveBrowser(Function<String, String> systemProperties,
+                                         Function<String, String> environment) {
         String value = systemProperties.apply("browser");
         if (value == null) {
             value = environment.apply("BROWSER");
@@ -73,7 +73,7 @@ public final class BrowserUtil {
         return options;
     }
 
-    static FirefoxOptions firefoxOptions() {
+    public static FirefoxOptions firefoxOptions() {
         return new FirefoxOptions();
     }
 

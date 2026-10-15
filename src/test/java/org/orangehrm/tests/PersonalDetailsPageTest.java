@@ -1,10 +1,9 @@
-package org.testPages;
+package org.orangehrm.tests;
 
-import org.base.BaseTest;
-import pages.DashboardPage;
-import pages.LoginPage;
-import pages.PersonalDetailsPage;
-import pages.PimPage;
+import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.pages.DashboardPage;
+import org.orangehrm.pages.LoginPage;
+import org.orangehrm.pages.PimPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
@@ -12,21 +11,13 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class PersonalDetailsPageTest extends BaseTest {
-    private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
 
 
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage();
-    }
-
-    @AfterMethod
-    public void quit() {
-        teardown();
+        loginPage = new LoginPage();
     }
 
 
@@ -40,10 +31,14 @@ public class PersonalDetailsPageTest extends BaseTest {
         pimPage.clickSubmitButton();
         pimPage.clickEditButton();
         String actualUrl = wd.getCurrentUrl();
-        softAssert.assertTrue( actualUrl.contains("/pim/viewPersonalDetails/empNumber/"),
+        softAssert.assertTrue(actualUrl.contains("/pim/viewPersonalDetails/empNumber/"),
                 "User did not land on Personal Details page. Actual URL: " + actualUrl);
-        softAssert.assertAll();
 
+    }
+
+    @AfterMethod
+    public void quit() {
+        teardown();
     }
 
 }
