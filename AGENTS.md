@@ -92,7 +92,7 @@ The dashboard test filename is `DashBoardPageTest.java`; the page object is `Das
 ## How the framework works
 
 1. Tests extend `BaseTest` and call `initialization()` from `@BeforeMethod`.
-2. Initialization calls `BrowserUtil.createDriver()`, maximizes its window, opens the configured login URL, and sets a 20-second shared wait. Chrome is the default in `BrowserUtil`; Edge and Firefox are also supported, plus Safari on macOS.
+2. Initialization calls `BrowserUtil.createDriver()`, maximizes its window, opens the configured login URL, and sets a 20-second shared wait. Chrome is the default in `BrowserUtil`; Edge, Firefox, and Safari are also supported. Safari requires macOS.
 3. Page objects extend `BaseTest`, inherit the shared `wd`, and initialize private `@FindBy` elements with `PageFactory.initElements(wd, this)`.
 4. Navigation methods return the destination page object, for example `LoginPage.clickOnlogin(...)` returns `DashboardPage`.
 5. Tests perform assertions and call `teardown()` from `@AfterMethod` to quit the browser. Soft assertion tests must call `assertAll()`.
@@ -140,9 +140,10 @@ blank or unsupported overrides are rejected before driver setup. `createDriver(B
 explicitly selects an enum value and bypasses runtime overrides. Selection is resolved on each
 no-argument call. Each creation returns a new driver and uses fresh options objects; the utility
 does not store a shared driver. It uses WebDriverManager setup and the matching Selenium driver
-constructor for Chrome, Firefox, and Edge. Safari uses `SafariDriver` with fresh
-default `SafariOptions` after checking that the local platform is macOS, without
-WebDriverManager setup. Chrome retains the disabled autofill profile preference;
+constructor for Chrome, Firefox, and Edge. Safari uses `SafariDriver` with the
+macOS-provided `safaridriver` and fresh default options from `safariOptions()`
+after checking that the local platform is macOS, without WebDriverManager setup.
+Chrome retains the disabled autofill profile preference;
 Firefox, Edge, and Safari use default options. All browsers remain visible by default.
 
 In macOS zsh, set an environment override with `export BROWSER=FIREFOX`; in

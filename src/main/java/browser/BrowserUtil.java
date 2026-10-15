@@ -49,7 +49,7 @@ public final class BrowserUtil {
                     throw new UnsupportedOperationException(
                             "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
                 }
-                yield new SafariDriver(new SafariOptions());
+                yield new SafariDriver(safariOptions());
             }
         };
     }
@@ -86,5 +86,9 @@ public final class BrowserUtil {
 
     static EdgeOptions edgeOptions() {
         return new EdgeOptions();
+    }
+
+    static SafariOptions safariOptions() {
+        return new SafariOptions();
     }
 }
