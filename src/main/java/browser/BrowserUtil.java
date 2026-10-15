@@ -8,6 +8,8 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.Locale;
 import java.util.Map;
@@ -26,7 +28,7 @@ public final class BrowserUtil {
 
     public static WebDriver createDriver(Browser browser) {
         if (browser == null) {
-            throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, or EDGE");
+            throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, EDGE, or SAFARI");
         }
         return switch (browser) {
             case CHROME -> {
@@ -41,6 +43,7 @@ public final class BrowserUtil {
                 WebDriverManager.edgedriver().setup();
                 yield new EdgeDriver(edgeOptions());
             }
+            case SAFARI -> new SafariDriver(safariOptions());
         };
     }
 
@@ -60,7 +63,7 @@ public final class BrowserUtil {
         try {
             return Browser.valueOf(value.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid browser override: expected CHROME, FIREFOX, or EDGE");
+            throw new IllegalArgumentException("Invalid browser override: expected CHROME, FIREFOX, EDGE, or SAFARI");
         }
     }
 
@@ -76,5 +79,9 @@ public final class BrowserUtil {
 
     static EdgeOptions edgeOptions() {
         return new EdgeOptions();
+    }
+
+    static SafariOptions safariOptions() {
+        return new SafariOptions();
     }
 }

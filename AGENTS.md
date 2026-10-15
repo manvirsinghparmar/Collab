@@ -36,7 +36,7 @@ Existing scenarios cover login, dashboard navigation, PIM employee search/edit/d
 | `pom.xml` | Dependencies, Java release, compiler, TestNG suite configuration |
 | `src/main/resources/config.properties` | Default application host, page paths, public demo credentials |
 | `src/main/java/utilities/ConfigReader.java` | Immutable configuration snapshot, overrides, validation, URL construction |
-| `src/main/java/browser/Browser.java` | Supported browser enum: CHROME, FIREFOX, EDGE |
+| `src/main/java/browser/Browser.java` | Supported browser enum: CHROME, FIREFOX, EDGE, SAFARI |
 | `src/main/java/browser/BrowserUtil.java` | Default browser, runtime selection, driver setup, browser-specific options |
 | `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown, soft assertions |
 | `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage` |
@@ -50,7 +50,7 @@ The dashboard test filename is `DashBoardPageTest.java`; the page object is `Das
 ## How the framework works
 
 1. Tests extend `BaseTest` and call `initialization()` from `@BeforeMethod`.
-2. Initialization calls `BrowserUtil.createDriver()`, maximizes its window, opens the configured login URL, and sets a 20-second shared wait. Chrome is the default in `BrowserUtil`; Edge and Firefox are also supported.
+2. Initialization calls `BrowserUtil.createDriver()`, maximizes its window, opens the configured login URL, and sets a 20-second shared wait. Chrome is the default in `BrowserUtil`; Edge, Firefox, and Safari are also supported. Safari requires macOS.
 3. Page objects extend `BaseTest`, inherit the shared `wd`, and initialize private `@FindBy` elements with `PageFactory.initElements(wd, this)`.
 4. Navigation methods return the destination page object, for example `LoginPage.clickOnlogin(...)` returns `DashboardPage`.
 5. Tests perform assertions and call `teardown()` from `@AfterMethod` to quit the browser. Soft assertion tests must call `assertAll()`.
@@ -87,8 +87,11 @@ blank or unsupported overrides are rejected before driver setup. `createDriver(B
 explicitly selects an enum value and bypasses runtime overrides. Selection is resolved on each
 no-argument call. Each creation returns a new driver and uses fresh options objects; the utility
 does not store a shared driver. It uses WebDriverManager setup and the matching Selenium driver
-constructor for all three browsers. Chrome retains the disabled autofill profile preference;
-Firefox and Edge use default options. All browsers remain visible by default.
+constructor for Chrome, Firefox, and Edge. Safari uses `SafariDriver` with the macOS-provided
+`safaridriver`, without WebDriverManager setup. Chrome retains the disabled autofill profile
+preference; Firefox, Edge, and Safari use default options. All browsers remain visible by default.
+To use Safari on macOS, run `safaridriver --enable` once, then select `-Dbrowser=SAFARI`,
+`BROWSER=SAFARI`, or `createDriver(Browser.SAFARI)`. Local Safari execution is unavailable on Windows.
 
 After the existing build/suite blockers are resolved, examples are:
 
