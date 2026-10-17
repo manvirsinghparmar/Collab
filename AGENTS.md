@@ -80,6 +80,8 @@ and [Selenium's Safari documentation](https://www.selenium.dev/documentation/web
 | `src/main/java/utilities/ConfigReader.java` | Immutable configuration snapshot, overrides, validation, URL construction |
 | `src/main/java/browser/Browser.java` | Supported browser enum: CHROME, FIREFOX, EDGE, SAFARI (macOS only) |
 | `src/main/java/browser/BrowserUtil.java` | Default browser, runtime selection, driver setup, browser-specific options |
+| `src/main/java/platform/Platforms.java` | Framework operating-system enum: WINDOWS, MAC, LINUX |
+| `src/main/java/platform/PlatformUtil.java` | Local operating-system detection; wraps Selenium's Platform API |
 | `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown, soft assertions |
 | `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage` |
 | `src/main/java/utilities/SelUtils.java` | Shared explicit waits, clicking, scrolling, and text entry |
@@ -100,7 +102,7 @@ The dashboard test filename is `DashBoardPageTest.java`; the page object is `Das
 `SelUtils` exposes static helpers with 15-second explicit waits. Its click helper scrolls and waits, then falls back to a JavaScript click for selected Selenium exceptions. It also implements `WebDriver` and `JavascriptExecutor`, but several instance methods are stubs; use its existing static helpers rather than treating it as a complete driver implementation.
 
 All four leave date-entry methods use `SelUtils.enterDate`. It selects Command+A
-on macOS or Ctrl+A on Windows using Selenium's local platform detection, deletes
+on macOS or Ctrl+A elsewhere using `PlatformUtil.isMac()`, deletes
 the selection, enters the date, waits for the input value to match, then presses
 Tab so the application can apply its display format on blur. Reuse this helper
 for date fields instead of hardcoding `Keys.CONTROL`. Selection, deletion, and
@@ -109,6 +111,17 @@ application may reformat `2026-09-23` as `2026-23-09` with a `yyyy-dd-mm`
 display preference after Tab. Ordinary text fields still use
 `SelUtils.clearAndSendKeys`. This assumes local browser sessions; remote
 execution would need to use the browser host's platform instead.
+
+The `platform` package centralizes local operating-system detection, following the
+`Browser`/`BrowserUtil` structure. `PlatformUtil.getCurrentPlatform()` delegates to
+Selenium's `Platform` internally and returns the framework's `Platforms` enum:
+`WINDOWS`, `MAC`, or `LINUX`. Detection throws `UnsupportedOperationException`
+with the local OS name for other operating systems. Its `isMac()`, `isWindows()`,
+and `isLinux()` methods reuse that mapping and propagate that exception. Use this utility instead
+of referencing Selenium's `Platform` directly elsewhere in the framework.
+`BrowserUtil` also uses `PlatformUtil.isMac()` for Safari's local-host validation.
+Detection has no configuration overrides and does not describe a remote browser
+session; Selenium Grid support would need separate session-platform detection.
 
 ## Runtime configuration
 

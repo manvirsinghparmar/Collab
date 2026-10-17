@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import platform.PlatformUtil;
 
 import java.time.Duration;
 import java.util.List;
@@ -85,7 +86,7 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
 
     public static void enterDate(WebElement element, String date) {
         clickElement(element);
-        Keys modifier = Platform.getCurrent().is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
+        Keys modifier = PlatformUtil.isMac() ? Keys.COMMAND : Keys.CONTROL;
         element.sendKeys(Keys.chord(modifier, "a"), Keys.BACK_SPACE, date);
         // Verify replacement before Tab lets the application format the date on blur.
         getWait().until(ExpectedConditions.domPropertyToBe(element, "value", date));

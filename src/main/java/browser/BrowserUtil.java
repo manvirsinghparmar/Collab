@@ -1,7 +1,6 @@
 package browser;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import platform.PlatformUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -45,7 +45,7 @@ public final class BrowserUtil {
                 yield new EdgeDriver(edgeOptions());
             }
             case SAFARI -> {
-                if (!Platform.getCurrent().is(Platform.MAC)) {
+                if (!PlatformUtil.isMac()) {
                     throw new UnsupportedOperationException(
                             "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
                 }
