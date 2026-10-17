@@ -1,6 +1,7 @@
 package org.orangehrm.tests;
 
-import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.assertions.AssertionsUtil;
+import org.orangehrm.basetest.BaseTest;
 import org.orangehrm.pages.DashboardPage;
 import org.orangehrm.pages.LoginPage;
 import org.orangehrm.pages.PimPage;
@@ -27,7 +28,7 @@ public class DashBoardPageTest extends BaseTest {
                 loginPage.clickOnlogin(config.username(), config.password());
 
         PimPage pimPage = dashboard.clickOnPIMLink();
-        softAssert.assertTrue(wd.getCurrentUrl().contains("/pim/viewEmployeeList"), "Expected PIM URL, but actual URL was: " + wd.getCurrentUrl());
+        AssertionsUtil.softAssert.assertTrue(wd.getCurrentUrl().contains("/pim/viewEmployeeList"), "Expected PIM URL, but actual URL was: " + wd.getCurrentUrl());
 
     }
 
@@ -37,3 +38,4 @@ public class DashBoardPageTest extends BaseTest {
         teardown();
     }
 }
+

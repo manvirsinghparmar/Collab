@@ -1,6 +1,7 @@
 package org.orangehrm.tests;
 
-import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.assertions.AssertionsUtil;
+import org.orangehrm.basetest.BaseTest;
 import org.orangehrm.config.ConfigReader;
 import org.orangehrm.pages.*;
 import org.testng.annotations.AfterMethod;
@@ -39,7 +40,8 @@ public class ContactDetailsPageTest extends BaseTest {
         personalDetailsPage = pimPage.clickEditButton();
         contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
         contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "amelia@gmail.com", "0987654321");
-        softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
+        AssertionsUtil.softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
+
 
     }
 }

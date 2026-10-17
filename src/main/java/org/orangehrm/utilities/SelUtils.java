@@ -5,7 +5,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 
 import java.time.Duration;
 import java.util.List;

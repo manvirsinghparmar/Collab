@@ -1,6 +1,6 @@
 package org.orangehrm.pages;
 
-import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;

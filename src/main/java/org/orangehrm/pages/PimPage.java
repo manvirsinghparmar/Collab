@@ -1,11 +1,13 @@
 package org.orangehrm.pages;
 
-import org.orangehrm.bastest.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.orangehrm.utilities.SelUtils;
+
+import java.util.Collection;
 
 public class PimPage extends BaseTest {
 
@@ -91,5 +93,5 @@ public class PimPage extends BaseTest {
     }
 
 
-
+    }
 }
