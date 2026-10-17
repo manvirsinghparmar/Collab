@@ -6,6 +6,7 @@ import pages.LoginPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import utilities.SelUtils;
 
 public class LoginPageTest extends BaseTest {
 
@@ -22,7 +23,8 @@ public class LoginPageTest extends BaseTest {
     @Test
     public void validateUserIsAbleToLoginWithValidCredentials() {
 
-        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
+        SelUtils.waitForUrlContains(dashboardPage.DashboardUrl);
         softAssert.assertEquals(wd.getCurrentUrl(), dashboardPage.DashboardUrl);
         softAssert.assertAll();
     }

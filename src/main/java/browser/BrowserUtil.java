@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import platform.PlatformUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -43,7 +44,13 @@ public final class BrowserUtil {
                 WebDriverManager.edgedriver().setup();
                 yield new EdgeDriver(edgeOptions());
             }
-            case SAFARI -> new SafariDriver(safariOptions());
+            case SAFARI -> {
+                if (!PlatformUtil.isMac()) {
+                    throw new UnsupportedOperationException(
+                            "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
+                }
+                yield new SafariDriver(safariOptions());
+            }
         };
     }
 
