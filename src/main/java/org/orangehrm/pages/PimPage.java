@@ -94,4 +94,3 @@ public class PimPage extends BaseTest {
 
 
     }
-}
