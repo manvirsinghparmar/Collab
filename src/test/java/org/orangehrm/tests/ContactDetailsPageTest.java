@@ -1,21 +1,21 @@
-package org.testPages;
+package org.orangehrm.tests;
 
-import org.base.BaseTest;
-import pages.*;
+import org.orangehrm.assertions.AssertionsUtil;
+import org.orangehrm.basetest.BaseTest;
+import org.orangehrm.config.ConfigReader;
+import org.orangehrm.pages.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+
 public class ContactDetailsPageTest extends BaseTest {
 
     private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
     private ContactDetailsPage contactDetailsPage;
-
 
 
     @BeforeMethod
@@ -33,15 +33,15 @@ public class ContactDetailsPageTest extends BaseTest {
     @Test
     @Parameters("empName")
     public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Amelia") String empName) throws InterruptedException {
-        LoginPage login = new LoginPage();
-        DashboardPage dashboard = login.clickOnlogin(config.username(), config.password());
+        DashboardPage dashboard = loginPage.clickOnlogin(ConfigReader.getInstance().username(), ConfigReader.getInstance().password());
         PimPage pimPage = dashboard.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
         personalDetailsPage = pimPage.clickEditButton();
         contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
         contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "amelia@gmail.com", "0987654321");
-        softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
-        softAssert.assertAll();
+        AssertionsUtil.softAssert.assertTrue(contactDetailsPage.getSuccessMessage().contains("Success"));
+
+
     }
 }

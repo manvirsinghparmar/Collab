@@ -1,10 +1,10 @@
-package pages;
+package org.orangehrm.pages;
 
-import org.base.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utilities.SelUtils;
+import org.orangehrm.utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
 
@@ -30,4 +30,7 @@ public class DashboardPage extends BaseTest {
         return new LeavePage();
     }
 
+    public String getCurrentUrl() {
+        return wd.getCurrentUrl();
+    }
 }

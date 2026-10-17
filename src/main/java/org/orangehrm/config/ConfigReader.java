@@ -1,4 +1,4 @@
-package utilities;
+package org.orangehrm.config;
 
 import java.io.IOException;
 import java.io.InputStream;

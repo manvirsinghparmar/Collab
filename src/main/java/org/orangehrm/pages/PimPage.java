@@ -1,11 +1,13 @@
-package pages;
+package org.orangehrm.pages;
 
-import org.base.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utilities.SelUtils;
+import org.orangehrm.utilities.SelUtils;
+
+import java.util.Collection;
 
 public class PimPage extends BaseTest {
 
@@ -13,6 +15,7 @@ public class PimPage extends BaseTest {
         PageFactory.initElements(wd, this);
     }
 
+    public String pimPageUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList";
     @FindBy(xpath = "(//div[@role='listbox']//div[@role='option'])[1]")
     private WebElement firstNameHint;
 
@@ -42,10 +45,10 @@ public class PimPage extends BaseTest {
     @FindBy(xpath="//a[text()='Add Employee']")
     private WebElement addEmployeeLink;
 
-//    public AddEmployeePage clickAddEmployeeLink() {
-//        SelUtils.clickElement(addEmployeeLink);
-//        return new AddEmployeePage();
-//    }
+   public AddEmployeePage clickAddEmployeeLink() {
+       SelUtils.clickElement(addEmployeeLink);
+      return new AddEmployeePage();
+   }
 
     public void clickResetButton() {
         SelUtils.clickElement(resetButton);
@@ -90,5 +93,4 @@ public class PimPage extends BaseTest {
     }
 
 
-
-}
+    }

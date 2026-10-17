@@ -16,6 +16,7 @@
 
     <selenium.version>4.34.0</selenium.version>
     <testng.version>7.10.2</testng.version>
+    <hamcrest.version>2.2</hamcrest.version>
     <webdrivermanager.version>6.1.0</webdrivermanager.version>
     <log4j.version>2.23.1</log4j.version>
     <extentreports.version>5.1.2</extentreports.version>
@@ -48,6 +49,16 @@
       <version>${testng.version}</version>
       <scope>compile</scope>
     </dependency>
+
+
+    <!-- Hamcrest Assertions -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
 
     <!-- WebDriverManager -->
     <dependency>

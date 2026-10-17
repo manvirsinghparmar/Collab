@@ -1,11 +1,11 @@
-package pages;
+package org.orangehrm.pages;
 
-import org.base.BaseTest;
+import org.orangehrm.basetest.BaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utilities.SelUtils;
+import org.orangehrm.utilities.SelUtils;
 
 public class ContactDetailsPage extends BaseTest {
 

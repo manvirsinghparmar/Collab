@@ -1,4 +1,4 @@
-package browser;
+package org.orangehrm.browserconfig;
 
 public enum Browser {
     CHROME,
