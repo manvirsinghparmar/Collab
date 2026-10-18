@@ -31,27 +31,25 @@ public final class BrowserUtil {
         if (browser == null) {
             throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, EDGE, or SAFARI");
         }
-        return switch (browser) {
-            case CHROME -> {
+        switch (browser) {
+            case CHROME:
                 WebDriverManager.chromedriver().setup();
-                yield new ChromeDriver(chromeOptions());
-            }
-            case FIREFOX -> {
+                return new ChromeDriver(chromeOptions());
+            case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
-                yield new FirefoxDriver(firefoxOptions());
-            }
-            case EDGE -> {
+                return new FirefoxDriver(firefoxOptions());
+            case EDGE:
                 WebDriverManager.edgedriver().setup();
-                yield new EdgeDriver(edgeOptions());
-            }
-            case SAFARI -> {
+                return new EdgeDriver(edgeOptions());
+            case SAFARI:
                 if (!PlatformUtil.isMac()) {
                     throw new UnsupportedOperationException(
                             "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
                 }
-                yield new SafariDriver(safariOptions());
-            }
-        };
+                return new SafariDriver(safariOptions());
+            default:
+                throw new IllegalArgumentException("Unsupported browser: " + browser);
+        }
     }
 
     public static Browser resolveBrowser() {
