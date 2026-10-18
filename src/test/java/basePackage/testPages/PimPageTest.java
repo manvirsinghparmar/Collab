@@ -1,6 +1,6 @@
-package org.testPages;
+package basePackage.testPages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PersonalDetailsPage;
@@ -10,6 +10,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import hamcrestAssertion.HamcrestSoftAssertions;
+
+import static org.hamcrest.Matchers.containsString;
 
 public class PimPageTest extends BaseTest {
 
@@ -44,14 +47,16 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
 
-        LoginPage loginPage = new LoginPage();
-        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
-        PimPage pimPage = dashboardPage.clickOnPIMLink();
-        pimPage.enterEmployeeName(empName);
-        pimPage.clickSubmitButton();
-        pimPage.clickEditButton();
-        softAssert.assertTrue(wd.getCurrentUrl().contains("/pim/viewPersonalDetails/empNumber/"), "Expected Personal Details URL, but actual URL was: " + wd.getCurrentUrl());
-        softAssert.assertAll();
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            LoginPage loginPage = new LoginPage();
+            DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+            PimPage pimPage = dashboardPage.clickOnPIMLink();
+            pimPage.enterEmployeeName(empName);
+            pimPage.clickSubmitButton();
+            pimPage.clickEditButton();
+            softly.assertThat("Expected Personal Details URL", wd.getCurrentUrl(),
+                    containsString("/pim/viewPersonalDetails/empNumber/"));
+        }
 
     }
 

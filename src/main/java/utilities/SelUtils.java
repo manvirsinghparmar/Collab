@@ -1,6 +1,6 @@
 package utilities;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;

@@ -1,16 +1,14 @@
-package org.base;
+package basePackage.base;
 
 import browser.BrowserUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.asserts.SoftAssert;
 import utilities.ConfigReader;
 
 public class BaseTest {
 
     protected static WebDriver wd;
     public static WebDriverWait wait;
-    public SoftAssert softAssert = new SoftAssert();
 
     protected final ConfigReader config = ConfigReader.getInstance();
 

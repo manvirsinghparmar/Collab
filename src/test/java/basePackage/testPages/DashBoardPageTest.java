@@ -1,6 +1,6 @@
-package org.testPages;
+package basePackage.testPages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PimPage;

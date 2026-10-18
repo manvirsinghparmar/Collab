@@ -22,18 +22,20 @@ Existing scenarios cover login, dashboard navigation, PIM employee search/edit/d
 ## Stack and build
 
 - Maven coordinates: `org.example:Collab:1.0-SNAPSHOT`; packaging: JAR.
-- Java release: 17; source encoding: UTF-8.
-- Selenium 4.34.0, TestNG 7.10.2, and WebDriverManager 6.3.4.
+- Java release: 11; source encoding: UTF-8.
+- Selenium 4.34.0, TestNG 7.10.2, Hamcrest 3.0, and WebDriverManager 6.3.4.
 - WebDriverManager was updated from 6.1.0 because Edge driver setup used the retired `msedgedriver.azureedge.net` host. Version 6.3.4 includes the replacement download URL and requires no browser factory changes. See the [WebDriverManager changelog](https://github.com/bonigarcia/webdrivermanager/blob/master/CHANGELOG.md#633---2025-11-08).
 - Maven Compiler Plugin 3.13.0 and Surefire 3.3.0.
 - The POM also declares Lombok, Log4j2/SLF4J, Extent Reports, and Apache POI. A dependency declaration alone does not mean reporting or spreadsheet integration is implemented.
-- TestNG has compile scope because framework code lives under `src/main/java` and uses TestNG classes. Preserve this unless reorganizing the framework is part of the task.
-- There is currently no Maven wrapper or checked-in CI configuration. Use installed Maven and a JDK supporting release 17.
+- TestNG retains its existing compile scope. Preserve this unless reorganizing framework dependencies is part of the task.
+- Hamcrest has compile scope because `hamcrestAssertion.HamcrestSoftAssertions` lives under `src/main/java`. TestNG supplies test execution and lifecycle annotations; assertion checks use Hamcrest.
+- There is currently no Maven wrapper or checked-in CI configuration. Use installed Maven and JDK 11. Maven's compiler release setting controls source syntax, Java APIs, and bytecode compatibility.
 - Windows and macOS use the same browser factory. WebDriverManager resolves platform-specific drivers for Chrome, Firefox, and Edge; Safari uses the driver included with macOS. Do not hardcode driver paths or OS/architecture overrides without evidence of a detection problem.
 
 ## Windows and macOS setup
 
-- Install JDK 17 and Maven. JDK 21 has also been validated with the project's release 17 target.
+- Install JDK 11 and Maven. The project targets Java 11 and does not require a JDK upgrade.
+- Clean compilation and the existing Chrome valid-login smoke test passed on Windows with Oracle JDK 11.0.15.1 on 2026-10-17.
 - Set `JAVA_HOME` to the JDK directory and put its `bin` directory and Maven's `bin` directory on `PATH`.
 - Install the browser you want to use: Chrome (default), Firefox, or Edge on Windows or macOS. Safari is also supported on macOS only.
 - Allow Maven dependency resolution, WebDriverManager driver downloads, and access to the configured application host. Drivers are managed automatically; do not copy Windows `.exe` drivers to a Mac.
@@ -41,16 +43,20 @@ Existing scenarios cover login, dashboard navigation, PIM employee search/edit/d
 On Apple Silicon, use an ARM64 JDK and native browser installation; on Intel Macs,
 use x64 installations. WebDriverManager handles driver resolution.
 
-On macOS with JDK 17 installed, configure the current zsh session with:
+On macOS with JDK 11 installed, configure the current zsh session with:
 
 ```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+export JAVA_HOME=$(/usr/libexec/java_home -v 11)
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
 Add these lines to `~/.zshrc` to persist them. Make sure Maven is also on `PATH`.
 On Windows, set `JAVA_HOME` and add `%JAVA_HOME%\bin` and Maven's `bin` directory
 through the environment variable settings.
+
+In IntelliJ IDEA, use JDK 11 for the project/module SDK and the Maven runner and
+importer. Reload the Maven project after changing `pom.xml` so the language level
+and compiler target follow `maven.compiler.release=11`, then rebuild the project.
 
 For Safari on macOS, enable WebDriver once in Terminal before running tests:
 
@@ -82,9 +88,10 @@ and [Selenium's Safari documentation](https://www.selenium.dev/documentation/web
 | `src/main/java/browser/BrowserUtil.java` | Default browser, runtime selection, driver setup, browser-specific options |
 | `src/main/java/platform/Platforms.java` | Framework operating-system enum: WINDOWS, MAC, LINUX |
 | `src/main/java/platform/PlatformUtil.java` | Local operating-system detection; wraps Selenium's Platform API |
-| `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown, soft assertions |
+| `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown |
 | `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage` |
 | `src/main/java/utilities/SelUtils.java` | Shared explicit waits, clicking, scrolling, and text entry |
+| `src/main/java/utilities/HamcrestSoftAssertions.java` | Invocation-local, thread-confined Hamcrest soft failure collection and reporting |
 | `src/main/java/utilities/Utils.java` | Existing sleep helper |
 | `src/test/java/org/testPages/` | TestNG test classes for the page flows |
 | `target/` | Generated Maven output; ignored by Git |
@@ -97,7 +104,45 @@ The dashboard test filename is `DashBoardPageTest.java`; the page object is `Das
 2. Initialization calls `BrowserUtil.createDriver()`, maximizes its window, opens the configured login URL, and sets a 20-second shared wait. Chrome is the default in `BrowserUtil`; Edge, Firefox, and Safari are also supported. Safari requires macOS.
 3. Page objects extend `BaseTest`, inherit the shared `wd`, and initialize private `@FindBy` elements with `PageFactory.initElements(wd, this)`.
 4. Navigation methods return the destination page object, for example `LoginPage.clickOnlogin(...)` returns `DashboardPage`.
-5. Tests perform assertions and call `teardown()` from `@AfterMethod` to quit the browser. Soft assertion tests must call `assertAll()`.
+5. Tests perform Hamcrest assertions and call `teardown()` from `@AfterMethod` to quit the browser. Soft assertion tests create a local `HamcrestSoftAssertions` in a try-with-resources block; closing the block reports collected failures automatically.
+
+### Assertion lifecycle
+
+Use `org.hamcrest.MatcherAssert.assertThat` for checks that should fail immediately.
+Use a fresh local `hamcrestAssertion.HamcrestSoftAssertions` for independent checks that
+should continue after a mismatch. Both paths evaluate Hamcrest matchers; do not
+introduce TestNG assertion classes.
+
+```java
+try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+    softly.assertThat("Dashboard URL", actualUrl, equalTo(expectedUrl));
+    softly.assertThat("Status message", actualMessage, containsString("Success"));
+}
+```
+
+Import the collector and the required matchers from `org.hamcrest.Matchers`.
+Pass actual values directly to matchers instead of reducing them to booleans first,
+so failure messages include the expected condition and observed mismatch.
+
+The collector accepts `assertThat(actual, matcher)` and
+`assertThat(reason, actual, matcher)`. It records assertion errors in check order,
+then throws one aggregate `AssertionError` when closed. Each original error is
+attached as a suppressed exception, retaining its stack trace. No explicit
+`assertAll()` call is needed. Non-assertion exceptions propagate immediately; if
+the test body throws after collecting mismatches, Java's try-with-resources
+handling preserves that original throwable and attaches the aggregate as a
+suppressed exception.
+
+Each collector belongs to its creating thread. Separate invocations may use their
+own collectors concurrently; sharing a collector across threads throws
+`IllegalStateException` before accessing its mutable state. Do not store collectors
+in static fields or shared test-instance fields, including for retries or data
+providers. Closing is idempotent on the owner thread, and assertions after closure
+are rejected. Custom matchers and examined values must avoid shared mutable state.
+
+This isolates assertion state only. Browser sessions, waits, and page objects still
+use the existing lifecycle, and `testng.xml` remains sequential. Full browser
+parallelism requires a separate change to isolate that state and test data.
 
 `SelUtils` exposes static helpers with 15-second explicit waits. Its click helper scrolls and waits, then falls back to a JavaScript click for selected Selenium exceptions. It also implements `WebDriver` and `JavascriptExecutor`, but several instance methods are stubs; use its existing static helpers rather than treating it as a complete driver implementation.
 
@@ -234,6 +279,6 @@ These gaps are context, not instructions to fix unrelated code automatically.
 - Preserve existing method contracts and package layout unless the task calls for a refactor; update callers together when changing a contract.
 - Add unit tests only after explicit user approval, including new methods in existing unit-test classes and temporary unit-test harnesses.
 - Give authorized new tests clear outcome assertions. Keep setup and teardown consistent with the existing TestNG lifecycle.
-- Keep Java compatibility at release 17 and match nearby formatting. Avoid dependency upgrades and unrelated cleanup unless needed for the requested change.
+- Keep Java compatibility at release 11 and match nearby formatting. Avoid dependency upgrades and unrelated cleanup unless needed for the requested change.
 - Do not add real credentials, personal data, local IDE files, browser binaries, or generated reports to version control. Existing demo credentials in tests belong to the public demo environment.
 - Do not commit, push, or change branches unless the task authorizes it. Finish with a concise description of changes, validation, and any remaining blocker.
