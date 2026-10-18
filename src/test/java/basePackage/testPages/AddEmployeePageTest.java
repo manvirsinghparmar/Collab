@@ -2,10 +2,11 @@ package org.orangehrm.tests;
 
 import org.orangehrm.assertions.AssertionsUtil;
 import org.orangehrm.basetest.BaseTest;
-import org.orangehrm.pages.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import pages.AddEmployeePage;
+import pages.PimPage;
 
 public class AddEmployeePageTest extends BaseTest {
     private LoginPage loginPage;

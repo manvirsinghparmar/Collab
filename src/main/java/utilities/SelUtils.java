@@ -1,11 +1,11 @@
-package org.orangehrm.utilities;
+package utilities;
 
-
+import basePackage.base.BaseTest;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.orangehrm.basetest.BaseTest;
+import platform.PlatformUtil;
 
 import java.time.Duration;
 import java.util.List;
@@ -25,6 +25,10 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
 
     public static List<WebElement> waitForElementsPresent(By element) {
         return getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(element));
+    }
+
+    public static boolean waitForElementPresent(By element) {
+        return getWait().until(ExpectedConditions.presenceOfElementLocated(element)).isDisplayed();
     }
 
     public static boolean waitForUrlContains(String partialUrl) {
@@ -78,6 +82,15 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
         waitForElementVisible(element);
         element.clear();
         element.sendKeys(text);
+    }
+
+    public static void enterDate(WebElement element, String date) {
+        clickElement(element);
+        Keys modifier = PlatformUtil.isMac() ? Keys.COMMAND : Keys.CONTROL;
+        element.sendKeys(Keys.chord(modifier, "a"), Keys.BACK_SPACE, date);
+        // Verify replacement before Tab lets the application format the date on blur.
+        getWait().until(ExpectedConditions.domPropertyToBe(element, "value", date));
+        element.sendKeys(Keys.TAB);
     }
 
     public static void enterTextIntoInputBox(WebElement element, String text) {

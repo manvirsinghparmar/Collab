@@ -1,4 +1,4 @@
-package org.orangehrm.browserconfig;
+package browserconfig;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import platform.PlatformUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -30,21 +31,25 @@ public final class BrowserUtil {
         if (browser == null) {
             throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, EDGE, or SAFARI");
         }
-        return switch (browser) {
-            case CHROME -> {
+        switch (browser) {
+            case CHROME:
                 WebDriverManager.chromedriver().setup();
-                yield new ChromeDriver(chromeOptions());
-            }
-            case FIREFOX -> {
+                return new ChromeDriver(chromeOptions());
+            case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
-                yield new FirefoxDriver(firefoxOptions());
-            }
-            case EDGE -> {
+                return new FirefoxDriver(firefoxOptions());
+            case EDGE:
                 WebDriverManager.edgedriver().setup();
-                yield new EdgeDriver(edgeOptions());
-            }
-            case SAFARI -> new SafariDriver(safariOptions());
-        };
+                return new EdgeDriver(edgeOptions());
+            case SAFARI:
+                if (!PlatformUtil.isMac()) {
+                    throw new UnsupportedOperationException(
+                            "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
+                }
+                return new SafariDriver(safariOptions());
+            default:
+                throw new IllegalArgumentException("Unsupported browser: " + browser);
+        }
     }
 
     public static Browser resolveBrowser() {
