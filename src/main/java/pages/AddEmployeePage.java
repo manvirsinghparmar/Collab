@@ -1,13 +1,10 @@
 package pages;
 
-import org.base.BaseTest;
-import org.openqa.selenium.WebDriver;
+import basePackage.base.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utilities.SelUtils;
-
-import java.security.cert.X509Certificate;
 
 public class AddEmployeePage extends BaseTest {
 

@@ -1,10 +1,13 @@
-package org.testPages;
+package basePackage.testPages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class AddEmployeePageTest extends BaseTest {
     private PersonalDetailsPage personalDetailsPage;
@@ -29,8 +32,8 @@ public class AddEmployeePageTest extends BaseTest {
         PimPage pimPage = dashboard.clickOnPIMLink();
         pimPage.clickAddEmployeeLink();
         addEmployeePage.addEmployee("Ruchi", "Chaudhary", "Ravish");
-        softAssert.assertTrue(addEmployeePage.isSuccessMessageVisible(), "Success message is not visible after adding a new employee.");
-        softAssert.assertAll();
+        assertThat("Success message is not visible after adding a new employee.",
+                addEmployeePage.isSuccessMessageVisible(), is(true));
     }
 
     @AfterMethod

@@ -3,7 +3,7 @@
 <suite name="Collab smoke suite" parallel="none">
     <test name="Valid login">
         <classes>
-            <class name="org.testPages.LoginPageTest">
+            <class name="basePackage.testPages.LoginPageTest">
                 <methods>
                     <include name="validateUserIsAbleToLoginWithValidCredentials"/>
                 </methods>

@@ -17,7 +17,9 @@ Application settings are centralized in `src/main/resources/config.properties` a
 `utilities.ConfigReader`. Browser selection, driver setup, and options live in `browser.BrowserUtil`,
 using the `browser.Browser` enum; `BaseTest` consumes both components.
 
-Existing scenarios cover login, dashboard navigation, PIM employee search/edit/delete, navigation to personal details, updating contact details, and leave search/application.
+Existing scenarios cover login, dashboard navigation, PIM employee creation/search/edit/delete,
+navigation to personal details, updating contact details, leave search/application,
+and Recruitment candidate search and creation with generated-record cleanup.
 
 ## Stack and build
 
@@ -79,7 +81,7 @@ and [Selenium's Safari documentation](https://www.selenium.dev/documentation/web
 | Path | Responsibility |
 | --- | --- |
 | `pom.xml` | Dependencies, Java release, compiler, TestNG suite configuration |
-| `testng.xml` | Sequential smoke suite: the valid-login scenario only |
+| `testng.xml` | Sequential valid-login smoke suite using `basePackage.testPages.LoginPageTest` |
 | `AGENTS.md` | Project guidance, Windows/macOS setup, commands, and compatibility validation |
 | `.gitignore` | Excludes build output, IDE files, generated Extent reports, and macOS metadata |
 | `src/main/resources/config.properties` | Default application host, page paths, public demo credentials |
@@ -88,15 +90,73 @@ and [Selenium's Safari documentation](https://www.selenium.dev/documentation/web
 | `src/main/java/browser/BrowserUtil.java` | Default browser, runtime selection, driver setup, browser-specific options |
 | `src/main/java/platform/Platforms.java` | Framework operating-system enum: WINDOWS, MAC, LINUX |
 | `src/main/java/platform/PlatformUtil.java` | Local operating-system detection; wraps Selenium's Platform API |
-| `src/main/java/org/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown |
-| `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage` |
+| `src/main/java/basePackage/base/BaseTest.java` | Shared driver, configured browser initialization, waits, teardown |
+| `src/main/java/pages/` | Page objects: `LoginPage`, `DashboardPage`, `PimPage`, `AddEmployeePage`, `PersonalDetailsPage`, `ContactDetailsPage`, `LeavePage`, `RecruitmentPage` |
+| `src/main/java/pages/RecruitmentPage.java` | Candidate keyword/name search, candidate creation/profile checks and generated-record cleanup |
 | `src/main/java/utilities/SelUtils.java` | Shared explicit waits, clicking, scrolling, and text entry |
-| `src/main/java/utilities/HamcrestSoftAssertions.java` | Invocation-local, thread-confined Hamcrest soft failure collection and reporting |
+| `src/main/java/hamcrestAssertion/HamcrestSoftAssertions.java` | Invocation-local, thread-confined Hamcrest soft failure collection and reporting |
 | `src/main/java/utilities/Utils.java` | Existing sleep helper |
-| `src/test/java/org/testPages/` | TestNG test classes for the page flows |
+| `src/test/java/basePackage/testPages/` | All TestNG page-flow tests, including the relocated `AddEmployeePageTest` |
+| `src/test/java/basePackage/testPages/RecruitmentPageTest.java` | Candidate name search, unmatched-keyword search/reset and add-candidate validation |
 | `target/` | Generated Maven output; ignored by Git |
 
 The dashboard test filename is `DashBoardPageTest.java`; the page object is `DashboardPage.java`. Use the actual names when selecting tests.
+
+All current test classes declare `package basePackage.testPages` and extend
+`basePackage.base.BaseTest`. `AddEmployeePageTest` now lives alongside the other
+tests in that directory; there are no remaining test sources under `org.testPages`.
+Keep package declarations, source directories and fully qualified suite references
+consistent when moving classes. `testng.xml` uses the current
+`basePackage.testPages.LoginPageTest` class.
+
+### Recruitment page object
+
+`DashboardPage.clickOnRecruitmentMenu()` returns a `RecruitmentPage` after the
+Candidates list loads. The page object contains only the navigation, search,
+candidate form/profile and cleanup controls needed by the three Recruitment tests.
+It reuses `SelUtils` and waits for loading indicators to disappear and the
+results to become visible after navigation, search and reset. It extends
+`basePackage.base.BaseTest`, as does `RecruitmentPageTest` in
+`basePackage.testPages`.
+
+`validateCandidateSearchWithUnmatchedKeywordsAndReset` logs in with configured
+credentials, waits for dashboard navigation, searches with a unique
+`no-match-<UUID>` keyword, checks `No Records Found` and zero rows, then verifies
+that Reset clears Keywords and restores candidate records. Assertions use
+Hamcrest. The test changes no candidate data and does not depend on fixed names
+or an exact public-demo record count. It requires at least one existing candidate.
+
+`validateCandidateSearchWithExistingName` reads an existing name from the current
+table, selects an exact-name autocomplete suggestion, searches and checks that
+all returned names match. Duplicate display names are allowed; names are
+normalized for repeated whitespace. Query autocomplete with the first-name
+portion, then match the full displayed name: full-name queries can miss records
+with a blank middle name in the demo. The Candidate column is resolved by its
+heading, not a fixed column position.
+
+`validateUserIsAbleToAddCandidate` creates unique generated names and an
+`example.com` email, checks the save notification and persisted profile values,
+then searches for the new candidate. This test changes the demo. Its
+`@AfterMethod(alwaysRun = true)` cleanup verifies the saved candidate ID before
+deleting only that generated record, and quits the browser in a finally block.
+If candidate creation fails before an ID is captured, cleanup cannot identify
+a saved record automatically. The tests are independent and remain sequential.
+
+Recruitment tests are selected explicitly; the default suite runs valid login only:
+
+```powershell
+mvn "-Dtest=basePackage.testPages.RecruitmentPageTest#validateCandidateSearchWithUnmatchedKeywordsAndReset" test
+
+# Runs all three Recruitment scenarios, including creation and cleanup.
+mvn "-Dbrowser=CHROME" "-Dtest=basePackage.testPages.RecruitmentPageTest" test
+```
+
+The existing `AddEmployeePageTest` now imports `basePackage.base.BaseTest` and
+uses Hamcrest instead of its undefined `softAssert`, allowing test compilation.
+Earlier on 2026-10-18, `mvn test-compile` and all three Recruitment tests passed on
+Windows Chrome (3 tests, 0 failures) with JDK 21 targeting release 11, including
+generated-candidate cleanup. Browser execution required network access for
+WebDriverManager and the demo host.
 
 ## How the framework works
 
@@ -114,9 +174,9 @@ should continue after a mismatch. Both paths evaluate Hamcrest matchers; do not
 introduce TestNG assertion classes.
 
 ```java
-try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
-    softly.assertThat("Dashboard URL", actualUrl, equalTo(expectedUrl));
-    softly.assertThat("Status message", actualMessage, containsString("Success"));
+try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+    hmAssert.assertThat("Dashboard URL", actualUrl, equalTo(expectedUrl));
+    hmAssert.assertThat("Status message", actualMessage, containsString("Success"));
 }
 ```
 
@@ -218,9 +278,21 @@ mvn "-Dapp.base.url=https://your-test-host.example" "-Dtest=LoginPageTest#valida
 
 ## Commands and validation
 
-Run commands from the repository root. `mvn test` uses the sequential smoke suite
-in `testng.xml`: valid login only. Explicit `-Dtest`
-selection overrides the suite and may run scenarios that change remote demo data.
+Run commands from the repository root. `mvn test` uses the sequential valid-login
+smoke suite in `testng.xml`, which references
+`basePackage.testPages.LoginPageTest`. The stale `org.testPages` reference was
+corrected on 2026-10-18. To select the same test explicitly:
+
+```powershell
+mvn "-Dtest=basePackage.testPages.LoginPageTest#validateUserIsAbleToLoginWithValidCredentials" test
+```
+
+Explicit `-Dtest` selection overrides the suite and may run scenarios that change
+remote demo data. A clean build prevents obsolete class files from masking
+package moves. `mvn clean test-compile` passed on 2026-10-18
+(17 framework sources and 8 test sources, release 11).
+After correcting the suite reference that day, `mvn test` passed on Windows
+Chrome (1 valid-login test, 0 failures) with JDK 21 targeting release 11.
 
 ```powershell
 java -version
@@ -260,9 +332,9 @@ the caller/locator issues recorded below and are excluded from the smoke suite.
 
 For code changes, compile first and run relevant existing tests when the environment supports them. Do not add unit tests without explicit user approval for the current task; approval to implement a feature, fix, or refactor does not itself authorize new unit tests. This restriction includes new unit-test classes, new test methods in existing classes, and temporary unit-test harnesses. Use compilation, existing tests, and diff review for validation unless the user approves additional unit tests. For documentation-only changes, check accuracy and the diff without launching browsers. Report which checks ran and distinguish build failures, environment limitations, and scenario failures. Surefire normally writes test results under `target/surefire-reports/`.
 
-## Known gaps reviewed on 2026-10-14
+## Known gaps (baseline 2026-10-14; package review 2026-10-18)
 
-- `PimPage.clickAddEmployeeLink()` is commented out. `AddEmployeePage` is absent, but the commented method is not a compilation blocker. Baseline `mvn test-compile` succeeded on Windows with JDK 21 targeting release 17 on 2026-10-14.
+- The earlier missing-`AddEmployeePage` gap is resolved: `PimPage.clickAddEmployeeLink()` is active, `AddEmployeePage` exists, and `AddEmployeePageTest` is under `basePackage.testPages`. Clean compilation targeting release 11 passed on 2026-10-18. The employee-creation scenario was not executed during the package review.
 - `wd` and the shared wait are static. The current driver lifecycle is unsuitable for parallel test execution; do not enable TestNG parallelism without isolating browser state.
 - Tests depend on shared demo data, hardcoded employee names, and fixed leave dates. Contact updates, employee deletion, and leave applications change remote demo state. Choose a targeted test appropriate to the task and inspect its effects before running a broad suite.
 - The 2026-10-14 Windows Chrome leave-search run passed both date-entry value waits, then timed out selecting the hardcoded `Demo Open Source` employee suggestion. The complete scenario is not a passing compatibility check. Chrome and Edge smoke suites passed; macOS, Firefox, and Safari execution remain unverified.
@@ -273,6 +345,19 @@ These gaps are context, not instructions to fix unrelated code automatically.
 
 ## Conventions for changes
 
+- User preferences reviewed on 2026-10-18: name the invocation-local
+  `HamcrestSoftAssertions` collector `hmAssert` and use try-with-resources.
+  Keep test flows concise and focused on the scenario's outcomes; use navigation
+  waits without adding repeated login/dashboard assertions to every feature test.
+  Keep hard Hamcrest assertions for prerequisites and soft checks for independent
+  outcomes. Prefer a cleanup method named `tearDown()` delegating to
+  `super.teardown()`. Preserve cleanup on failed setup where a browser was already
+  created; the naming preference is not a reason to drop failure-path cleanup.
+  Use `basePackage.base.BaseTest` and `basePackage.testPages` for new test classes.
+  Keep test files under `src/test/java/basePackage/testPages/`; the employee test
+  has also been moved there. Update any suite references when changing packages.
+  Show proposed new scenarios before implementing them and keep page objects
+  limited to locators, methods and supporting waits needed by approved scenarios.
 - Keep UI locators and browser interactions in the relevant page object; keep scenario orchestration and assertions in tests.
 - Reuse `SelUtils` explicit waits and wait for an observable condition after navigation or submission. Prefer condition-based waits over adding fixed sleeps.
 - Prefer stable semantic locators over positional XPath expressions when adding or repairing elements.
