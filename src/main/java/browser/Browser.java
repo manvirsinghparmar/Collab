@@ -1,4 +1,4 @@
-package browserconfig;
+package browser;
 
 public enum Browser {
     CHROME,

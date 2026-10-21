@@ -1,4 +1,4 @@
-package org.orangehrm.utilities;
+package utilities;
 
 public class Utils {
 

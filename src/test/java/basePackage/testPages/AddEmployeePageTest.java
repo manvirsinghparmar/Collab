@@ -1,12 +1,16 @@
-package org.orangehrm.tests;
+package basePackage.testPages;
 
-import org.orangehrm.assertions.AssertionsUtil;
-import org.orangehrm.basetest.BaseTest;
+import basePackage.base.BaseTest;
+import hamcrestAssertion.HamcrestSoftAssertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.AddEmployeePage;
 import pages.PimPage;
+import pages.DashboardPage;
+import pages.LoginPage;
+
+import static org.hamcrest.Matchers.is;
 
 public class AddEmployeePageTest extends BaseTest {
     private LoginPage loginPage;
@@ -22,12 +26,14 @@ public class AddEmployeePageTest extends BaseTest {
 
     @Test
     public void testAddEmployee() {
-        addEmployeePage = new AddEmployeePage();
-        DashboardPage dashboard = loginPage.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboard = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboard.clickOnPIMLink();
-        pimPage.clickAddEmployeeLink();
+        addEmployeePage = pimPage.clickAddEmployeeLink();
         addEmployeePage.addEmployee("Ruchi", "Chaudhary", "Ravish");
-        AssertionsUtil.softAssert.assertTrue(addEmployeePage.isSuccessMessageVisible(), "Success message is not visible after adding a new employee.");
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("Adding an employee should display a success message",
+                    addEmployeePage.isSuccessMessageVisible(), is(true));
+        }
     }
 
     @AfterMethod

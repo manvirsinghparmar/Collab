@@ -1,0 +1,26 @@
+package utilities;
+
+import org.openqa.selenium.WebDriver;
+
+/**
+ * Stores the active WebDriver per test thread.
+ */
+public final class DriverManager {
+
+    private static final ThreadLocal<WebDriver> DRIVER = new ThreadLocal<>();
+
+    private DriverManager() {
+    }
+
+    public static void setDriver(WebDriver driver) {
+        DRIVER.set(driver);
+    }
+
+    public static WebDriver getDriver() {
+        return DRIVER.get();
+    }
+
+    public static void clear() {
+        DRIVER.remove();
+    }
+}

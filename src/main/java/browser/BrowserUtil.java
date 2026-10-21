@@ -1,4 +1,4 @@
-package browserconfig;
+package browser;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +10,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import listeners.WebDriverEventListener;
 import platform.PlatformUtil;
 
 import java.util.Locale;
@@ -31,25 +33,31 @@ public final class BrowserUtil {
         if (browser == null) {
             throw new IllegalArgumentException("Browser must be CHROME, FIREFOX, EDGE, or SAFARI");
         }
+        WebDriver rawDriver;
         switch (browser) {
             case CHROME:
                 WebDriverManager.chromedriver().setup();
-                return new ChromeDriver(chromeOptions());
+                rawDriver = new ChromeDriver(chromeOptions());
+                break;
             case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
-                return new FirefoxDriver(firefoxOptions());
+                rawDriver = new FirefoxDriver(firefoxOptions());
+                break;
             case EDGE:
                 WebDriverManager.edgedriver().setup();
-                return new EdgeDriver(edgeOptions());
+                rawDriver = new EdgeDriver(edgeOptions());
+                break;
             case SAFARI:
                 if (!PlatformUtil.isMac()) {
                     throw new UnsupportedOperationException(
                             "Safari is only supported on macOS. Select CHROME, FIREFOX, or EDGE on this operating system.");
                 }
-                return new SafariDriver(safariOptions());
+                rawDriver = new SafariDriver(safariOptions());
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browser);
         }
+        return new EventFiringDecorator(new WebDriverEventListener()).decorate(rawDriver);
     }
 
     public static Browser resolveBrowser() {

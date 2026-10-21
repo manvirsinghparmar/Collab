@@ -15,8 +15,6 @@ public class ContactDetailsPageTest extends BaseTest {
 
     private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
     private ContactDetailsPage contactDetailsPage;
 
 

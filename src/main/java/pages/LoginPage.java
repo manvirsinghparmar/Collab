@@ -23,6 +23,13 @@ public class LoginPage extends BaseTest {
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement loginButton;
 
+    @FindBy(css = ".oxd-alert-content-text")
+    private WebElement loginErrorMessage;
+
+    public String getLoginErrorMessage() {
+        return SelUtils.getText(loginErrorMessage);
+    }
+
 
     public void enterEmailTextBox(String emailID) {
         SelUtils.clickElement(usernameInputTextBox);

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Properties>
+        <Property name="ARTIFACTS_DIR">${sys:framework.artifacts.dir:-target/artifacts}</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5level [%t] %logger - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <RollingFile name="FrameworkFile"
+                     fileName="${ARTIFACTS_DIR}/logs/framework.log"
+                     filePattern="${ARTIFACTS_DIR}/logs/framework-%d{yyyy-MM-dd}-%i.log.gz"
+                     createOnDemand="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${ARTIFACTS_DIR}/logs" maxDepth="1">
+                    <IfFileName glob="framework-*.log.gz"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="io.github.bonigarcia" level="warn"/>
+        <Logger name="org.openqa.selenium" level="warn"/>
+
+        <Logger name="basePackage"
+                level="${sys:framework.logging.level:-info}"
+                additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FrameworkFile"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FrameworkFile"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
