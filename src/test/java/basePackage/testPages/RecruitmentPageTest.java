@@ -33,8 +33,6 @@ public class RecruitmentPageTest extends BaseTest {
     @BeforeMethod
     public void launch() {
         createdCandidateId = null;
-        createdCandidateName = null;
-        recruitmentPage = null;
         initialization();
         loginPage = new LoginPage();
     }
@@ -91,6 +89,7 @@ public class RecruitmentPageTest extends BaseTest {
         String email = "candidate." + uniqueId + "@example.com";
         createdCandidateName = firstName + " " + lastName;
         recruitmentPage.clickAddCandidate();
+        recruitmentPage.waitForAddCandidatePage();
         recruitmentPage.enterFirstName(firstName);
         recruitmentPage.enterLastName(lastName);
         recruitmentPage.enterEmail(email);

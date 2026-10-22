@@ -7,6 +7,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
+import utilities.StringUtils;
 
 import java.net.URI;
 import java.util.List;
@@ -57,6 +58,9 @@ public class RecruitmentPage extends BaseTest {
     @FindBy(xpath = "//button[normalize-space()='Add']")
     private WebElement addCandidateButton;
 
+    @FindBy(xpath = "//h6[normalize-space()='Add Candidate']")
+    private WebElement addCandidateHeading;
+
     @FindBy(css = "input[name='firstName']")
     private WebElement firstNameInput;
 
@@ -92,16 +96,17 @@ public class RecruitmentPage extends BaseTest {
 
     public List<String> getCandidateNames() {
         waitForResults();
-        return candidateNameCells.stream().map(cell -> normalizeName(cell.getText()))
+        return candidateNameCells.stream().map(cell -> StringUtils.normalizeWhitespace(cell.getText()))
                 .collect(Collectors.toList());
     }
 
     public void enterCandidateName(String fullName) {
         // Full-name queries miss records with a blank middle name in the demo autocomplete.
-        SelUtils.clearAndSendKeys(candidateNameInput, normalizeName(fullName).split(" ")[0]);
+        SelUtils.clearAndSendKeys(candidateNameInput, StringUtils.normalizeWhitespace(fullName).split(" ")[0]);
         WebElement suggestion = SelUtils.getWait().until(ExpectedConditions.refreshed(driver ->
                 candidateSuggestions.stream().filter(WebElement::isDisplayed)
-                        .filter(option -> normalizeName(option.getText()).equals(normalizeName(fullName)))
+                        .filter(option -> StringUtils.normalizeWhitespace(option.getText())
+                                .equals(StringUtils.normalizeWhitespace(fullName)))
                         .findFirst().orElse(null)));
         // Duplicate display names are valid; any exact-name suggestion satisfies a name search.
         SelUtils.clickElement(suggestion);
@@ -110,8 +115,10 @@ public class RecruitmentPage extends BaseTest {
 
     public void clickAddCandidate() {
         SelUtils.clickElement(addCandidateButton);
-        SelUtils.getWait().until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h6[normalize-space()='Add Candidate']")));
+    }
+
+    public void waitForAddCandidatePage() {
+        SelUtils.waitForElementVisible(addCandidateHeading);
     }
 
     public void enterFirstName(String firstName) {
@@ -203,7 +210,8 @@ public class RecruitmentPage extends BaseTest {
 
     private WebElement findCandidateRow(String fullName) {
         List<WebElement> matches = candidateNameCells.stream()
-                .filter(cell -> normalizeName(cell.getText()).equals(normalizeName(fullName)))
+                .filter(cell -> StringUtils.normalizeWhitespace(cell.getText())
+                        .equals(StringUtils.normalizeWhitespace(fullName)))
                 .collect(Collectors.toList());
         if (matches.size() != 1) {
             throw new IllegalStateException("Expected one generated candidate named " + fullName
@@ -218,10 +226,6 @@ public class RecruitmentPage extends BaseTest {
         SelUtils.getWait().until(ExpectedConditions.refreshed(driver ->
                 driver.findElements(LOADING_INDICATORS).stream().noneMatch(WebElement::isDisplayed)
                         && !firstNameInput.isEnabled()));
-    }
-
-    private String normalizeName(String name) {
-        return name.trim().replaceAll("\\s+", " ");
     }
 
     private void waitForResults() {
