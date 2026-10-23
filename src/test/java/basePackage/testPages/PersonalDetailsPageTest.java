@@ -3,7 +3,6 @@ package basePackage.testPages;
 import basePackage.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
-import pages.PersonalDetailsPage;
 import pages.PimPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -15,39 +14,36 @@ import hamcrestAssertion.HamcrestSoftAssertions;
 import static org.hamcrest.Matchers.containsString;
 
 public class PersonalDetailsPageTest extends BaseTest {
-    private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
 
 
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage();
-    }
-
-    @AfterMethod
-    public void quit() {
-        teardown();
+        loginPage = new LoginPage();
     }
 
 
     @Test
     @Parameters("empName")
     public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("Charles") String empName) {
+        DashboardPage dashboard = loginPage.clickOnlogin(config.username(), config.password());
+        PimPage pimPage = dashboard.clickOnPIMLink();
+        pimPage.enterEmployeeName(empName);
+        pimPage.clickSubmitButton();
+        pimPage.clickEditButton();
+        String actualUrl = wd.getCurrentUrl();
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
-            LoginPage login = new LoginPage();
-            DashboardPage dashboard = login.clickOnlogin(config.username(), config.password());
-            PimPage pimPage = dashboard.clickOnPIMLink();
-            pimPage.enterEmployeeName(empName);
-            pimPage.clickSubmitButton();
-            pimPage.clickEditButton();
-            String actualUrl = wd.getCurrentUrl();
-            softly.assertThat("User did not land on Personal Details page", actualUrl,
+            softly.assertThat("Editing an employee should open Personal Details", actualUrl,
                     containsString("/pim/viewPersonalDetails/empNumber/"));
         }
 
+
+    }
+
+    @AfterMethod
+    public void quit() {
+        teardown();
     }
 
 }
