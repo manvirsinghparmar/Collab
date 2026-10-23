@@ -1,0 +1,5 @@
+target/
+.idea/
+*.iml
+Extent Reports/
+.DS_Store

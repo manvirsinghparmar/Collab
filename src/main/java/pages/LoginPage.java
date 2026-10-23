@@ -1,6 +1,6 @@
 package pages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -22,6 +22,13 @@ public class LoginPage extends BaseTest {
 
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement loginButton;
+
+    @FindBy(css = ".oxd-alert-content-text")
+    private WebElement loginErrorMessage;
+
+    public String getLoginErrorMessage() {
+        return SelUtils.getText(loginErrorMessage);
+    }
 
 
     public void enterEmailTextBox(String emailID) {

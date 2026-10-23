@@ -1,8 +1,7 @@
 package pages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -68,19 +67,11 @@ public class LeavePage extends BaseTest {
 
 
     public void enterFromDate(String fromDate) {
-        SelUtils.waitForElementVisible(fromDateField);
-        fromDateField.clear();
-        fromDateField.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        fromDateField.sendKeys(fromDate);
-        fromDateField.sendKeys(Keys.TAB);
+        SelUtils.enterDate(fromDateField, fromDate);
     }
 
     public void enterToDate(String toDate) {
-        SelUtils.waitForElementVisible(toDateField);
-        toDateField.clear();
-        toDateField.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        toDateField.sendKeys(toDate);
-        toDateField.sendKeys(Keys.TAB);
+        SelUtils.enterDate(toDateField, toDate);
     }
 
     public void enterEmployeeName(String employeeFirstName, String employeeFullName) {
@@ -118,19 +109,11 @@ public class LeavePage extends BaseTest {
     }
 
     public void enterFromDateUnderApplyLeave(String fromDate) {
-        SelUtils.waitForElementVisible(fromDateUnderApplyLeave);
-        fromDateUnderApplyLeave.clear();
-        fromDateUnderApplyLeave.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        fromDateUnderApplyLeave.sendKeys(fromDate);
-        fromDateUnderApplyLeave.sendKeys(Keys.TAB);
+        SelUtils.enterDate(fromDateUnderApplyLeave, fromDate);
     }
 
     public void enterToDateUnderApplyLeave(String toDate) {
-        SelUtils.waitForElementVisible(toDateUnderApplyLeave);
-        toDateUnderApplyLeave.clear();
-        toDateUnderApplyLeave.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        toDateUnderApplyLeave.sendKeys(toDate);
-        toDateUnderApplyLeave.sendKeys(Keys.TAB);
+        SelUtils.enterDate(toDateUnderApplyLeave, toDate);
     }
 
     public void clickApplyButtonForLeave() {

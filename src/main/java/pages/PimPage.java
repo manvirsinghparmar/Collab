@@ -1,11 +1,16 @@
 package pages;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
+import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PimPage extends BaseTest {
 
@@ -13,6 +18,7 @@ public class PimPage extends BaseTest {
         PageFactory.initElements(wd, this);
     }
 
+    public String pimPageUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList";
     @FindBy(xpath = "(//div[@role='listbox']//div[@role='option'])[1]")
     private WebElement firstNameHint;
 
@@ -42,6 +48,32 @@ public class PimPage extends BaseTest {
     @FindBy(xpath="//a[text()='Add Employee']")
     private WebElement addEmployeeLink;
 
+    @FindBy(css = ".oxd-toast-content--success")
+    private WebElement successMessage;
+
+    @FindBy(xpath = "//span[contains(normalize-space(), 'Records Found')"
+            + " or contains(normalize-space(), 'Record Found')]")
+    private WebElement recordsFoundMessage;
+
+    public List<String> getResultRows() {
+        SelUtils.waitForElementVisible(recordsFoundMessage);
+        return wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"))
+                .stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public String getRecordsFoundMessage() {
+        return SelUtils.getText(recordsFoundMessage);
+    }
+
+    public String getEmployeeNameFilter() {
+        SelUtils.waitForElementVisible(employeeNameInputTextBox);
+        return employeeNameInputTextBox.getDomProperty("value");
+    }
+
+    public String getSuccessMessage() {
+        return SelUtils.getText(successMessage);
+    }
+
    public AddEmployeePage clickAddEmployeeLink() {
        SelUtils.clickElement(addEmployeeLink);
       return new AddEmployeePage();
@@ -49,6 +81,8 @@ public class PimPage extends BaseTest {
 
     public void clickResetButton() {
         SelUtils.clickElement(resetButton);
+        SelUtils.getWait().until(
+                ExpectedConditions.domPropertyToBe(employeeNameInputTextBox, "value", ""));
     }
 
     public void enterEmployeeName(String employeeName) {
@@ -68,7 +102,9 @@ public class PimPage extends BaseTest {
 
     public void clickSubmitButton() {
         SelUtils.clickElement(submitButton);
-        SelUtils.waitForElementVisible(resultsTable);
+        SelUtils.getWait().until(
+                ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
+        SelUtils.waitForElementVisible(recordsFoundMessage);
     }
 
     public void scrollToEditButton() {
@@ -90,5 +126,4 @@ public class PimPage extends BaseTest {
     }
 
 
-
-}
+    }

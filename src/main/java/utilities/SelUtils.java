@@ -1,10 +1,11 @@
 package utilities;
 
-import org.base.BaseTest;
+import basePackage.base.BaseTest;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import platform.PlatformUtil;
 
 import java.time.Duration;
 import java.util.List;
@@ -14,8 +15,19 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
     private SelUtils() {
     }
 
+    private static WebDriver driver() {
+        WebDriver active = DriverManager.getDriver();
+        if (active != null) {
+            return active;
+        }
+        if (wd != null) {
+            return wd;
+        }
+        throw new IllegalStateException("WebDriver is not initialized.");
+    }
+
     public static WebDriverWait getWait() {
-        return new WebDriverWait(wd, Duration.ofSeconds(15));
+        return new WebDriverWait(driver(), Duration.ofSeconds(15));
     }
 
     public static WebElement waitForElementClickable(WebElement element) {
@@ -43,8 +55,8 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
     }
 
     public static String waitForPageSource() {
-        return getWait().until(wd -> {
-            String pageSource = wd.getPageSource();
+        return getWait().until(webDriver -> {
+            String pageSource = webDriver.getPageSource();
             return pageSource != null && !pageSource.isEmpty()
                     ? pageSource
                     : null;
@@ -57,12 +69,13 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
             scrollIntoView(element);
             waitForElementClickable(element).click();
         } catch (TimeoutException | ElementClickInterceptedException | StaleElementReferenceException e) {
-            ((JavascriptExecutor) wd).executeScript("arguments[0].click();", element);
+            FrameworkLogger.stepInfo("Standard click failed, retrying with JavaScript click.");
+            ((JavascriptExecutor) driver()).executeScript("arguments[0].click();", element);
         }
     }
 
     public static void scrollIntoView(WebElement element) {
-        ((JavascriptExecutor) wd)
+        ((JavascriptExecutor) driver())
                 .executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
     }
 
@@ -83,6 +96,15 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
         element.sendKeys(text);
     }
 
+    public static void enterDate(WebElement element, String date) {
+        clickElement(element);
+        Keys modifier = PlatformUtil.isMac() ? Keys.COMMAND : Keys.CONTROL;
+        element.sendKeys(Keys.chord(modifier, "a"), Keys.BACK_SPACE, date);
+        // Verify replacement before Tab lets the application format the date on blur.
+        getWait().until(ExpectedConditions.domPropertyToBe(element, "value", date));
+        element.sendKeys(Keys.TAB);
+    }
+
     public static void enterTextIntoInputBox(WebElement element, String text) {
         waitForElementVisible(element);
         element.sendKeys(text);
@@ -90,17 +112,20 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
 
     public static String getText(WebElement element) {
         waitForElementVisible(element);
-        return element.getText();
+        String text = element.getText();
+        FrameworkLogger.stepInfo("Getting text on " + text);
+        FrameworkLogger.stepInfo("Got text on " + text);
+        return text;
     }
 
     @Override
     public @Nullable String getCurrentUrl() {
-        return wd.getCurrentUrl();
+        return driver().getCurrentUrl();
     }
 
     @Override
     public @Nullable String getTitle() {
-        return wd.getTitle();
+        return driver().getTitle();
     }
 
     @Override
@@ -120,12 +145,12 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
 
     @Override
     public void close() {
-        wd.close();
+        driver().close();
     }
 
     @Override
     public void quit() {
-        wd.quit();
+        driver().quit();
     }
 
     @Override
