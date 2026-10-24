@@ -22,6 +22,9 @@ public class DashboardPage extends BaseTest {
     @FindBy(xpath = "//span[text()='Leave']")
     private WebElement leaveMenu;
 
+    @FindBy(css = "a[href$='/recruitment/viewRecruitmentModule']")
+    private WebElement recruitmentMenu;
+
     public PimPage clickOnPIMLink() {
         SelUtils.clickElement(pimLinkFromDashboard);
         return new PimPage();
@@ -30,6 +33,11 @@ public class DashboardPage extends BaseTest {
     public LeavePage clickOnLeaveMenu() {
         SelUtils.clickElement(leaveMenu);
         return new LeavePage();
+    }
+
+    public RecruitmentPage clickOnRecruitmentMenu() {
+        SelUtils.clickElement(recruitmentMenu);
+        return new RecruitmentPage().waitForCandidatesPage();
     }
 
 }
