@@ -79,6 +79,7 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
                 .executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
     }
 
+
     @Override
     public void get(String url) {
         waitForUrlContains(url);
