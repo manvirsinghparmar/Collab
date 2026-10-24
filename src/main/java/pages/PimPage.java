@@ -55,6 +55,9 @@ public class PimPage extends BaseTest {
             + " or contains(normalize-space(), 'Record Found')]")
     private WebElement recordsFoundMessage;
 
+    @FindBy(xpath = "//a[text()='Reports']")
+    private WebElement reportsLink;
+
     public List<String> getResultRows() {
         SelUtils.waitForElementVisible(recordsFoundMessage);
         return wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"))
@@ -126,4 +129,10 @@ public class PimPage extends BaseTest {
     }
 
 
+
+    public ReportsPage clickReportsLink() {
+        SelUtils.clickElement(reportsLink);
+        SelUtils.waitForUrlContains("/pim/viewDefinedPredefinedReports");
+        return new ReportsPage();
     }
+}
