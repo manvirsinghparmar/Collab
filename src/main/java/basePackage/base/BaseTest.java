@@ -6,11 +6,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Listeners;
 import config.ConfigReader;
 import listeners.CustomExecutionListener;
+import listeners.EventReportListener;
 import utilities.DriverManager;
 
-@Listeners(CustomExecutionListener.class)
+@Listeners({CustomExecutionListener.class, EventReportListener.class})
 public class BaseTest {
-    // All extending tests inherit centralized TestNG listener behavior through this base class.
+    // All extending tests inherit centralized TestNG logging and reporting listeners.
 
     protected static WebDriver wd;
     public static WebDriverWait wait;
