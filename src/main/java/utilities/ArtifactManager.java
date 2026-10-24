@@ -29,6 +29,15 @@ public final class ArtifactManager {
         return createDirectoryIfNeeded(getArtifactsDirectory().resolve("logs"));
     }
 
+    public static Path createReportDirectory() {
+        Path reports = createDirectoryIfNeeded(getArtifactsDirectory().resolve("reports"));
+        try {
+            return Files.createTempDirectory(reports, LocalDateTime.now().format(FILE_TIME) + "_");
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to create report directory: " + reports, e);
+        }
+    }
+
     public static Path failedScreenshotPath(String testClass, String testMethod) {
         return buildScreenshotPath(screenshotsFailedDirectory(), testClass, testMethod);
     }
