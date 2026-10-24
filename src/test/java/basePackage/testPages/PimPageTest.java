@@ -3,7 +3,6 @@ package basePackage.testPages;
 import basePackage.base.BaseTest;
 import pages.DashboardPage;
 import pages.LoginPage;
-import pages.PersonalDetailsPage;
 import pages.PimPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -13,13 +12,14 @@ import org.testng.annotations.Test;
 import hamcrestAssertion.HamcrestSoftAssertions;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 
 public class PimPageTest extends BaseTest {
 
-    private PersonalDetailsPage personalDetailsPage;
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
 
     @BeforeMethod
     public void launch() {
@@ -32,23 +32,23 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName) {
 
-        LoginPage loginPage = new LoginPage();
-
         DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
-
         PimPage pimPage = dashboardPage.clickOnPIMLink();
-
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
 
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("Employee search should return a matching employee",
+                    pimPage.getResultRows(), hasItem(containsStringIgnoringCase(empName)));
+        }
     }
+
 
     @Test(priority = 2)
     @Parameters("empName")
     public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
-            LoginPage loginPage = new LoginPage();
             DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
             PimPage pimPage = dashboardPage.clickOnPIMLink();
             pimPage.enterEmployeeName(empName);
@@ -64,26 +64,37 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToDeleteEmpDetails(@Optional("bala") String empName) {
 
-        LoginPage loginPage = new LoginPage();
         DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboardPage.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
         pimPage.clickDeleteButton();
         pimPage.clickDeleteRecordButton();
+
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("Deleting an employee should display a success message",
+                    pimPage.getSuccessMessage(), containsString("Successfully Deleted"));
+        }
     }
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset(@Optional("Ana") String empName) {
+    public void validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset(
+            @Optional("NoSuchEmployee987654321") String empName) {
 
-        LoginPage loginPage = new LoginPage();
         DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
         PimPage pimPage = dashboardPage.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
-        pimPage.clickResetButton();
-
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("An unknown employee should return no records",
+                    pimPage.getRecordsFoundMessage(), equalTo("No Records Found"));
+            softly.assertThat("An unknown employee should leave the results empty",
+                    pimPage.getResultRows(), empty());
+            pimPage.clickResetButton();
+            softly.assertThat("Reset should clear the employee name filter",
+                    pimPage.getEmployeeNameFilter(), equalTo(""));
+        }
 
     }
 

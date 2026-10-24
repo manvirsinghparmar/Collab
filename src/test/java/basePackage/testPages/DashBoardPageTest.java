@@ -1,37 +1,42 @@
 package basePackage.testPages;
 
 import basePackage.base.BaseTest;
+import hamcrestAssertion.HamcrestSoftAssertions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import pages.DashboardPage;
 import pages.LoginPage;
-import pages.PimPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.hamcrest.Matchers.containsString;
+
 public class DashBoardPageTest extends BaseTest {
 
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
-    private PimPage pimPage;
 
     @BeforeMethod
     public void launch() {
         initialization();
-        loginPage=new LoginPage();
+        loginPage = new LoginPage();
 
     }
-
 
 
     @Test
     public void validateUserIsAbleToClickOnPIMLinkOnDashboard() {
 
-        LoginPage login = new LoginPage();
-
         DashboardPage dashboard =
-                login.clickOnlogin(config.username(), config.password());
+                loginPage.clickOnlogin(config.username(), config.password());
 
-        PimPage pimPage = dashboard.clickOnPIMLink();
+        dashboard.clickOnPIMLink();
+        wait.until(ExpectedConditions.urlContains("/pim/viewEmployeeList"));
+
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("PIM link should open the employee list",
+                    wd.getCurrentUrl(), containsString("/pim/viewEmployeeList"));
+        }
+
     }
 
 

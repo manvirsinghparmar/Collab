@@ -14,7 +14,6 @@ import static org.hamcrest.Matchers.equalTo;
 public class LoginPageTest extends BaseTest {
 
     private LoginPage loginPage;
-    private DashboardPage dashboardPage;
 
     @BeforeMethod
     public void launch() {
@@ -28,17 +27,22 @@ public class LoginPageTest extends BaseTest {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
-            SelUtils.waitForUrlContains(dashboardPage.DashboardUrl);
+            SelUtils.waitForUrlContains(dashboardPage.dashboardUrl);
             softly.assertThat("Login should open the dashboard", wd.getCurrentUrl(),
-                    equalTo(dashboardPage.DashboardUrl));
+                    equalTo(dashboardPage.dashboardUrl));
         }
     }
 
     @Test
     public void validateUserIsNotAbleToLoginWithInvalidCredential() {
 
-        LoginPage loginPage = new LoginPage();
-        loginPage.clickOnlogin("Admin", "admin1234");
+        loginPage.clickOnlogin(config.username(), "admin1234");
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("Invalid credentials should display an error",
+                    loginPage.getLoginErrorMessage(), equalTo("Invalid credentials"));
+            softly.assertThat("Invalid login should remain on the login page",
+                    wd.getCurrentUrl(), equalTo(config.loginUrl()));
+        }
     }
 
     @AfterMethod

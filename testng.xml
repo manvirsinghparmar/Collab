@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
 <suite name="Collab smoke suite" parallel="none">
-    <test name="Valid login">
+
+    <listeners>
+        <listener class-name="listeners.CustomExecutionListener"/>
+    </listeners>
+
+    <test name="Collab Tests">
         <classes>
-            <class name="basePackage.testPages.LoginPageTest">
-                <methods>
-                    <include name="validateUserIsAbleToLoginWithValidCredentials"/>
-                </methods>
-            </class>
+            <class name="basePackage.testPages.LoginPageTest"/>
+            <class name="basePackage.testPages.AddEmployeePageTest"/>
+            <class name="basePackage.testPages.ContactDetailsPageTest"/>
+            <class name="basePackage.testPages.DashBoardPageTest"/>
+            <class name="basePackage.testPages.LeavePageTest"/>
+            <class name="basePackage.testPages.PersonalDetailsPageTest"/>
+            <class name="basePackage.testPages.PimPageTest"/>
         </classes>
     </test>
+
 </suite>

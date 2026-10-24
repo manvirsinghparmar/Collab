@@ -58,4 +58,3 @@ public class AddEmployeePage extends BaseTest {
         return SelUtils.waitForElementVisible(successMessageOnAddingNewEmployee);    }
 
 }
-
