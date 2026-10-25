@@ -40,7 +40,7 @@ public class LeavePageTest extends BaseTest {
 
     @Test
     public void applyLeave() {
-        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
             dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
             leavePage = dashboardPage.clickOnLeaveMenu();
             leavePage.clickApplyButton();
@@ -48,14 +48,14 @@ public class LeavePageTest extends BaseTest {
             leavePage.enterFromDate("2026-10-23");
             leavePage.enterToDate("2026-10-23");
             leavePage.clickApplyButtonForLeave();
-            softly.assertThat("Leave application was not successful.",
+            hmAssert.assertThat("Leave application was not successful.",
                     leavePage.getMessagePrompt(), containsString("Success"));
         }
     }
 
     @Test
     public void applyLeaveForMoreDaysThanAvailable() {
-        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
             dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
             leavePage = dashboardPage.clickOnLeaveMenu();
             leavePage.clickApplyButton();
@@ -63,7 +63,7 @@ public class LeavePageTest extends BaseTest {
             leavePage.enterFromDate("2026-10-23");
             leavePage.enterToDate("2026-11-30");
             leavePage.clickApplyButtonForLeave();
-            softly.assertThat("Error message for insufficient leave balance was not displayed.",
+            hmAssert.assertThat("Error message for insufficient leave balance was not displayed.",
                     leavePage.getMessagePrompt(), containsString("Leave Balance Exceeded"));
         }
     }

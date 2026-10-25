@@ -27,9 +27,9 @@ public class LoginPageTest extends BaseTest {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
-            SelUtils.waitForUrlContains(dashboardPage.dashboardUrl);
+            SelUtils.waitForUrlContains(config.dashboardUrl());
             softly.assertThat("Login should open the dashboard", wd.getCurrentUrl(),
-                    equalTo(dashboardPage.dashboardUrl));
+                    equalTo(config.dashboardUrl()));
         }
     }
 

@@ -1,21 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="Collab smoke suite" parallel="none">
-
-    <listeners>
-        <listener class-name="listeners.CustomExecutionListener"/>
-    </listeners>
+<suite name="Collab full suite" parallel="none">
 
     <test name="Collab Tests">
         <classes>
-            <class name="basePackage.testPages.LoginPageTest"/>
-            <class name="basePackage.testPages.AddEmployeePageTest"/>
-            <class name="basePackage.testPages.ContactDetailsPageTest"/>
-            <class name="basePackage.testPages.DashBoardPageTest"/>
-            <class name="basePackage.testPages.LeavePageTest"/>
-            <class name="basePackage.testPages.PersonalDetailsPageTest"/>
-            <class name="basePackage.testPages.PimPageTest"/>
+            <class name="basePackage.testPages.LoginPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToLoginWithValidCredentials"/>
+                    <include name="validateUserIsNotAbleToLoginWithInvalidCredential"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.AddEmployeePageTest">
+                <methods>
+                    <include name="testAddEmployee"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.ContactDetailsPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToUpdateEmployeeContactDetails"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.DashBoardPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToClickOnPIMLinkOnDashboard"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.LeavePageTest">
+                <methods>
+                    <include name="validIfThereAreNOLeavesPendingApproval"/>
+                    <include name="applyLeave"/>
+                    <include name="applyLeaveForMoreDaysThanAvailable"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.PersonalDetailsPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.PimPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToSearchForEmployeeWithValidEmpName"/>
+                    <include name="validateUserIsAbleToEditEmpDetails"/>
+                    <include name="validateUserIsAbleToDeleteEmpDetails"/>
+                    <include name="validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.RecruitmentPageTest">
+                <methods>
+                    <include name="validateCandidateSearchWithUnmatchedKeywordsAndReset"/>
+                    <include name="validateCandidateSearchWithExistingName"/>
+                    <include name="validateUserIsAbleToAddCandidate"/>
+                </methods>
+            </class>
         </classes>
     </test>
 
