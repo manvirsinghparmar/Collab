@@ -34,7 +34,7 @@ public class ContactDetailsPageTest extends BaseTest {
     @Test
     @Parameters("empName")
     public void validateUserIsAbleToUpdateEmployeeContactDetails(@Optional("Amelia") String empName) throws InterruptedException {
-        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+        try (HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions()) {
             LoginPage login = new LoginPage();
             DashboardPage dashboard = login.clickOnlogin(config.username(), config.password());
             PimPage pimPage = dashboard.clickOnPIMLink();
@@ -43,7 +43,7 @@ public class ContactDetailsPageTest extends BaseTest {
             personalDetailsPage = pimPage.clickEditButton();
             contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
             contactDetailsPage.fillContactDetailsAndSave("123", "Williams", "Buffalo", "New York", "USA101", "United States", "amelia@gmail.com", "0987654321");
-            softly.assertThat("Contact details should be saved successfully",
+            hamcrestAssert.assertThat("Contact details should be saved successfully",
                     contactDetailsPage.getSuccessMessage(), containsString("Success"));
         }
     }

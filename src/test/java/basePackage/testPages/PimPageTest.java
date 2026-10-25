@@ -32,7 +32,7 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName) {
 
-        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboardPage.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -49,7 +49,7 @@ public class PimPageTest extends BaseTest {
     public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
-            DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+            DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
             PimPage pimPage = dashboardPage.clickOnPIMLink();
             pimPage.enterEmployeeName(empName);
             pimPage.clickSubmitButton();
@@ -64,7 +64,7 @@ public class PimPageTest extends BaseTest {
     @Parameters("empName")
     public void validateUserIsAbleToDeleteEmpDetails(@Optional("bala") String empName) {
 
-        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboardPage.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -82,7 +82,7 @@ public class PimPageTest extends BaseTest {
     public void validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset(
             @Optional("NoSuchEmployee987654321") String empName) {
 
-        DashboardPage dashboardPage = loginPage.clickOnlogin("Admin", "admin123");
+        DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboardPage.clickOnPIMLink();
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
@@ -96,6 +96,19 @@ public class PimPageTest extends BaseTest {
                     pimPage.getEmployeeNameFilter(), equalTo(""));
         }
 
+    }
+
+    @Test
+    public void validateUserIsAbleToClickOnReportsLink() {
+
+        DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
+        PimPage pimPage = dashboardPage.clickOnPIMLink();
+        pimPage.clickReportsLink();
+
+        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
+            softly.assertThat("Clicking on Reports link should navigate to the Reports page",
+                    wd.getCurrentUrl(), containsString("/pim/viewDefinedPredefinedReports"));
+        }
     }
 
     @AfterMethod
