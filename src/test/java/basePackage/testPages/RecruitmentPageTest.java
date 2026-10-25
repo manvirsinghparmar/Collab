@@ -40,7 +40,7 @@ public class RecruitmentPageTest extends BaseTest {
     @Test
     public void validateCandidateSearchWithUnmatchedKeywordsAndReset() {
         DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
-        SelUtils.waitForUrlContains(dashboardPage.dashboardUrl);
+        SelUtils.waitForUrlContains(config.dashboardUrl());
         RecruitmentPage recruitmentPage = dashboardPage.clickOnRecruitmentMenu();
         String unmatchedKeywords = "no-match-" + UUID.randomUUID();
         recruitmentPage.enterKeywords(unmatchedKeywords);
@@ -62,7 +62,7 @@ public class RecruitmentPageTest extends BaseTest {
     @Test
     public void validateCandidateSearchWithExistingName() {
         DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
-        SelUtils.waitForUrlContains(dashboardPage.dashboardUrl);
+        SelUtils.waitForUrlContains(config.dashboardUrl());
         RecruitmentPage recruitmentPage = dashboardPage.clickOnRecruitmentMenu();
         List<String> candidateNames = recruitmentPage.getCandidateNames();
         assertThat("An existing candidate is required for name search", candidateNames, not(empty()));
@@ -81,7 +81,7 @@ public class RecruitmentPageTest extends BaseTest {
     @Test
     public void validateUserIsAbleToAddCandidate() {
         DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
-        SelUtils.waitForUrlContains(dashboardPage.dashboardUrl);
+        SelUtils.waitForUrlContains(config.dashboardUrl());
         recruitmentPage = dashboardPage.clickOnRecruitmentMenu();
         String uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
         String firstName = "Recruitment" + uniqueId;

@@ -10,8 +10,6 @@ import utilities.SelUtils;
 
 public class DashboardPage extends BaseTest {
 
-    public String dashboardUrl = config.dashboardUrl();
-
     public DashboardPage() {
         PageFactory.initElements(wd, this);
     }
