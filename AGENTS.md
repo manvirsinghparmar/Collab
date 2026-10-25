@@ -17,16 +17,17 @@ The repository contains automation code, not the OrangeHRM application.
 
 | Location | Responsibility |
 | --- | --- |
-| `pom.xml` / `testng.xml` | Maven build and the sequential valid-login smoke suite |
+| `pom.xml` / `testng.xml` | Maven build and sequential suite selection |
 | `src/main/java/basePackage/base/BaseTest.java` | Shared browser initialization, configuration, waits and shutdown |
 | `src/main/java/pages/` | Page objects, locators and browser interactions |
 | `src/main/java/browser/` | Browser enum, selection, options and driver creation |
 | `src/main/java/platform/` | Local operating-system detection |
+| `src/main/java/listeners/` | TestNG execution logging, HTML reports and Selenium event logging |
 | `src/main/java/utilities/` | Configuration and reusable Selenium helpers |
 | `src/main/java/hamcrestAssertion/` | Hamcrest soft assertion collector |
 | `src/main/resources/config.properties` | Default URLs and public demo credentials |
 | `src/test/java/basePackage/testPages/` | TestNG scenarios and assertions |
-| `target/` | Generated Maven output and Surefire reports; ignored by Git |
+| `target/` | Generated Maven output, reports, logs and screenshots; ignored by Git |
 
 ## Coding and test conventions
 
@@ -84,7 +85,7 @@ Run commands from the repository root:
 # Compile framework and test sources without browser execution.
 mvn test-compile
 
-# Run the sequential valid-login smoke suite.
+# Run the configured sequential suite (includes data-changing scenarios).
 mvn test
 
 # Select a browser and a single test explicitly.
@@ -93,6 +94,16 @@ mvn "-Dbrowser=EDGE" "-Dtest=basePackage.testPages.LoginPageTest#validateUserIsA
 
 Explicit `-Dtest` selection overrides the suite and can run data-changing scenarios.
 Surefire results are under `target/surefire-reports/`.
+
+Tests inherit `CustomExecutionListener` and `EventReportListener` through
+`BaseTest`'s `@Listeners`; do not also register them in `testng.xml`.
+`CustomExecutionListener` owns lifecycle logging and failure screenshots.
+`EventReportListener` extends `TestListenerAdapter` and writes an Extent Spark
+HTML report once execution finishes, including failed/skipped configuration
+methods as separate entries. Report totals include those configuration entries.
+Reports are saved to `target/artifacts/reports/<unique-run-id>/index.html`;
+`-Dframework.artifacts.dir=<path>` overrides the artifact root for reports,
+logs and screenshots. Captured failure screenshots are embedded in the HTML.
 
 ## Working rules and framework constraints
 
