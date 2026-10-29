@@ -1,8 +1,5 @@
 package pages;
-
 import basePackage.base.BaseTest;
-import listeners.WebDriverEventListener;
-import org.apache.logging.log4j.ThreadContext;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,6 +7,10 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,21 @@ public class MyInfoPage extends BaseTest {
 
     @FindBy(xpath = "//div[@class=\"oxd-toast-content oxd-toast-content--success\"]")
     private WebElement successMessageOnUpdatingPersonalDetails;
+
+    @FindBy(xpath="(//div[@class='oxd-table-cell-actions']//button)[3]")
+    private WebElement downloadImageButton;
+
+    @FindBy(xpath="(//div[@class='oxd-table-cell-actions']//button)[1]")
+    private WebElement editRecordImageButton;
+
+    @FindBy(css = "input[type='file']")
+    private WebElement fileUploadInput;
+
+    @FindBy(xpath = "div.oxd-file-div>i.oxd-icon")
+    private WebElement uploadedImageIcon;
+
+
+
 
     public MyInfoPage clickMyInfoLink() {
         SelUtils.clickElement(myInfoLink);
@@ -141,5 +157,37 @@ public class MyInfoPage extends BaseTest {
 
     public String getSuccessMessage() {
         return SelUtils.getText(successMessageOnUpdatingPersonalDetails);
+    }
+
+    public void  clickDownloadImageButton() {
+        SelUtils.clickElement(downloadImageButton);
+    }
+
+    public boolean isProfileImageDownloaded(String expectedFileName) {
+        String downloadDir = System.getProperty("user.home") + "/Downloads";
+        Path filePath = Paths.get(downloadDir, expectedFileName);
+        return Files.exists(filePath);
+    }
+
+    public void clickEditRecordButton() {
+        SelUtils.clickElement(editRecordImageButton);
+    }
+    public void uploadProfileImage(String filePath) {
+        Path path = Paths.get(filePath);
+        if (!path.isAbsolute()) {
+            path = Paths.get(System.getProperty("user.home"), "Downloads", filePath);
+        }
+        SelUtils.uploadFile(fileUploadInput, path);
+    }
+
+    public boolean isProfileImageUploaded(String image) {
+        String downloadDir = System.getProperty("user.home") + "/Downloads";
+        Path filePath = Paths.get(downloadDir, image);
+
+        try {
+            return Files.exists(filePath) && Files.size(filePath) > 0;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

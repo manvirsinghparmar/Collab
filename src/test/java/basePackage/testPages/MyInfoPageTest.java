@@ -70,7 +70,7 @@ public class MyInfoPageTest extends BaseTest {
         myInfoPage.selectDateFromCalendar(1, "2030-30-10");
         myInfoPage.selectOptionFromDropdown(2, "Married");
         myInfoPage.clickPersonalDetailsSaveButton(1);
-        try{
+        try {
 
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
 
@@ -83,12 +83,47 @@ public class MyInfoPageTest extends BaseTest {
             );
 
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+        @Test
+    public void validateUserIsAbleToDownloadProfileImage() {
+        dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
+        myInfoPage = dashboardPage.clickOnMyInfoLink()
+                .clickTab(MyInfo.PERSONAL_DETAILS);
+        myInfoPage.clickDownloadImageButton();
+        try {
+            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
+            hamcrestAssert.assertThat(
+                    "Profile image should be downloaded successfully",
+                    myInfoPage.isProfileImageDownloaded("test.png"), is(true)
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        // Add assertions to verify that the dates have been updated successfully
+    }
+
+    @Test
+    public void validateUserIsAbleToUploadProfileImage() {
+        dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
+        myInfoPage = dashboardPage.clickOnMyInfoLink()
+                .clickTab(MyInfo.PERSONAL_DETAILS);
+        myInfoPage.clickEditRecordButton();
+        myInfoPage.uploadProfileImage("profile.jpg");
+        myInfoPage.clickPersonalDetailsSaveButton(2);
+        try {
+            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
+            hamcrestAssert.assertThat(
+                    "Profile image should be uploaded successfully",
+                    myInfoPage.isProfileImageUploaded("profile.jpg"), is(true)
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @AfterMethod
