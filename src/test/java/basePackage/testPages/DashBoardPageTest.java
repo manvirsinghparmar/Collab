@@ -38,11 +38,6 @@ public class DashBoardPageTest extends BaseTest {
         }
 
     }
-    @Test
-    public void validateUserIsAbleToClickOnMyInfoLinkOnDashboard(){
-
-    }
-
 
 
     @AfterMethod

@@ -47,7 +47,7 @@ public class MyInfoPageTest extends BaseTest {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
 
         myInfoPage = dashboardPage.clickOnMyInfoLink()
-                .clickTab(MyInfo.PERSONAL_DETAILS);
+                .clickMyInfoTabs(MyInfo.PERSONAL_DETAILS);
         try {
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
 
@@ -65,7 +65,7 @@ public class MyInfoPageTest extends BaseTest {
     public void validateUserIsAbleToUpdatePersonalDetails() {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         myInfoPage = dashboardPage.clickOnMyInfoLink()
-                .clickTab(MyInfo.PERSONAL_DETAILS);
+                .clickMyInfoTabs(MyInfo.PERSONAL_DETAILS);
 
         myInfoPage.selectDateFromCalendar(1, "2030-30-10");
         myInfoPage.selectOptionFromDropdown(2, "Married");
@@ -88,11 +88,11 @@ public class MyInfoPageTest extends BaseTest {
         }
     }
 
-        @Test
+    @Test
     public void validateUserIsAbleToDownloadProfileImage() {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         myInfoPage = dashboardPage.clickOnMyInfoLink()
-                .clickTab(MyInfo.PERSONAL_DETAILS);
+                .clickMyInfoTabs(MyInfo.PERSONAL_DETAILS);
         myInfoPage.clickDownloadImageButton();
         try {
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
@@ -110,7 +110,7 @@ public class MyInfoPageTest extends BaseTest {
     public void validateUserIsAbleToUploadProfileImage() {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         myInfoPage = dashboardPage.clickOnMyInfoLink()
-                .clickTab(MyInfo.PERSONAL_DETAILS);
+                .clickMyInfoTabs(MyInfo.PERSONAL_DETAILS);
         myInfoPage.clickEditRecordButton();
         myInfoPage.uploadProfileImage("profile.jpg");
         myInfoPage.clickPersonalDetailsSaveButton(2);

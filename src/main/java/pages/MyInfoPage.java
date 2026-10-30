@@ -1,4 +1,5 @@
 package pages;
+
 import basePackage.base.BaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -42,10 +43,10 @@ public class MyInfoPage extends BaseTest {
     @FindBy(xpath = "//div[@class=\"oxd-toast-content oxd-toast-content--success\"]")
     private WebElement successMessageOnUpdatingPersonalDetails;
 
-    @FindBy(xpath="(//div[@class='oxd-table-cell-actions']//button)[3]")
+    @FindBy(xpath = "(//div[@class='oxd-table-cell-actions']//button)[3]")
     private WebElement downloadImageButton;
 
-    @FindBy(xpath="(//div[@class='oxd-table-cell-actions']//button)[1]")
+    @FindBy(xpath = "(//div[@class='oxd-table-cell-actions']//button)[1]")
     private WebElement editRecordImageButton;
 
     @FindBy(css = "input[type='file']")
@@ -53,8 +54,6 @@ public class MyInfoPage extends BaseTest {
 
     @FindBy(xpath = "div.oxd-file-div>i.oxd-icon")
     private WebElement uploadedImageIcon;
-
-
 
 
     public MyInfoPage clickMyInfoLink() {
@@ -67,7 +66,7 @@ public class MyInfoPage extends BaseTest {
         return this;
     }
 
-    public MyInfoPage clickTab(MyInfo tab) {
+    public MyInfoPage clickMyInfoTabs(MyInfo tab) {
         String tabName = tab.getDisplayName();
         WebElement matchingTab = SelUtils.getWait()
                 .withMessage("My Info tab not found: " + tabName)
@@ -159,7 +158,7 @@ public class MyInfoPage extends BaseTest {
         return SelUtils.getText(successMessageOnUpdatingPersonalDetails);
     }
 
-    public void  clickDownloadImageButton() {
+    public void clickDownloadImageButton() {
         SelUtils.clickElement(downloadImageButton);
     }
 
@@ -172,6 +171,7 @@ public class MyInfoPage extends BaseTest {
     public void clickEditRecordButton() {
         SelUtils.clickElement(editRecordImageButton);
     }
+
     public void uploadProfileImage(String filePath) {
         Path path = Paths.get(filePath);
         if (!path.isAbsolute()) {
