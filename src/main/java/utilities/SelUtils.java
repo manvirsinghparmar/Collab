@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import platform.PlatformUtil;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
@@ -77,6 +79,23 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
     public static void scrollIntoView(WebElement element) {
         ((JavascriptExecutor) driver())
                 .executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
+    }
+
+    // File inputs are often hidden behind a styled "Browse" label; send the path directly
+    // instead of clicking, which would open a native OS dialog Selenium cannot control.
+    public static void uploadFile(WebElement fileInput, Path filePath) {
+        Path absolutePath = filePath.toAbsolutePath();
+        if (!Files.isRegularFile(absolutePath)) {
+            throw new IllegalArgumentException("Upload file not found: " + absolutePath);
+        }
+        getWait().until(driver -> {
+            try {
+                return fileInput.isEnabled();
+            } catch (NoSuchElementException | StaleElementReferenceException e) {
+                return false;
+            }
+        });
+        fileInput.sendKeys(absolutePath.toString());
     }
 
 
