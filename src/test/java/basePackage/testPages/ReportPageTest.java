@@ -73,18 +73,18 @@ public class ReportPageTest extends BaseTest {
         reportsPage = pimPage.clickReportsLink();
         reportsPage.enterReportName("All Employees");
         reportsPage.clickSearchButton();
-        reportsPage.editReportButton("All Employees");
+        reportsPage.clickEditReportButton("All Employees");
         reportsPage.editReportName("Sub Unit Hierarchy Report of Employees");
         reportsPage.clickDropdownIcon(2);
         reportsPage.selectOptionFromDropdown(2);
         reportsPage.clickDropdownIcon(3);
         reportsPage.selectOptionFromDropdown(4);
-        reportsPage.clickAddButton();
-        reportsPage.clickSaveButton();
+        reportsPage.clickDisplayFieldAddButton();
+        reportsPage.clickRecordSaveButton();
         try {
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
             hamcrestAssert.assertThat("Contact details should be saved successfully",
-                    reportsPage.getSuccessMessage(), containsString("Success"));
+                    reportsPage.getSuccessMessageTxt(), containsString("Success"));
             hamcrestAssert.assertThat(
                     "Report edit should be successfull",
                     wd.getCurrentUrl(),
@@ -96,6 +96,7 @@ public class ReportPageTest extends BaseTest {
         }
 
     }
+
 
     @AfterMethod
     public void quit() {

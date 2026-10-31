@@ -3,12 +3,10 @@ package pages;
 import basePackage.base.BaseTest;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utilities.SelUtils;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class ReportsPage extends BaseTest {
 
@@ -20,13 +18,13 @@ public class ReportsPage extends BaseTest {
     private WebElement reportNameInputTextBox;
 
     @FindBy(xpath = "//button[@type='submit']")
-    private WebElement searchButton;
+    private WebElement reportSearchButton;
 
     @FindBy(xpath = "(//button[@type='button'])[9]")
-    private WebElement reportButton;
+    private WebElement reportButtonInRecords;
 
     @FindBy(css = ".oxd-table-body .bi-pencil-fill")
-    private WebElement editButton;
+    private WebElement recordEditButton;
 
     @FindBy(xpath = "//input[@placeholder='Type here ...']")
     private WebElement reportNameEditInputTextBox;
@@ -35,10 +33,10 @@ public class ReportsPage extends BaseTest {
     private List<WebElement> dropdownIcons;
 
     @FindBy(xpath = "(//button[@type='button'])[5]")
-    private WebElement addButton;
+    private WebElement displayFieldAddBtn;
 
     @FindBy(xpath = "//button[@type='submit']")
-    private WebElement saveButton;
+    private WebElement reportSaveBtn;
 
     @FindBy(xpath = "//div[@class=\"oxd-toast-content oxd-toast-content--success\"]")
     private WebElement successMessageOnUpdatingContactDetails;
@@ -46,7 +44,7 @@ public class ReportsPage extends BaseTest {
     @FindBy(css = ".oxd-select-option")
     private List<WebElement> dropdownOptions;
 
-    public String getSuccessMessage() {
+    public String getSuccessMessageText() {
         return SelUtils.getText(successMessageOnUpdatingContactDetails);
     }
 
@@ -58,15 +56,15 @@ public class ReportsPage extends BaseTest {
     }
 
     public void clickSearchButton() {
-        SelUtils.clickElement(searchButton);
+        SelUtils.clickElement(reportSearchButton);
     }
 
     public void clickReportButton() {
-        SelUtils.clickElement(reportButton);
+        SelUtils.clickElement(reportButtonInRecords);
     }
 
     public void clickEditButton() {
-        SelUtils.clickElement(editButton);
+        SelUtils.clickElement(recordEditButton);
     }
 
     public void getReport(String reportName) {
@@ -75,7 +73,7 @@ public class ReportsPage extends BaseTest {
         clickReportButton();
     }
 
-    public void editReportButton(String reportName) {
+    public void clickEditReportButton(String reportName) {
         enterReportName(reportName);
         clickSearchButton();
         clickEditButton();
@@ -108,11 +106,11 @@ public class ReportsPage extends BaseTest {
         SelUtils.clickElement(dropdownOptions.get(optionPosition));
     }
 
-    public void clickAddButton() {
-        SelUtils.clickElement(addButton);
+    public void clickDisplayFieldAddButton() {
+        SelUtils.clickElement(displayFieldAddBtn);
     }
 
-    public void clickSaveButton() {
-        SelUtils.clickElement(saveButton);
+    public void clickRecordSaveButton() {
+        SelUtils.clickElement(reportSaveBtn);
     }
 }
