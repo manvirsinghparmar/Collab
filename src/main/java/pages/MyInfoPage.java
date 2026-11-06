@@ -55,6 +55,9 @@ public class MyInfoPage extends BaseTest {
     @FindBy(xpath = "div.oxd-file-div>i.oxd-icon")
     private WebElement uploadedImageIcon;
 
+    @FindBy(xpath = "//h6[normalize-space()='Contact Details']")
+    private WebElement contactDetailsHeading;
+
 
     public MyInfoPage clickMyInfoLink() {
         SelUtils.clickElement(myInfoLink);
@@ -189,5 +192,10 @@ public class MyInfoPage extends BaseTest {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public MyInfoContactDetailsPage clickContactDetailsMyInfoTab() {
+    clickMyInfoTabs(MyInfo.CONTACT_DETAILS);
+        return new MyInfoContactDetailsPage();
     }
 }

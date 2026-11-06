@@ -29,8 +29,7 @@ public class ReportPageTest extends BaseTest {
         loginPage.clickOnlogin(config.username(), config.password())
                 .clickOnPIMLink()
                 .clickReportsLink();
-        try{
-            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
+        try (HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions()) {
 
             hamcrestAssert.assertThat(
                     "Report page navigation should be successful",
@@ -64,7 +63,6 @@ public class ReportPageTest extends BaseTest {
     }
 
 
-
     @Test
     public void validateUserIsAbleToEditAndSaveTheReport() {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
@@ -84,7 +82,7 @@ public class ReportPageTest extends BaseTest {
         try {
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
             hamcrestAssert.assertThat("Contact details should be saved successfully",
-                    reportsPage.getSuccessMessageTxt(), containsString("Success"));
+                    reportsPage.getSuccessMessageText(), containsString("Success"));
             hamcrestAssert.assertThat(
                     "Report edit should be successfull",
                     wd.getCurrentUrl(),
