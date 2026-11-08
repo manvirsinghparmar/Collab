@@ -1,16 +1,17 @@
 # GitHub Actions
 
 The workflows use `windows-latest`, Temurin Java 11, Maven caching and Chrome.
-PowerShell runs the commands. Tests run sequentially against DEV. No workflow has
-a `workflow_dispatch` trigger. No repository secrets are needed for the public
-demo configuration.
+PowerShell runs the commands. Tests run sequentially against DEV. Both workflows
+support manual runs through `workflow_dispatch`. No repository secrets are
+needed for the public demo configuration.
 
 ## PR checks
 
 `.github/workflows/pr-check.yml` runs on PR creation, new commits/force pushes,
 edits and reopenings, for every target branch and changed path. Draft PRs also
-run. The default checkout tests the PR merge commit. New activity cancels an
-older run for the same PR.
+run. PR events test the PR merge commit; manual runs test the selected branch
+or tag. New activity cancels an older run for the same PR. Manual runs use a
+separate concurrency group per selected ref.
 
 All framework and test sources are compiled, then `testng-pr.xml` runs four
 existing scenarios: valid login, invalid login, Dashboard-to-PIM navigation,
@@ -21,17 +22,19 @@ Adding the workflow alone does not enforce merge protection.
 
 ## Scheduled regression
 
-`.github/workflows/regression.yml` is automatic only. GitHub schedules it daily
-at **04:00 America/Toronto**, following local daylight-saving changes. A small
-calendar check runs the test job every second local calendar day, anchored to
+`.github/workflows/regression.yml` supports scheduled and manual runs. GitHub
+schedules it daily at **04:00 America/Toronto**, following local daylight-saving
+changes. A small calendar check runs the test job every second local calendar day, anchored to
 **2026-11-08**: November 8, 10, 12, and so on, including across month/year
-boundaries. Off days skip the test job before checkout, dependency setup or
-browser execution. This avoids the uneven month boundaries of a day-of-month
+boundaries. Scheduled off days skip the test job before checkout, dependency
+setup or browser execution. This avoids the uneven month boundaries of a day-of-month
 `*/2` cron expression. The gate uses the Toronto date when it executes.
+Manual runs always enable the test job, including on off days, and test the
+selected branch or tag without changing the scheduled cadence.
 
 The workflow must be merged into the repository's default branch to receive
-scheduled events. It tests that branch. GitHub can delay or drop scheduled
-events, so 04:00 is the requested start, not an exact execution guarantee.
+scheduled events. Scheduled runs test that branch. GitHub can delay or drop
+scheduled events, so 04:00 is the requested start, not an exact execution guarantee.
 Public repositories may have schedules disabled after 60 days without activity.
 See [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 
@@ -82,3 +85,8 @@ mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" te
 ```
 
 Omitting `-Dtestng.suite` retains the existing `testng.xml` default.
+
+To run either workflow manually, open GitHub Actions, select `PR checks` or
+`Scheduled regression`, choose **Run workflow**, and select the branch.
+The workflow file must first exist on the default branch for manual dispatch
+to be available. See [GitHub's manual-run documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).

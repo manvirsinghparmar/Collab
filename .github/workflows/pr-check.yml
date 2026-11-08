@@ -1,6 +1,7 @@
 name: PR checks
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [opened, synchronize, edited, reopened]
 
@@ -8,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: pr-check-${{ github.event.pull_request.number }}
+  group: pr-check-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -17,7 +18,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
-      - name: Check out the PR merge commit
+      - name: Check out source
         uses: actions/checkout@v7
         with:
           persist-credentials: false

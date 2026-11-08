@@ -1,6 +1,7 @@
 name: Scheduled regression
 
 on:
+  workflow_dispatch:
   schedule:
     # A calendar-day gate below preserves the two-day interval across months.
     - cron: '0 4 * * *'
@@ -15,22 +16,23 @@ concurrency:
 
 jobs:
   schedule:
-    name: Check alternate-day schedule
+    name: Check regression trigger
     runs-on: windows-latest
     timeout-minutes: 5
     outputs:
       due: ${{ steps.calendar.outputs.due }}
     steps:
-      - name: Check the Toronto calendar date
+      - name: Check manual trigger or Toronto calendar date
         id: calendar
         shell: pwsh
         run: |
           $zone = [TimeZoneInfo]::FindSystemTimeZoneById('Eastern Standard Time')
           $today = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $zone).Date
           $anchor = [datetime]::new(2026, 11, 8)
-          $due = $today -ge $anchor -and ($today - $anchor).Days % 2 -eq 0
+          $manual = $env:GITHUB_EVENT_NAME -eq 'workflow_dispatch'
+          $due = $manual -or ($today -ge $anchor -and ($today - $anchor).Days % 2 -eq 0)
           "due=$($due.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
-          "Toronto date: $($today.ToString('yyyy-MM-dd')). Regression due: $due." >> $env:GITHUB_STEP_SUMMARY
+          "Trigger: $env:GITHUB_EVENT_NAME. Toronto date: $($today.ToString('yyyy-MM-dd')). Regression due: $due." >> $env:GITHUB_STEP_SUMMARY
 
   regression:
     name: Regression tests
@@ -39,7 +41,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - name: Check out the default branch
+      - name: Check out source
         uses: actions/checkout@v7
         with:
           persist-credentials: false
