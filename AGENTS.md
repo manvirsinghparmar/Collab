@@ -123,7 +123,8 @@ CI runs Chrome on `windows-latest` with Java 11. PR checks run on opening,
 code updates, edits and reopenings. Regression runs automatically at 04:00
 America/Toronto every second calendar day from 2026-11-08. It selects 19
 existing scenarios; six exclusions and ownership/cleanup rules are documented
-in `docs/ci.md`. Neither workflow supports manual dispatch.
+in `docs/ci.md`. Both workflows support manual dispatch; manual regression runs
+bypass the alternate-day gate and use the selected ref.
 
 Tests inherit `CustomExecutionListener` and `EventReportListener` through
 `BaseTest`'s `@Listeners`; do not also register them in `testng.xml`.
