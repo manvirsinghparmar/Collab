@@ -20,10 +20,12 @@ The repository contains automation code, not the OrangeHRM application.
 | `pom.xml` / `testng.xml` | Maven build and sequential suite selection |
 | `src/main/java/basePackage/base/BaseTest.java` | Shared browser initialization, configuration, waits and shutdown |
 | `src/main/java/pages/` | Page objects, locators and browser interactions |
+| `src/main/java/config/` | Immutable application configuration |
+| `src/main/java/env/` | Environment enum and environment name validation in `EnvManagerUtil` |
 | `src/main/java/browser/` | Browser enum, selection, options and driver creation |
 | `src/main/java/platform/` | Local operating-system detection |
 | `src/main/java/listeners/` | TestNG execution logging, HTML reports and Selenium event logging |
-| `src/main/java/utilities/` | Configuration and reusable Selenium helpers |
+| `src/main/java/utilities/` | Reusable Selenium and runtime helpers |
 | `src/main/java/hamcrestAssertion/` | Hamcrest soft assertion collector |
 | `src/main/resources/config.properties` | Default URLs and public demo credentials |
 | `src/test/java/basePackage/testPages/` | TestNG scenarios and assertions |
@@ -60,11 +62,24 @@ The repository contains automation code, not the OrangeHRM application.
 
 - `ConfigReader` loads an immutable configuration snapshot from the classpath.
   Precedence is JVM system property, environment variable, then properties file.
-- Environment names are uppercase property names with dots replaced by underscores,
-  for example `app.base.url` becomes `APP_BASE_URL`.
+- Select DEV, STAGE or PROD through `-Dapp.env`, then `APP_ENV`, then `app.env`
+  in `config.properties` (DEV by default). Names are case-insensitive. One
+  environment is selected per JVM; blank or unsupported values fail early.
+- Environment variable names are uppercase property names with dots replaced by
+  underscores, for example `app.base.url.stage` becomes `APP_BASE_URL_STAGE`.
+- Each environment has its own origin: `app.base.url.dev`, `app.base.url.stage`
+  and `app.base.url.prod`. These replace the single `app.base.url` setting and
+  its overrides. Only the selected origin is required; an unset origin fails
+  before browser creation without falling back to another environment. DEV uses
+  the public demo; supply STAGE/PROD origins in the file or through overrides.
 - Application settings cover the base URL, login/dashboard paths and credentials.
-  The base URL is an HTTP(S) origin; page paths start with `/`.
-  Missing, blank or invalid required settings fail early.
+  The base URL is an HTTP(S) origin; shared page paths start with `/` and
+  credentials retain their existing overrides. Missing, blank or invalid required
+  settings fail early.
+- Tests extending `BaseTest` can call `getEnvironment()` to obtain the selected
+  `env.Environment` enum, or access `config.environment()`. These report the
+  configured environment rather than detecting it from the browser's current URL.
+  `env.EnvManagerUtil` validates environment names separately from configuration loading.
 - Browser selection is independent: `-Dbrowser`, then `BROWSER`, then Chrome.
   Supported names are CHROME, FIREFOX, EDGE and SAFARI; names are case-insensitive.
 - Use `BrowserUtil` for driver creation and `PlatformUtil` for local OS checks.
@@ -90,6 +105,9 @@ mvn test
 
 # Select a browser and a single test explicitly.
 mvn "-Dbrowser=EDGE" "-Dtest=basePackage.testPages.LoginPageTest#validateUserIsAbleToLoginWithValidCredentials" test
+
+# Select STAGE after supplying app.base.url.stage (or APP_BASE_URL_STAGE).
+mvn "-Dapp.env=STAGE" "-Dtest=basePackage.testPages.LoginPageTest#validateUserIsAbleToLoginWithValidCredentials" test
 ```
 
 Explicit `-Dtest` selection overrides the suite and can run data-changing scenarios.
