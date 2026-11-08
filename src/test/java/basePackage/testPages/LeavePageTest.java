@@ -2,6 +2,7 @@ package basePackage.testPages;
 
 
 import basePackage.base.BaseTest;
+import basePackage.support.EmployeeFixture;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import pages.DashboardPage;
@@ -12,14 +13,19 @@ import hamcrestAssertion.HamcrestSoftAssertions;
 
 import static org.hamcrest.Matchers.containsString;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 public class LeavePageTest extends BaseTest {
 
     DashboardPage dashboardPage;
     LeavePage leavePage;
     LoginPage loginPage;
+    private EmployeeFixture employee;
 
     @BeforeMethod
     public void setUp() {
+        employee = new EmployeeFixture();
         initialization();
         loginPage = new LoginPage();
     }
@@ -28,10 +34,12 @@ public class LeavePageTest extends BaseTest {
     public void validIfThereAreNOLeavesPendingApproval() {
         try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
             dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
+            employee.create(dashboardPage.clickOnPIMLink());
             leavePage = dashboardPage.clickOnLeaveMenu();
-            leavePage.enterFromDate("2026-09-23");
-            leavePage.enterToDate("2026-12-31");
-            leavePage.enterEmployeeName("Demo", "Demo Open Source");
+            LocalDate today = LocalDate.now(ZoneId.of("America/Toronto"));
+            leavePage.enterFromDate(today.withDayOfYear(1).toString());
+            leavePage.enterToDate(today.withMonth(12).withDayOfMonth(31).toString());
+            leavePage.enterEmployeeName(employee.firstName(), employee.fullName());
             leavePage.clickSearchButton();
             hmAssert.assertThat("There are leaves pending approval.",
                     leavePage.getRecordsFoundMessage(), containsString("No Records Found"));
@@ -68,8 +76,12 @@ public class LeavePageTest extends BaseTest {
         }
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
-        super.teardown();
+        try {
+            employee.close();
+        } finally {
+            super.teardown();
+        }
     }
 }

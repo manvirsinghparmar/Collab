@@ -1,0 +1,76 @@
+name: Scheduled regression
+
+on:
+  schedule:
+    # A calendar-day gate below preserves the two-day interval across months.
+    - cron: '0 4 * * *'
+      timezone: America/Toronto
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-regression
+  cancel-in-progress: false
+
+jobs:
+  schedule:
+    name: Check alternate-day schedule
+    runs-on: windows-latest
+    timeout-minutes: 5
+    outputs:
+      due: ${{ steps.calendar.outputs.due }}
+    steps:
+      - name: Check the Toronto calendar date
+        id: calendar
+        shell: pwsh
+        run: |
+          $zone = [TimeZoneInfo]::FindSystemTimeZoneById('Eastern Standard Time')
+          $today = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $zone).Date
+          $anchor = [datetime]::new(2026, 11, 8)
+          $due = $today -ge $anchor -and ($today - $anchor).Days % 2 -eq 0
+          "due=$($due.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "Toronto date: $($today.ToString('yyyy-MM-dd')). Regression due: $due." >> $env:GITHUB_STEP_SUMMARY
+
+  regression:
+    name: Regression tests
+    needs: schedule
+    if: needs.schedule.outputs.due == 'true'
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the default branch
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 11 and Maven cache
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Check Chrome
+        run: |
+          $chrome = Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+          $chrome.VersionInfo.ProductVersion
+
+      - name: Compile framework and all test sources
+        run: mvn --batch-mode --no-transfer-progress clean test-compile
+
+      - name: Run the sequential regression suite
+        run: >-
+          mvn --batch-mode --no-transfer-progress
+          "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" test
+
+      - name: Upload test results, reports, logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: regression-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            target/surefire-reports/
+            target/artifacts/
+          retention-days: 14
+          if-no-files-found: warn

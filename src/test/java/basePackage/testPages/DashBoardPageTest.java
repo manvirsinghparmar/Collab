@@ -40,7 +40,7 @@ public class DashBoardPageTest extends BaseTest {
     }
 
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void closeBrowser() {
         teardown();
     }

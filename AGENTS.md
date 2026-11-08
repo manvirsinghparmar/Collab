@@ -18,6 +18,8 @@ The repository contains automation code, not the OrangeHRM application.
 | Location | Responsibility |
 | --- | --- |
 | `pom.xml` / `testng.xml` | Maven build and sequential suite selection |
+| `testng-pr.xml` / `testng-regression.xml` | Explicit CI smoke and unattended regression selection |
+| `.github/workflows/` / `docs/ci.md` | GitHub Actions triggers, runtime and regression coverage |
 | `src/main/java/basePackage/base/BaseTest.java` | Shared browser initialization, configuration, waits and shutdown |
 | `src/main/java/pages/` | Page objects, locators and browser interactions |
 | `src/main/java/config/` | Immutable application configuration |
@@ -100,6 +102,9 @@ Run commands from the repository root:
 # Compile framework and test sources without browser execution.
 mvn test-compile
 
+# Run the four existing PR smoke scenarios.
+mvn "-Dtestng.suite=testng-pr.xml" test
+
 # Run the configured sequential suite (includes data-changing scenarios).
 mvn test
 
@@ -112,6 +117,13 @@ mvn "-Dapp.env=STAGE" "-Dtest=basePackage.testPages.LoginPageTest#validateUserIs
 
 Explicit `-Dtest` selection overrides the suite and can run data-changing scenarios.
 Surefire results are under `target/surefire-reports/`.
+
+`-Dtestng.suite=<file>` selects a TestNG suite, defaulting to `testng.xml`.
+CI runs Chrome on `windows-latest` with Java 11. PR checks run on opening,
+code updates, edits and reopenings. Regression runs automatically at 04:00
+America/Toronto every second calendar day from 2026-11-08. It selects 19
+existing scenarios; six exclusions and ownership/cleanup rules are documented
+in `docs/ci.md`. Neither workflow supports manual dispatch.
 
 Tests inherit `CustomExecutionListener` and `EventReportListener` through
 `BaseTest`'s `@Listeners`; do not also register them in `testng.xml`.

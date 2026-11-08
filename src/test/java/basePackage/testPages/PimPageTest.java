@@ -1,6 +1,7 @@
 package basePackage.testPages;
 
 import basePackage.base.BaseTest;
+import basePackage.support.EmployeeFixture;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PimPage;
@@ -20,9 +21,11 @@ import static org.hamcrest.Matchers.hasItem;
 public class PimPageTest extends BaseTest {
 
     private LoginPage loginPage;
+    private EmployeeFixture employee;
 
     @BeforeMethod
     public void launch() {
+        employee = new EmployeeFixture();
         initialization();
         loginPage = new LoginPage();
 
@@ -30,10 +33,15 @@ public class PimPageTest extends BaseTest {
 
     @Test(priority = 1)
     @Parameters("empName")
-    public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("Charles") String empName) {
+    public void validateUserIsAbleToSearchForEmployeeWithValidEmpName(@Optional("") String empName) {
 
         DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboardPage.clickOnPIMLink();
+        if (empName.isBlank()) {
+            employee.create(pimPage);
+            pimPage = employee.openEmployeeList();
+            empName = employee.fullName();
+        }
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
 
@@ -46,11 +54,16 @@ public class PimPageTest extends BaseTest {
 
     @Test(priority = 2)
     @Parameters("empName")
-    public void validateUserIsAbleToEditEmpDetails(@Optional("Charles") String empName) {
+    public void validateUserIsAbleToEditEmpDetails(@Optional("") String empName) {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
             PimPage pimPage = dashboardPage.clickOnPIMLink();
+            if (empName.isBlank()) {
+                employee.create(pimPage);
+                pimPage = employee.openEmployeeList();
+                empName = employee.fullName();
+            }
             pimPage.enterEmployeeName(empName);
             pimPage.clickSubmitButton();
             pimPage.clickEditButton();
@@ -62,18 +75,15 @@ public class PimPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToDeleteEmpDetails(@Optional("bala") String empName) {
+    public void validateUserIsAbleToDeleteEmpDetails(@Optional("") String empName) {
+        employee = new EmployeeFixture(empName);
 
         DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboardPage.clickOnPIMLink();
-        pimPage.enterEmployeeName(empName);
-        pimPage.clickSubmitButton();
-        pimPage.clickDeleteButton();
-        pimPage.clickDeleteRecordButton();
+        employee.create(pimPage);
 
-        try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
-            softly.assertThat("Deleting an employee should display a success message",
-                    pimPage.getSuccessMessage(), containsString("Successfully Deleted"));
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+            hmAssert.assertThat("The generated employee should be deleted", employee.delete(), equalTo(true));
         }
     }
 
@@ -111,9 +121,13 @@ public class PimPageTest extends BaseTest {
         }
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void closeBrowser() {
-        teardown();
+        try {
+            employee.close();
+        } finally {
+            teardown();
+        }
     }
 
 

@@ -10,6 +10,8 @@ import listeners.CustomExecutionListener;
 import listeners.EventReportListener;
 import utilities.DriverManager;
 
+import java.time.Duration;
+
 @Listeners({CustomExecutionListener.class, EventReportListener.class})
 public class BaseTest {
     // All extending tests inherit centralized TestNG logging and reporting listeners.
@@ -28,6 +30,7 @@ public class BaseTest {
 
         wd = BrowserUtil.createDriver();
         DriverManager.setDriver(wd);
+        wait = new WebDriverWait(wd, Duration.ofSeconds(15));
 
         wd.manage().window().maximize();
         wd.get(config.loginUrl());
