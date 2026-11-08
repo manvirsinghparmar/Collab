@@ -82,6 +82,9 @@ public class LeavePage extends BaseTest {
 
     public void clickSearchButton() {
         SelUtils.clickElement(searchButtonForLeaveList);
+        SelUtils.getWait().until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector(".oxd-loading-spinner, .oxd-form-loader")));
+        SelUtils.waitForElementVisible(recordsFoundMessage);
     }
 
     public boolean isLeaveListTableEmpty() {

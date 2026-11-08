@@ -1,0 +1,54 @@
+name: PR checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: PR smoke tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the PR merge commit
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 11 and Maven cache
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Check Chrome
+        run: |
+          $chrome = Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+          $chrome.VersionInfo.ProductVersion
+
+      - name: Compile framework and all test sources
+        run: mvn --batch-mode --no-transfer-progress clean test-compile
+
+      - name: Run the four PR smoke scenarios
+        run: >-
+          mvn --batch-mode --no-transfer-progress
+          "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr.xml" test
+
+      - name: Upload test results, reports, logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            target/surefire-reports/
+            target/artifacts/
+          retention-days: 14
+          if-no-files-found: warn

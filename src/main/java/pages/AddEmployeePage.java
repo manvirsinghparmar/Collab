@@ -4,6 +4,7 @@ import basePackage.base.BaseTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
 
 public class AddEmployeePage extends BaseTest {
@@ -20,6 +21,9 @@ public class AddEmployeePage extends BaseTest {
 
     @FindBy(xpath = "//input[@name='lastName']")
     private WebElement lastNameInput;
+
+    @FindBy(xpath = "//label[normalize-space()='Employee Id']/parent::div/following-sibling::div//input")
+    private WebElement employeeIdInput;
 
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement saveButton;
@@ -44,6 +48,16 @@ public class AddEmployeePage extends BaseTest {
 
     public void clickSaveButton() {
         SelUtils.clickElement(saveButton);
+    }
+
+    public void enterEmployeeId(String employeeId) {
+        SelUtils.clearAndSendKeys(employeeIdInput, employeeId);
+    }
+
+    public String getSavedEmployeeNumber() {
+        SelUtils.getWait().until(ExpectedConditions.urlMatches("/pim/viewPersonalDetails/empNumber/[0-9]+$"));
+        String url = wd.getCurrentUrl();
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
     public void addEmployee(String firstName, String middleName, String lastName) {
