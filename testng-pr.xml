@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Collab PR smoke suite" parallel="none">
+    <test name="PR smoke checks">
+        <classes>
+            <class name="basePackage.testPages.LoginPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToLoginWithValidCredentials"/>
+                    <include name="validateUserIsNotAbleToLoginWithInvalidCredential"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.DashBoardPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToClickOnPIMLinkOnDashboard"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.PimPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

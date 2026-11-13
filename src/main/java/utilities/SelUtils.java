@@ -112,8 +112,9 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
 
     public static void clearAndSendKeys(WebElement element, String text) {
         waitForElementVisible(element);
-        element.clear();
-        element.sendKeys(text);
+        Keys modifier = PlatformUtil.isMac() ? Keys.COMMAND : Keys.CONTROL;
+        element.sendKeys(Keys.chord(modifier, "a"), Keys.BACK_SPACE, text);
+        getWait().until(ExpectedConditions.domPropertyToBe(element, "value", text));
     }
 
     public static void enterDate(WebElement element, String date) {

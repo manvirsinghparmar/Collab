@@ -45,7 +45,7 @@ public class LoginPageTest extends BaseTest {
         }
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void closeBrowser() {
         teardown();
     }

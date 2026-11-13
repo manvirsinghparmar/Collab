@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
+import utilities.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,12 +33,15 @@ public class PimPage extends BaseTest {
     @FindBy(xpath = "(//div[@class='oxd-table-body']//i[contains(@class,'bi-trash')])[1]")
     private WebElement deleteButton;
 
-    @FindBy(xpath = "(//button[@type='button'])[9]")
+    @FindBy(xpath = "//*[@role='dialog']//button[normalize-space()='Yes, Delete']")
     private WebElement deleteRecordButton;
 
 
     @FindBy(xpath = "(//input[@placeholder=\"Type for hints...\"])[1]")
     private WebElement employeeNameInputTextBox;
+
+    @FindBy(xpath = "//label[normalize-space()='Employee Id']/parent::div/following-sibling::div//input")
+    private WebElement employeeIdInput;
 
     @FindBy(xpath = "//button[@type=\"submit\"]")
     private WebElement submitButton;
@@ -61,7 +65,7 @@ public class PimPage extends BaseTest {
     public List<String> getResultRows() {
         SelUtils.waitForElementVisible(recordsFoundMessage);
         return wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"))
-                .stream().map(WebElement::getText).collect(Collectors.toList());
+                .stream().map(row -> StringUtils.normalizeWhitespace(row.getText())).collect(Collectors.toList());
     }
 
     public String getRecordsFoundMessage() {
@@ -93,6 +97,36 @@ public class PimPage extends BaseTest {
         employeeNameInputTextBox.clear();
         employeeNameInputTextBox.sendKeys(employeeName);
         selectFirstNameHint();
+    }
+
+    public void enterEmployeeId(String employeeId) {
+        SelUtils.clearAndSendKeys(employeeIdInput, employeeId);
+    }
+
+    /** Deletes only the exact generated employee, checking both ID and name. */
+    public boolean deleteCreatedEmployee(String employeeId, String firstName, String lastName) {
+        enterEmployeeId(employeeId);
+        clickSubmitButton();
+        List<WebElement> rows = wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"));
+        if (rows.isEmpty()) {
+            return false;
+        }
+        if (rows.size() != 1) {
+            throw new IllegalStateException("Refusing to delete multiple employees for a generated ID");
+        }
+        WebElement row = rows.get(0);
+        List<WebElement> cells = row.findElements(By.cssSelector(".oxd-table-cell"));
+        if (cells.size() < 4 || !employeeId.equals(cells.get(1).getText().trim())
+                || !firstName.equals(cells.get(2).getText().trim())
+                || !lastName.equals(cells.get(3).getText().trim())) {
+            throw new IllegalStateException("Refusing to delete an employee with a different identity");
+        }
+        SelUtils.clickElement(row.findElement(By.cssSelector("button:has(.bi-trash)")));
+        clickDeleteRecordButton();
+        SelUtils.getWait().until(ExpectedConditions.invisibilityOf(deleteRecordButton));
+        SelUtils.getWait().until(ExpectedConditions.numberOfElementsToBe(
+                By.cssSelector(".oxd-table-body .oxd-table-row"), 0));
+        return true;
     }
 
     private void selectFirstNameHint() {

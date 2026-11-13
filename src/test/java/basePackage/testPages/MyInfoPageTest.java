@@ -2,7 +2,6 @@ package basePackage.testPages;
 
 import basePackage.base.BaseTest;
 import hamcrestAssertion.HamcrestSoftAssertions;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -28,16 +27,13 @@ public class MyInfoPageTest extends BaseTest {
     public void validateMyInfoTabsAreDisplayed() {
         dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
         myInfoPage = dashboardPage.clickOnMyInfoLink();
-        for (MyInfo tab : MyInfo.values()) {
-            try (HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions()) {
-
-                hamcrestAssert.assertThat(
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+            for (MyInfo tab : MyInfo.values()) {
+                hmAssert.assertThat(
                         "Tab should be displayed: " + tab.getDisplayName(),
                         myInfoPage.isTabDisplayed(tab), is(true)
                 );
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         }
     }
@@ -48,10 +44,8 @@ public class MyInfoPageTest extends BaseTest {
 
         myInfoPage = dashboardPage.clickOnMyInfoLink()
                 .clickMyInfoTabs(MyInfo.PERSONAL_DETAILS);
-        try {
-            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
-
-            hamcrestAssert.assertThat(
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+            hmAssert.assertThat(
                     "Personal Details page should be displayed",
                     myInfoPage.isPersonalDetailsPageDisplayed(), is(true)
             );
@@ -126,7 +120,7 @@ public class MyInfoPageTest extends BaseTest {
 
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void quit() {
         teardown();
     }

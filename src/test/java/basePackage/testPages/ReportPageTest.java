@@ -29,10 +29,8 @@ public class ReportPageTest extends BaseTest {
         loginPage.clickOnlogin(config.username(), config.password())
                 .clickOnPIMLink()
                 .clickReportsLink();
-        try{
-            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
-
-            hamcrestAssert.assertThat(
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+            hmAssert.assertThat(
                     "Report page navigation should be successful",
                     wd.getCurrentUrl(),
                     containsString("/pim/viewDefinedPredefinedReports")
@@ -49,10 +47,8 @@ public class ReportPageTest extends BaseTest {
                 .clickOnPIMLink()
                 .clickReportsLink()
                 .getReport("All Employees");
-        try {
-            HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
-
-            hamcrestAssert.assertThat(
+        try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
+            hmAssert.assertThat(
                     "Report search should return a matching report",
                     wd.getCurrentUrl(),
                     containsString("displayPredefinedReport")
@@ -84,7 +80,7 @@ public class ReportPageTest extends BaseTest {
         try {
             HamcrestSoftAssertions hamcrestAssert = new HamcrestSoftAssertions();
             hamcrestAssert.assertThat("Contact details should be saved successfully",
-                    reportsPage.getSuccessMessageTxt(), containsString("Success"));
+                    reportsPage.getSuccessMessageText(), containsString("Success"));
             hamcrestAssert.assertThat(
                     "Report edit should be successfull",
                     wd.getCurrentUrl(),
@@ -98,7 +94,7 @@ public class ReportPageTest extends BaseTest {
     }
 
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void quit() {
         teardown();
     }

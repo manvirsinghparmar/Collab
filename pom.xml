@@ -13,6 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
+        <testng.suite>testng.xml</testng.suite>
 
         <selenium.version>4.34.0</selenium.version>
         <testng.version>7.10.2</testng.version>
@@ -114,7 +115,7 @@
                 <version>3.3.0</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                        <suiteXmlFile>${testng.suite}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>

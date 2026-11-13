@@ -1,5 +1,8 @@
 package config;
 
+import env.Environment;
+import env.EnvManagerUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +15,7 @@ import java.util.function.Function;
 
 public final class ConfigReader {
 
+    private final Environment environment;
     private final String loginUrl;
     private final String dashboardUrl;
     private final String username;
@@ -29,13 +33,17 @@ public final class ConfigReader {
     // Separate resolution from file loading so validation can run without a browser.
     ConfigReader(Properties defaults, Function<String, String> systemProperties,
                  Function<String, String> environment) {
-        URI base = parseUri("app.base.url",
-                required("app.base.url", defaults, systemProperties, environment).trim());
+        this.environment = EnvManagerUtil.resolveEnvironment(
+                required("app.env", defaults, systemProperties, environment));
+
+        String baseUrlKey = "app.base.url." + this.environment.name().toLowerCase(Locale.ROOT);
+        URI base = parseUri(baseUrlKey,
+                required(baseUrlKey, defaults, systemProperties, environment).trim());
         if (!("https".equalsIgnoreCase(base.getScheme()) || "http".equalsIgnoreCase(base.getScheme()))
                 || base.getHost() == null || base.getRawUserInfo() != null
                 || base.getRawQuery() != null || base.getRawFragment() != null
                 || !(base.getRawPath().isEmpty() || base.getRawPath().equals("/"))) {
-            throw invalid("app.base.url", "expected an absolute HTTP(S) URL containing only the host and optional port");
+            throw invalid(baseUrlKey, "expected an absolute HTTP(S) URL containing only the host and optional port");
         }
 
         loginUrl = pageUrl(base, "app.login.path", defaults, systemProperties, environment);
@@ -96,6 +104,10 @@ public final class ConfigReader {
 
     private static IllegalArgumentException invalid(String key, String reason) {
         return new IllegalArgumentException("Invalid configuration '" + key + "': " + reason);
+    }
+
+    public Environment environment() {
+        return environment;
     }
 
     public String loginUrl() {

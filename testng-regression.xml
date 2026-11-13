@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Explicitly reviewed unattended coverage. See docs/ci.md for six exclusions. -->
+<suite name="Collab scheduled regression suite" parallel="none">
+    <test name="Regression checks">
+        <classes>
+            <class name="basePackage.testPages.LoginPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToLoginWithValidCredentials"/>
+                    <include name="validateUserIsNotAbleToLoginWithInvalidCredential"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.DashBoardPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToClickOnPIMLinkOnDashboard"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.AddEmployeePageTest">
+                <methods>
+                    <include name="testAddEmployee"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.ContactDetailsPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToUpdateEmployeeContactDetails"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.LeavePageTest">
+                <methods>
+                    <include name="validIfThereAreNOLeavesPendingApproval"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.PersonalDetailsPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.PimPageTest">
+                <methods>
+                    <include name="validateUserIsAbleToSearchForEmployeeWithValidEmpName"/>
+                    <include name="validateUserIsAbleToEditEmpDetails"/>
+                    <include name="validateUserIsAbleToDeleteEmpDetails"/>
+                    <include name="validateUserIsAbleToSearchForEmployeeDoesNotExistAndReset"/>
+                    <include name="validateUserIsAbleToClickOnReportsLink"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.RecruitmentPageTest">
+                <methods>
+                    <include name="validateCandidateSearchWithUnmatchedKeywordsAndReset"/>
+                    <include name="validateCandidateSearchWithExistingName"/>
+                    <include name="validateUserIsAbleToAddCandidate"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.MyInfoPageTest">
+                <methods>
+                    <include name="validateMyInfoTabsAreDisplayed"/>
+                    <include name="validateNavigationToPersonalDetails"/>
+                </methods>
+            </class>
+            <class name="basePackage.testPages.ReportPageTest">
+                <methods>
+                    <include name="validateReportPageNavigation"/>
+                    <include name="validateUserIsAbleToSearchForReport"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

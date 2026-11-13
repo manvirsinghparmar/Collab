@@ -1,6 +1,7 @@
 package basePackage.testPages;
 
 import basePackage.base.BaseTest;
+import basePackage.support.EmployeeFixture;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.PimPage;
@@ -15,10 +16,12 @@ import static org.hamcrest.Matchers.containsString;
 
 public class PersonalDetailsPageTest extends BaseTest {
     private LoginPage loginPage;
+    private EmployeeFixture employee;
 
 
     @BeforeMethod
     public void launch() {
+        employee = new EmployeeFixture();
         initialization();
         loginPage = new LoginPage();
     }
@@ -26,9 +29,14 @@ public class PersonalDetailsPageTest extends BaseTest {
 
     @Test
     @Parameters("empName")
-    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("Charles") String empName) {
+    public void validateUserIsAbleToLandOnPersonalDetailsPageAfterClickingEditButton(@Optional("") String empName) {
         DashboardPage dashboard = loginPage.clickOnlogin(config.username(), config.password());
         PimPage pimPage = dashboard.clickOnPIMLink();
+        if (empName.isBlank()) {
+            employee.create(pimPage);
+            pimPage = employee.openEmployeeList();
+            empName = employee.fullName();
+        }
         pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
         pimPage.clickEditButton();
@@ -41,9 +49,13 @@ public class PersonalDetailsPageTest extends BaseTest {
 
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void quit() {
-        teardown();
+        try {
+            employee.close();
+        } finally {
+            teardown();
+        }
     }
 
 }
