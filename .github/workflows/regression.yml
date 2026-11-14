@@ -1,9 +1,10 @@
+
 name: Scheduled regression
 
 on:
   workflow_dispatch:
   schedule:
-    # A calendar-day gate below preserves the two-day interval across months.
+    # Run daily; calendar-day gate preserves the two-day interval.
     - cron: '0 4 * * *'
       timezone: America/Toronto
 
@@ -19,8 +20,10 @@ jobs:
     name: Check regression trigger
     runs-on: windows-latest
     timeout-minutes: 5
+
     outputs:
       due: ${{ steps.calendar.outputs.due }}
+
     steps:
       - name: Check manual trigger or Toronto calendar date
         id: calendar
@@ -31,6 +34,7 @@ jobs:
           $anchor = [datetime]::new(2026, 11, 8)
           $manual = $env:GITHUB_EVENT_NAME -eq 'workflow_dispatch'
           $due = $manual -or ($today -ge $anchor -and ($today - $anchor).Days % 2 -eq 0)
+
           "due=$($due.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           "Trigger: $env:GITHUB_EVENT_NAME. Toronto date: $($today.ToString('yyyy-MM-dd')). Regression due: $due." >> $env:GITHUB_STEP_SUMMARY
 
@@ -40,6 +44,7 @@ jobs:
     if: needs.schedule.outputs.due == 'true'
     runs-on: windows-latest
     timeout-minutes: 60
+
     steps:
       - name: Check out source
         uses: actions/checkout@v7
@@ -54,6 +59,7 @@ jobs:
           cache: maven
 
       - name: Check Chrome
+        shell: pwsh
         run: |
           $chrome = Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe'
           $chrome.VersionInfo.ProductVersion
@@ -64,8 +70,12 @@ jobs:
       - name: Run the sequential regression suite
         run: >-
           mvn --batch-mode --no-transfer-progress
-          "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" test
+          "-Dapp.env=DEV"
+          "-Dbrowser=CHROME"
+          "-Dtestng.suite=testng-regression.xml"
+          test
 
+      # Upload complete regression execution results
       - name: Upload test results, reports, logs and screenshots
         if: always()
         uses: actions/upload-artifact@v7
@@ -76,3 +86,12 @@ jobs:
             target/artifacts/
           retention-days: 14
           if-no-files-found: warn
+
+      # Upload failed TestNG XML for the second workflow
+      - name: Upload TestNG failed suite
+        if: always() && hashFiles('target/surefire-reports/testng-failed.xml') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: failed-testng-suite-${{ github.run_id }}-${{ github.run_attempt }}
+          path: target/surefire-reports/testng-failed.xml
+          retention-days: 14
