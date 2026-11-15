@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      # Checkout the exact commit from the original regression run
+      # Checkout the exact commit from the original regression run.
       - name: Check out source
         uses: actions/checkout@v7
         with:
@@ -36,49 +36,82 @@ jobs:
           java-version: '11'
           cache: maven
 
-      # Download failed XML from the exact regression run
+      # Download the artifact from the exact triggering regression run.
       - name: Download failed TestNG suite
         id: download
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: failed-testng-suite-${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}
-          path: target/failed-suite
+          path: ${{ runner.temp }}/downloaded-failures
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Check whether failed XML exists
-      - name: Check failed XML
-        id: check
+      # Dynamically discover and validate the downloaded XML.
+      - name: Locate and validate failed TestNG suite
+        id: locate-suite
+        if: always()
         shell: pwsh
         run: |
-          $file = "target/failed-suite/testng-failed.xml"
+          $downloadDirectory = Join-Path $env:RUNNER_TEMP 'downloaded-failures'
 
-          if ((Test-Path $file) -and (Get-Item $file).Length -gt 0) {
-              "has_failures=true" >> $env:GITHUB_OUTPUT
-              Write-Host "Failed test cases found."
-          }
-          else {
-              "has_failures=false" >> $env:GITHUB_OUTPUT
-              Write-Host "No failed TestNG XML found."
+          $files = @(
+            Get-ChildItem -Path $downloadDirectory `
+              -Filter 'testng-failed.xml' `
+              -Recurse `
+              -File `
+              -ErrorAction SilentlyContinue
+          )
+
+          if ($files.Count -eq 0) {
+            throw "No failed TestNG XML was found in the downloaded artifact."
           }
 
-      # Compile without deleting downloaded failed XML
+          if ($files.Count -gt 1) {
+            $files | ForEach-Object { Write-Host $_.FullName }
+            throw "Multiple failed TestNG XML files found. Cannot safely select one."
+          }
+
+          $failedXml = $files[0]
+
+          if ($failedXml.Length -eq 0) {
+            throw "Downloaded TestNG failed-suite XML is empty."
+          }
+
+          try {
+            [xml]$parsedXml = Get-Content -LiteralPath $failedXml.FullName -Raw -ErrorAction Stop
+          }
+          catch {
+            throw "Downloaded TestNG XML is not valid XML: $($_.Exception.Message)"
+          }
+
+          if ($parsedXml.DocumentElement.LocalName -ne 'suite') {
+            throw "Downloaded XML does not have a TestNG suite as its root element."
+          }
+
+          $failedXmlPath = $failedXml.FullName
+
+          "path=$failedXmlPath" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Valid TestNG failed suite found: $failedXmlPath"
+          Write-Host "File size: $($failedXml.Length) bytes"
+
+          "Failed suite: $failedXmlPath" >> $env:GITHUB_STEP_SUMMARY
+
+      # Compile without cleaning the downloaded artifact.
       - name: Compile framework and test sources
-        if: steps.check.outputs.has_failures == 'true'
         run: mvn --batch-mode --no-transfer-progress test-compile
 
-      # Execute only failed TestNG methods
+      # Execute only the failed TestNG methods.
       - name: Execute only failed test cases
-        if: steps.check.outputs.has_failures == 'true'
         run: >-
           mvn --batch-mode --no-transfer-progress
           "-Dapp.env=DEV"
           "-Dbrowser=CHROME"
-          "-Dtestng.suite=target/failed-suite/testng-failed.xml"
+          "-Dtestng.suite=${{ steps.locate-suite.outputs.path }}"
           test
 
-      # Upload rerun results separately
+      # Upload rerun results separately.
       - name: Upload rerun reports, logs and screenshots
         if: always()
         uses: actions/upload-artifact@v7
