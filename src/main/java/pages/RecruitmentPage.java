@@ -19,7 +19,7 @@ public class RecruitmentPage extends BaseTest {
     private static final By RESULTS_BODY = By.cssSelector(".oxd-table-body");
 
     public RecruitmentPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//h5[normalize-space()='Candidates']")
@@ -154,14 +154,14 @@ public class RecruitmentPage extends BaseTest {
 
     public String getCandidateId() {
         waitForCandidateProfile();
-        String path = URI.create(wd.getCurrentUrl()).getPath();
+        String path = URI.create(getDriver().getCurrentUrl()).getPath();
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
     /** Removes only the generated test record, after verifying its saved profile ID. */
-    public void deleteCreatedCandidate(String candidateId, String fullName) {
+    public void deleteCreatedCandidate(String candidateId, String fullName, String keyword) {
         clickCandidatesTab();
-        enterCandidateName(fullName);
+        enterKeywords(keyword);
         clickSearchButton();
         SelUtils.clickElement(findCandidateRow(fullName).findElement(By.cssSelector("button:has(.bi-eye-fill)")));
         if (!getCandidateId().equals(candidateId)) {
@@ -169,7 +169,7 @@ public class RecruitmentPage extends BaseTest {
         }
 
         clickCandidatesTab();
-        enterCandidateName(fullName);
+        enterKeywords(keyword);
         clickSearchButton();
         SelUtils.clickElement(findCandidateRow(fullName).findElement(By.cssSelector("button:has(.bi-trash)")));
         SelUtils.clickElement(confirmDeleteButton);
@@ -189,7 +189,9 @@ public class RecruitmentPage extends BaseTest {
     }
 
     public void clickSearchButton() {
+        WebElement previousResults = SelUtils.getWait().until(ExpectedConditions.presenceOfElementLocated(RESULTS_BODY));
         SelUtils.clickElement(searchButton);
+        SelUtils.getWait().until(ExpectedConditions.stalenessOf(previousResults));
         waitForResults();
     }
 

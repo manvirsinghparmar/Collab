@@ -2,19 +2,22 @@ package pages;
 
 import basePackage.base.BaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.SelUtils;
 
+import java.time.Duration;
 import java.util.List;
 
 public class LeavePage extends BaseTest {
 
+    private static final By RESULTS_BODY = By.cssSelector(".oxd-table-body");
 
     public LeavePage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//label[text()='From Date']/parent::div/following-sibling::div//input")
@@ -75,15 +78,30 @@ public class LeavePage extends BaseTest {
     }
 
     public void enterEmployeeName(String employeeFirstName, String employeeFullName) {
-        SelUtils.clearAndSendKeys(employeeNameField, employeeFirstName);
         By option = By.xpath("//div[@role='listbox']//span[normalize-space()='" + employeeFullName + "']");
-        SelUtils.getWait().until(ExpectedConditions.elementToBeClickable(option)).click();
+        queryEmployeeName(employeeFirstName);
+        WebElement suggestion;
+        try {
+            suggestion = SelUtils.getWait().withTimeout(Duration.ofSeconds(5))
+                    .until(ExpectedConditions.elementToBeClickable(option));
+        } catch (TimeoutException e) {
+            // The demo can dismiss the autocomplete while a matching employee exists.
+            queryEmployeeName(employeeFirstName);
+            suggestion = SelUtils.getWait().until(ExpectedConditions.elementToBeClickable(option));
+        }
+        SelUtils.clickElement(suggestion);
+    }
+
+    private void queryEmployeeName(String employeeFirstName) {
+        SelUtils.clickElement(employeeNameField);
+        SelUtils.clearAndSendKeys(employeeNameField, employeeFirstName);
     }
 
     public void clickSearchButton() {
+        WebElement previousResults = SelUtils.getWait().until(ExpectedConditions.presenceOfElementLocated(RESULTS_BODY));
         SelUtils.clickElement(searchButtonForLeaveList);
-        SelUtils.getWait().until(ExpectedConditions.invisibilityOfElementLocated(
-                By.cssSelector(".oxd-loading-spinner, .oxd-form-loader")));
+        SelUtils.getWait().until(ExpectedConditions.stalenessOf(previousResults));
+        SelUtils.getWait().until(ExpectedConditions.presenceOfElementLocated(RESULTS_BODY));
         SelUtils.waitForElementVisible(recordsFoundMessage);
     }
 

@@ -1,7 +1,7 @@
 # GitHub Actions
 
 The workflows use `windows-latest`, Temurin Java 11, Maven caching and Chrome.
-PowerShell runs the commands. Tests run sequentially against DEV. Both workflows
+PowerShell runs the commands, and both suites target DEV. Both workflows
 support manual runs through `workflow_dispatch`. No repository secrets are
 needed for the public demo configuration.
 
@@ -13,9 +13,13 @@ run. PR events test the PR merge commit; manual runs test the selected branch
 or tag. New activity cancels an older run for the same PR. Manual runs use a
 separate concurrency group per selected ref.
 
-All framework and test sources are compiled, then `testng-pr.xml` runs four
-existing scenarios: valid login, invalid login, Dashboard-to-PIM navigation,
-and nonexistent-employee search/reset. These scenarios do not change demo data.
+All framework and test sources are compiled, then `testng-pr-parallel.xml` runs
+four existing scenarios with two TestNG workers. Classes can overlap, and
+methods in each class run sequentially. Each method has its own Chrome session.
+The suite covers valid login, invalid login, Dashboard-to-PIM navigation, and
+nonexistent-employee search/reset. These scenarios do not change demo data.
+`testng-pr.xml` runs the same selection sequentially for local troubleshooting.
+Keep the method selections in both smoke suites synchronized.
 The job times out after 15 minutes. The stable check name is `PR smoke tests`;
 configure it as a required check in the repository's branch rules if desired.
 Adding the workflow alone does not enforce merge protection.
@@ -39,17 +43,20 @@ Public repositories may have schedules disabled after 60 days without activity.
 See [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 
 `testng-regression.xml` explicitly selects **19 existing scenarios** across all
-ten test classes. The test job has a 60-minute timeout. Scheduled runs share a
-concurrency group and do not cancel an active regression, allowing cleanup to
-finish. There is no browser matrix or parallel TestNG execution.
+ten test classes. Two TestNG workers run classes in parallel, and methods in
+each class run sequentially. Each method gets its own Chrome session. The test
+job has a 60-minute timeout. Scheduled runs share a concurrency group and allow
+an active regression to finish, including cleanup.
 
 Employee creation, contact update, deletion, default employee search/edit and
-the empty-leave search use unique generated employees. Cleanup checks the
-generated employee ID, first name and last name before deleting. It runs before
-browser shutdown, including after failures. Read-only employee search/navigation
+the empty-leave search use unique generated employees. Employee edits and
+cleanup verify the generated employee ID, first name and last name before
+opening or deleting the record. Cleanup runs before browser shutdown, including
+after failures. Read-only employee search/navigation
 tests still accept an explicit `empName`; in contact/deletion scenarios that
 parameter supplies the generated record's first name, and never selects an
-existing record to change. Candidate creation uses its existing identity-checked cleanup.
+existing record to change. The candidate creation test uses a unique keyword to
+find its record and verifies the saved profile ID before deleting it.
 
 ### Explicit regression exclusions
 
@@ -81,6 +88,7 @@ From the repository root (PowerShell):
 ```powershell
 mvn test-compile
 mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr.xml" test
+mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr-parallel.xml" test
 mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" test
 ```
 

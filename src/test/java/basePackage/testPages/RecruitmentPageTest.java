@@ -29,6 +29,7 @@ public class RecruitmentPageTest extends BaseTest {
     private RecruitmentPage recruitmentPage;
     private String createdCandidateId;
     private String createdCandidateName;
+    private String createdCandidateKeyword;
 
     @BeforeMethod
     public void launch() {
@@ -88,11 +89,13 @@ public class RecruitmentPageTest extends BaseTest {
         String lastName = "Automation";
         String email = "candidate." + uniqueId + "@example.com";
         createdCandidateName = firstName + " " + lastName;
+        createdCandidateKeyword = "collab" + uniqueId;
         recruitmentPage.clickAddCandidate();
         recruitmentPage.waitForAddCandidatePage();
         recruitmentPage.enterFirstName(firstName);
         recruitmentPage.enterLastName(lastName);
         recruitmentPage.enterEmail(email);
+        recruitmentPage.enterKeywords(createdCandidateKeyword);
         String successMessage = recruitmentPage.saveCandidate();
         createdCandidateId = recruitmentPage.getCandidateId();
         Reporter.log("Created demo candidate " + createdCandidateId + ": " + createdCandidateName, true);
@@ -104,7 +107,7 @@ public class RecruitmentPageTest extends BaseTest {
             hmAssert.assertThat("Saved last name should match", recruitmentPage.getLastNameValue(), equalTo(lastName));
             hmAssert.assertThat("Saved email should match", recruitmentPage.getEmailValue(), equalTo(email));
             recruitmentPage.clickCandidatesTab();
-            recruitmentPage.enterCandidateName(createdCandidateName);
+            recruitmentPage.enterKeywords(createdCandidateKeyword);
             recruitmentPage.clickSearchButton();
             hmAssert.assertThat("The new candidate should appear in search results",
                     recruitmentPage.getCandidateNames(), hasItem(createdCandidateName));
@@ -115,12 +118,11 @@ public class RecruitmentPageTest extends BaseTest {
     public void tearDown() {
         try {
             if (createdCandidateId != null) {
-                recruitmentPage.deleteCreatedCandidate(createdCandidateId, createdCandidateName);
+                recruitmentPage.deleteCreatedCandidate(createdCandidateId, createdCandidateName, createdCandidateKeyword);
+                Reporter.log("Deleted demo candidate " + createdCandidateId, true);
             }
         } finally {
-            if (wd != null) {
-                super.teardown();
-            }
+            super.teardown();
         }
     }
 }

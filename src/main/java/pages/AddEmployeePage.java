@@ -10,7 +10,7 @@ import utilities.SelUtils;
 public class AddEmployeePage extends BaseTest {
 
     public AddEmployeePage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//input[@name='firstName']")
@@ -56,7 +56,7 @@ public class AddEmployeePage extends BaseTest {
 
     public String getSavedEmployeeNumber() {
         SelUtils.getWait().until(ExpectedConditions.urlMatches("/pim/viewPersonalDetails/empNumber/[0-9]+$"));
-        String url = wd.getCurrentUrl();
+        String url = getDriver().getCurrentUrl();
         return url.substring(url.lastIndexOf('/') + 1);
     }
 

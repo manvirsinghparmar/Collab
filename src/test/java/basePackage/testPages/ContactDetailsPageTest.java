@@ -47,10 +47,7 @@ public class ContactDetailsPageTest extends BaseTest {
             DashboardPage dashboard = login.clickOnlogin(config.username(), config.password());
             PimPage pimPage = dashboard.clickOnPIMLink();
             employee.create(pimPage);
-            pimPage = employee.openEmployeeList();
-            pimPage.enterEmployeeName(employee.fullName());
-            pimPage.clickSubmitButton();
-            personalDetailsPage = pimPage.clickEditButton();
+            personalDetailsPage = employee.openPersonalDetails();
             contactDetailsPage = personalDetailsPage.clickcontactdetailslink();
             contactDetailsPage.fillContactDetailsAndSave("123", "Test Street", "Buffalo", "New York", "12345", "United States", employee.email(), "0987654321");
             hamcrestAssert.assertThat("Contact details should be saved successfully",

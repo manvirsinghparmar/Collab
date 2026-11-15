@@ -34,13 +34,13 @@ public class PersonalDetailsPageTest extends BaseTest {
         PimPage pimPage = dashboard.clickOnPIMLink();
         if (empName.isBlank()) {
             employee.create(pimPage);
-            pimPage = employee.openEmployeeList();
-            empName = employee.fullName();
+            employee.openPersonalDetails();
+        } else {
+            pimPage.enterEmployeeName(empName);
+            pimPage.clickSubmitButton();
+            pimPage.clickEditButton();
         }
-        pimPage.enterEmployeeName(empName);
-        pimPage.clickSubmitButton();
-        pimPage.clickEditButton();
-        String actualUrl = wd.getCurrentUrl();
+        String actualUrl = getDriver().getCurrentUrl();
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             softly.assertThat("Editing an employee should open Personal Details", actualUrl,
                     containsString("/pim/viewPersonalDetails/empNumber/"));

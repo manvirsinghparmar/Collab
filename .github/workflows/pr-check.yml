@@ -38,10 +38,10 @@ jobs:
       - name: Compile framework and all test sources
         run: mvn --batch-mode --no-transfer-progress clean test-compile
 
-      - name: Run the four PR smoke scenarios
+      - name: Run the four PR smoke scenarios with two workers
         run: >-
           mvn --batch-mode --no-transfer-progress
-          "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr.xml" test
+          "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr-parallel.xml" test
 
       - name: Upload test results, reports, logs and screenshots
         if: always()

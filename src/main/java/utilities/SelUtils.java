@@ -18,14 +18,7 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
     }
 
     private static WebDriver driver() {
-        WebDriver active = DriverManager.getDriver();
-        if (active != null) {
-            return active;
-        }
-        if (wd != null) {
-            return wd;
-        }
-        throw new IllegalStateException("WebDriver is not initialized.");
+        return DriverManager.requireDriver();
     }
 
     public static WebDriverWait getWait() {

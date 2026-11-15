@@ -18,9 +18,10 @@ The repository contains automation code, not the OrangeHRM application.
 | Location | Responsibility |
 | --- | --- |
 | `pom.xml` / `testng.xml` | Maven build and sequential suite selection |
-| `testng-pr.xml` / `testng-regression.xml` | Explicit CI smoke and unattended regression selection |
+| `testng-pr.xml` / `testng-pr-parallel.xml` | Sequential and parallel variants of the four PR smoke scenarios |
+| `testng-regression.xml` | Explicit unattended regression selection with two workers |
 | `.github/workflows/` / `docs/ci.md` | GitHub Actions triggers, runtime and regression coverage |
-| `src/main/java/basePackage/base/BaseTest.java` | Shared browser initialization, configuration, waits and shutdown |
+| `src/main/java/basePackage/base/BaseTest.java` | Browser initialization, configuration, driver access and shutdown |
 | `src/main/java/pages/` | Page objects, locators and browser interactions |
 | `src/main/java/config/` | Immutable application configuration |
 | `src/main/java/env/` | Environment enum and environment name validation in `EnvManagerUtil` |
@@ -105,6 +106,9 @@ mvn test-compile
 # Run the four existing PR smoke scenarios.
 mvn "-Dtestng.suite=testng-pr.xml" test
 
+# Run the same smoke scenarios with the PR workflow's two-worker configuration.
+mvn "-Dtestng.suite=testng-pr-parallel.xml" test
+
 # Run the configured sequential suite (includes data-changing scenarios).
 mvn test
 
@@ -120,7 +124,8 @@ Surefire results are under `target/surefire-reports/`.
 
 `-Dtestng.suite=<file>` selects a TestNG suite, defaulting to `testng.xml`.
 CI runs Chrome on `windows-latest` with Java 11. PR checks run on opening,
-code updates, edits and reopenings. Regression runs automatically at 04:00
+code updates, edits and reopenings. PR checks and scheduled regression each use
+two workers running separate test classes. Regression runs automatically at 04:00
 America/Toronto every second calendar day from 2026-11-08. It selects 19
 existing scenarios; six exclusions and ownership/cleanup rules are documented
 in `docs/ci.md`. Both workflows support manual dispatch; manual regression runs
@@ -148,8 +153,11 @@ logs and screenshots. Captured failure screenshots are embedded in the HTML.
 - For code changes, compile first and run relevant existing tests when supported.
   For documentation-only changes, check accuracy and the diff without browsers.
   Report what ran and distinguish code, environment and scenario failures.
-- Driver and wait state are shared/static. Keep execution sequential; parallel
-  execution requires a separate change to isolate browser state and test data.
+- Each test method creates its own browser session. `DriverManager` binds it to
+  the current thread, and `SelUtils` creates waits for that driver. Teardown
+  quits the session and clears the thread's reference. CI suites use class-level
+  parallelism because test classes store per-method page objects and fixtures
+  in instance fields. Review data isolation before extending parallel coverage.
 - Tests use shared public demo data, and some create, update or delete records.
   Inspect scenario effects before running a broad suite; do not assume fixed
   names/counts or interpret every demo-data failure as a framework defect.

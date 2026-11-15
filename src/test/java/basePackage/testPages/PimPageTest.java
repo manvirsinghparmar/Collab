@@ -41,8 +41,10 @@ public class PimPageTest extends BaseTest {
             employee.create(pimPage);
             pimPage = employee.openEmployeeList();
             empName = employee.fullName();
+            pimPage.enterExactEmployeeName(employee.firstName(), empName);
+        } else {
+            pimPage.enterEmployeeName(empName);
         }
-        pimPage.enterEmployeeName(empName);
         pimPage.clickSubmitButton();
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
@@ -61,13 +63,13 @@ public class PimPageTest extends BaseTest {
             PimPage pimPage = dashboardPage.clickOnPIMLink();
             if (empName.isBlank()) {
                 employee.create(pimPage);
-                pimPage = employee.openEmployeeList();
-                empName = employee.fullName();
+                employee.openPersonalDetails();
+            } else {
+                pimPage.enterEmployeeName(empName);
+                pimPage.clickSubmitButton();
+                pimPage.clickEditButton();
             }
-            pimPage.enterEmployeeName(empName);
-            pimPage.clickSubmitButton();
-            pimPage.clickEditButton();
-            softly.assertThat("Expected Personal Details URL", wd.getCurrentUrl(),
+            softly.assertThat("Expected Personal Details URL", getDriver().getCurrentUrl(),
                     containsString("/pim/viewPersonalDetails/empNumber/"));
         }
 
@@ -117,7 +119,7 @@ public class PimPageTest extends BaseTest {
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             softly.assertThat("Clicking on Reports link should navigate to the Reports page",
-                    wd.getCurrentUrl(), containsString("/pim/viewDefinedPredefinedReports"));
+                    getDriver().getCurrentUrl(), containsString("/pim/viewDefinedPredefinedReports"));
         }
     }
 

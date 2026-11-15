@@ -20,6 +20,14 @@ public final class DriverManager {
         return DRIVER.get();
     }
 
+    public static WebDriver requireDriver() {
+        WebDriver driver = getDriver();
+        if (driver == null) {
+            throw new IllegalStateException("WebDriver is not initialized for the current thread.");
+        }
+        return driver;
+    }
+
     public static void clear() {
         DRIVER.remove();
     }

@@ -61,7 +61,7 @@ jobs:
       - name: Compile framework and all test sources
         run: mvn --batch-mode --no-transfer-progress clean test-compile
 
-      - name: Run the sequential regression suite
+      - name: Run the regression suite with two workers
         run: >-
           mvn --batch-mode --no-transfer-progress
           "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" test

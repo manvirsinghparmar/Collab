@@ -32,7 +32,7 @@ public class ReportPageTest extends BaseTest {
         try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
             hmAssert.assertThat(
                     "Report page navigation should be successful",
-                    wd.getCurrentUrl(),
+                    getDriver().getCurrentUrl(),
                     containsString("/pim/viewDefinedPredefinedReports")
             );
 
@@ -50,7 +50,7 @@ public class ReportPageTest extends BaseTest {
         try (HamcrestSoftAssertions hmAssert = new HamcrestSoftAssertions()) {
             hmAssert.assertThat(
                     "Report search should return a matching report",
-                    wd.getCurrentUrl(),
+                    getDriver().getCurrentUrl(),
                     containsString("displayPredefinedReport")
             );
 
@@ -83,7 +83,7 @@ public class ReportPageTest extends BaseTest {
                     reportsPage.getSuccessMessageText(), containsString("Success"));
             hamcrestAssert.assertThat(
                     "Report edit should be successfull",
-                    wd.getCurrentUrl(),
+                    getDriver().getCurrentUrl(),
                     containsString("definePredefinedReport")
             );
 

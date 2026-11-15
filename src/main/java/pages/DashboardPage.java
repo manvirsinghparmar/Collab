@@ -11,7 +11,7 @@ import utilities.SelUtils;
 public class DashboardPage extends BaseTest {
 
     public DashboardPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "(//a[@class='oxd-main-menu-item'])[2]")

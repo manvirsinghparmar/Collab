@@ -2,14 +2,17 @@ package basePackage.support;
 
 import basePackage.base.BaseTest;
 import pages.AddEmployeePage;
+import pages.PersonalDetailsPage;
 import pages.PimPage;
+import utilities.DriverManager;
+import utilities.FrameworkLogger;
 
 import java.net.URI;
 import java.util.UUID;
 
 /** One generated employee per invocation; only this identity may be cleaned up. */
 public final class EmployeeFixture extends BaseTest implements AutoCloseable {
-    private final String employeeId = "ci" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+    private final String employeeId;
     private final String firstName;
     private final String lastName = "Run" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
     private boolean creationAttempted;
@@ -20,7 +23,9 @@ public final class EmployeeFixture extends BaseTest implements AutoCloseable {
     }
 
     public EmployeeFixture(String firstName) {
-        this.firstName = firstName.isBlank() ? "Automation" : firstName;
+        String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        employeeId = "ci" + suffix;
+        this.firstName = firstName.isBlank() ? "Automation" + suffix : firstName;
     }
 
     public void create(PimPage pimPage) {
@@ -31,6 +36,7 @@ public final class EmployeeFixture extends BaseTest implements AutoCloseable {
         // Capture success before the toast disappears, then wait for the saved profile.
         savedSuccessfully = addEmployee.isSuccessMessageVisible();
         addEmployee.getSavedEmployeeNumber();
+        FrameworkLogger.stepInfo("Created demo employee " + employeeId);
     }
 
     public String firstName() {
@@ -51,17 +57,26 @@ public final class EmployeeFixture extends BaseTest implements AutoCloseable {
 
     public PimPage openEmployeeList() {
         URI origin = URI.create(config.loginUrl());
-        wd.get(origin.resolve("/web/index.php/pim/viewEmployeeList").toString());
+        getDriver().get(origin.resolve("/web/index.php/pim/viewEmployeeList").toString());
         return new PimPage();
     }
 
     public boolean delete() {
-        return openEmployeeList().deleteCreatedEmployee(employeeId, firstName, lastName);
+        boolean deleted = openEmployeeList().deleteCreatedEmployee(employeeId, firstName, lastName);
+        if (deleted) {
+            creationAttempted = false;
+            FrameworkLogger.stepInfo("Deleted demo employee " + employeeId);
+        }
+        return deleted;
+    }
+
+    public PersonalDetailsPage openPersonalDetails() {
+        return openEmployeeList().editCreatedEmployee(employeeId, firstName, lastName);
     }
 
     @Override
     public void close() {
-        if (creationAttempted && wd != null) {
+        if (creationAttempted && DriverManager.getDriver() != null) {
             delete();
         }
     }

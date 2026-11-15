@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 
 public class PimPage extends BaseTest {
 
+    private static final By RESULTS_BODY = By.cssSelector(".oxd-table-body");
+
     public PimPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     public String pimPageUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList";
@@ -64,7 +66,7 @@ public class PimPage extends BaseTest {
 
     public List<String> getResultRows() {
         SelUtils.waitForElementVisible(recordsFoundMessage);
-        return wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"))
+        return getDriver().findElements(By.cssSelector(".oxd-table-body .oxd-table-row"))
                 .stream().map(row -> StringUtils.normalizeWhitespace(row.getText())).collect(Collectors.toList());
     }
 
@@ -99,27 +101,36 @@ public class PimPage extends BaseTest {
         selectFirstNameHint();
     }
 
+    public void enterExactEmployeeName(String firstName, String fullName) {
+        SelUtils.clickElement(employeeNameInputTextBox);
+        SelUtils.clearAndSendKeys(employeeNameInputTextBox, firstName);
+        By options = By.cssSelector("[role='listbox'] [role='option']");
+        String expectedName = StringUtils.normalizeWhitespace(fullName);
+        WebElement suggestion = SelUtils.getWait().until(ExpectedConditions.refreshed(driver ->
+                driver.findElements(options).stream()
+                        .filter(option -> option.isDisplayed()
+                                && expectedName.equals(StringUtils.normalizeWhitespace(option.getText())))
+                        .findFirst().orElse(null)));
+        SelUtils.clickElement(suggestion);
+    }
+
     public void enterEmployeeId(String employeeId) {
         SelUtils.clearAndSendKeys(employeeIdInput, employeeId);
     }
 
+    public PersonalDetailsPage editCreatedEmployee(String employeeId, String firstName, String lastName) {
+        WebElement row = findCreatedEmployee(employeeId, firstName, lastName);
+        if (row == null) {
+            throw new IllegalStateException("No employee found for generated ID " + employeeId);
+        }
+        return openPersonalDetails(row.findElement(By.cssSelector("button:has(.bi-pencil-fill)")));
+    }
+
     /** Deletes only the exact generated employee, checking both ID and name. */
     public boolean deleteCreatedEmployee(String employeeId, String firstName, String lastName) {
-        enterEmployeeId(employeeId);
-        clickSubmitButton();
-        List<WebElement> rows = wd.findElements(By.cssSelector(".oxd-table-body .oxd-table-row"));
-        if (rows.isEmpty()) {
+        WebElement row = findCreatedEmployee(employeeId, firstName, lastName);
+        if (row == null) {
             return false;
-        }
-        if (rows.size() != 1) {
-            throw new IllegalStateException("Refusing to delete multiple employees for a generated ID");
-        }
-        WebElement row = rows.get(0);
-        List<WebElement> cells = row.findElements(By.cssSelector(".oxd-table-cell"));
-        if (cells.size() < 4 || !employeeId.equals(cells.get(1).getText().trim())
-                || !firstName.equals(cells.get(2).getText().trim())
-                || !lastName.equals(cells.get(3).getText().trim())) {
-            throw new IllegalStateException("Refusing to delete an employee with a different identity");
         }
         SelUtils.clickElement(row.findElement(By.cssSelector("button:has(.bi-trash)")));
         clickDeleteRecordButton();
@@ -127,6 +138,26 @@ public class PimPage extends BaseTest {
         SelUtils.getWait().until(ExpectedConditions.numberOfElementsToBe(
                 By.cssSelector(".oxd-table-body .oxd-table-row"), 0));
         return true;
+    }
+
+    private WebElement findCreatedEmployee(String employeeId, String firstName, String lastName) {
+        enterEmployeeId(employeeId);
+        clickSubmitButton();
+        List<WebElement> rows = getDriver().findElements(By.cssSelector(".oxd-table-body .oxd-table-row"));
+        if (rows.isEmpty()) {
+            return null;
+        }
+        if (rows.size() != 1) {
+            throw new IllegalStateException("Multiple employees matched generated ID " + employeeId);
+        }
+        WebElement row = rows.get(0);
+        List<WebElement> cells = row.findElements(By.cssSelector(".oxd-table-cell"));
+        if (cells.size() < 4 || !employeeId.equals(cells.get(1).getText().trim())
+                || !firstName.equals(cells.get(2).getText().trim())
+                || !lastName.equals(cells.get(3).getText().trim())) {
+            throw new IllegalStateException("Employee result did not match the generated identity for ID " + employeeId);
+        }
+        return row;
     }
 
     private void selectFirstNameHint() {
@@ -138,9 +169,10 @@ public class PimPage extends BaseTest {
     }
 
     public void clickSubmitButton() {
+        WebElement previousResults = SelUtils.getWait().until(ExpectedConditions.presenceOfElementLocated(RESULTS_BODY));
         SelUtils.clickElement(submitButton);
-        SelUtils.getWait().until(
-                ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
+        SelUtils.getWait().until(ExpectedConditions.stalenessOf(previousResults));
+        SelUtils.getWait().until(ExpectedConditions.presenceOfElementLocated(RESULTS_BODY));
         SelUtils.waitForElementVisible(recordsFoundMessage);
     }
 
@@ -149,7 +181,11 @@ public class PimPage extends BaseTest {
     }
 
     public PersonalDetailsPage clickEditButton() {
-        SelUtils.clickElement(firstEditButton);
+        return openPersonalDetails(firstEditButton);
+    }
+
+    private PersonalDetailsPage openPersonalDetails(WebElement editButton) {
+        SelUtils.clickElement(editButton);
         SelUtils.waitForUrlContains("/pim/viewPersonalDetails/empNumber/");
         return new PersonalDetailsPage();
     }
