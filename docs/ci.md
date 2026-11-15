@@ -43,10 +43,12 @@ Public repositories may have schedules disabled after 60 days without activity.
 See [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 
 `testng-regression.xml` explicitly selects **19 existing scenarios** across all
-ten test classes. Two TestNG workers run classes in parallel, and methods in
-each class run sequentially. Each method gets its own Chrome session. The test
-job has a 60-minute timeout. Scheduled runs share a concurrency group and allow
-an active regression to finish, including cleanup.
+ten test classes. Scheduled runs use the suite's two-worker default. Manual runs
+require a positive whole number in the **TestNG workers** field. The count limits
+how many classes can run concurrently on one Windows runner. Methods in each class
+run sequentially, and each method gets its own Chrome session. The test job has a
+60-minute timeout. Scheduled runs share a concurrency group and allow an active
+regression to finish, including cleanup.
 
 Employee creation, contact update, deletion, default employee search/edit and
 the empty-leave search use unique generated employees. Employee edits and
@@ -90,11 +92,13 @@ mvn test-compile
 mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr.xml" test
 mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-pr-parallel.xml" test
 mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" test
+mvn "-Dapp.env=DEV" "-Dbrowser=CHROME" "-Dtestng.suite=testng-regression.xml" "-DthreadCount=3" test
 ```
 
 Omitting `-Dtestng.suite` retains the existing `testng.xml` default.
 
 To run either workflow manually, open GitHub Actions, select `PR checks` or
 `Scheduled regression`, choose **Run workflow**, and select the branch.
+For `Scheduled regression`, enter the **TestNG workers** count and start the run.
 The workflow file must first exist on the default branch for manual dispatch
 to be available. See [GitHub's manual-run documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).

@@ -14,6 +14,7 @@ public class BaseTest {
     // All extending tests inherit centralized TestNG logging and reporting listeners.
 
     protected final ConfigReader config = ConfigReader.getInstance();
+    private final DriverManager driverManager = new DriverManager();
 
     // Reports the configured environment, independent of the current browser URL.
     protected Environment getEnvironment() {
@@ -21,7 +22,7 @@ public class BaseTest {
     }
 
     protected final WebDriver getDriver() {
-        return DriverManager.requireDriver();
+        return driverManager.requireDriver();
     }
 
     public void initialization() {

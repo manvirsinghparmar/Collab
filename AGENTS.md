@@ -128,8 +128,8 @@ code updates, edits and reopenings. PR checks and scheduled regression each use
 two workers running separate test classes. Regression runs automatically at 04:00
 America/Toronto every second calendar day from 2026-11-08. It selects 19
 existing scenarios; six exclusions and ownership/cleanup rules are documented
-in `docs/ci.md`. Both workflows support manual dispatch; manual regression runs
-bypass the alternate-day gate and use the selected ref.
+in `docs/ci.md`. Both workflows support manual dispatch. Manual regression runs
+bypass the alternate-day gate, use the selected ref and require a TestNG worker count.
 
 Tests inherit `CustomExecutionListener` and `EventReportListener` through
 `BaseTest`'s `@Listeners`; do not also register them in `testng.xml`.
