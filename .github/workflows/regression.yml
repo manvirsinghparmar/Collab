@@ -1,3 +1,4 @@
+
 name: Scheduled regression
 
 on:
@@ -8,24 +9,22 @@ on:
         type: number
         required: true
   schedule:
-    # A calendar-day gate below preserves the two-day interval across months.
+    # Run daily; calendar-day gate preserves the two-day interval.
     - cron: '0 4 * * *'
       timezone: America/Toronto
 
 permissions:
   contents: read
 
-concurrency:
-  group: scheduled-regression
-  cancel-in-progress: false
-
 jobs:
   schedule:
     name: Check regression trigger
     runs-on: windows-latest
     timeout-minutes: 5
+
     outputs:
       due: ${{ steps.calendar.outputs.due }}
+
     steps:
       - name: Check manual trigger or Toronto calendar date
         id: calendar
@@ -36,6 +35,7 @@ jobs:
           $anchor = [datetime]::new(2026, 11, 8)
           $manual = $env:GITHUB_EVENT_NAME -eq 'workflow_dispatch'
           $due = $manual -or ($today -ge $anchor -and ($today - $anchor).Days % 2 -eq 0)
+
           "due=$($due.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           "Trigger: $env:GITHUB_EVENT_NAME. Toronto date: $($today.ToString('yyyy-MM-dd')). Regression due: $due." >> $env:GITHUB_STEP_SUMMARY
 
@@ -45,6 +45,7 @@ jobs:
     if: needs.schedule.outputs.due == 'true'
     runs-on: windows-latest
     timeout-minutes: 60
+
     steps:
       - name: Validate the TestNG worker count
         id: workers
@@ -71,6 +72,7 @@ jobs:
           cache: maven
 
       - name: Check Chrome
+        shell: pwsh
         run: |
           $chrome = Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe'
           $chrome.VersionInfo.ProductVersion
@@ -87,7 +89,65 @@ jobs:
             $mavenArgs += "-DthreadCount=$env:TESTNG_WORKERS"
           }
           mvn @mavenArgs test
+      - name: Run the sequential regression suite
+        run: >-
+          mvn --batch-mode --no-transfer-progress
+          "-Dapp.env=DEV"
+          "-Dbrowser=CHROME"
+          "-Dtestng.suite=testng-regression.xml"
+          test
 
+      # Dynamically discover the TestNG failed suite.
+      - name: Locate TestNG failed suite
+        id: failed-suite
+        if: always()
+        shell: pwsh
+        run: |
+          $workspace = $env:GITHUB_WORKSPACE
+
+          $files = @(
+            Get-ChildItem -Path $workspace `
+              -Filter 'testng-failed.xml' `
+              -Recurse `
+              -File `
+              -ErrorAction SilentlyContinue |
+            Where-Object {
+              $_.FullName -notmatch '[\\/]\.git[\\/]'
+            }
+          )
+
+          if ($files.Count -eq 0) {
+            "found=false" >> $env:GITHUB_OUTPUT
+            Write-Host "No TestNG failed-suite XML was generated."
+            "No failed-suite XML was found." >> $env:GITHUB_STEP_SUMMARY
+          }
+          elseif ($files.Count -gt 1) {
+            Write-Host "Multiple failed-suite XML files were found:"
+            $files | ForEach-Object { Write-Host $_.FullName }
+            throw "Multiple failed-suite XML files found. Cannot safely select one."
+          }
+          else {
+            $failedXml = $files[0]
+
+            if ($failedXml.Length -eq 0) {
+              "found=false" >> $env:GITHUB_OUTPUT
+              Write-Host "TestNG failed-suite XML is empty (zero bytes)."
+              "Failed-suite XML was empty; no artifact uploaded." >> $env:GITHUB_STEP_SUMMARY
+            }
+            else {
+              $failedXmlPath = $failedXml.FullName
+
+              "found=true" >> $env:GITHUB_OUTPUT
+              "path=$failedXmlPath" >> $env:GITHUB_OUTPUT
+
+              Write-Host "Valid failed-suite XML found: $failedXmlPath"
+              Write-Host "File size: $($failedXml.Length) bytes"
+
+              "Failed-suite XML found: $failedXmlPath" >> $env:GITHUB_STEP_SUMMARY
+            }
+          }
+
+      # Upload complete regression execution results.
       - name: Upload test results, reports, logs and screenshots
         if: always()
         uses: actions/upload-artifact@v7
@@ -98,3 +158,13 @@ jobs:
             target/artifacts/
           retention-days: 14
           if-no-files-found: warn
+
+      # Upload only when a failed-suite XML was discovered.
+      - name: Upload TestNG failed suite
+        if: always() && steps.failed-suite.outputs.found == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: failed-testng-suite-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.failed-suite.outputs.path }}
+          if-no-files-found: error
+          retention-days: 14
