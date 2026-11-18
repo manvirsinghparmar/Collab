@@ -17,19 +17,12 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
     private SelUtils() {
     }
 
-    private static WebDriver driver() {
-        WebDriver active = DriverManager.getDriver();
-        if (active != null) {
-            return active;
-        }
-        if (wd != null) {
-            return wd;
-        }
-        throw new IllegalStateException("WebDriver is not initialized.");
+    private WebDriver driver() {
+        return getDriver();
     }
 
     public static WebDriverWait getWait() {
-        return new WebDriverWait(driver(), Duration.ofSeconds(15));
+        return new WebDriverWait(new SelUtils().driver(), Duration.ofSeconds(15));
     }
 
     public static WebElement waitForElementClickable(WebElement element) {
@@ -72,12 +65,12 @@ public class SelUtils extends BaseTest implements WebDriver, JavascriptExecutor 
             waitForElementClickable(element).click();
         } catch (TimeoutException | ElementClickInterceptedException | StaleElementReferenceException e) {
             FrameworkLogger.stepInfo("Standard click failed, retrying with JavaScript click.");
-            ((JavascriptExecutor) driver()).executeScript("arguments[0].click();", element);
+            ((JavascriptExecutor) new SelUtils().driver()).executeScript("arguments[0].click();", element);
         }
     }
 
     public static void scrollIntoView(WebElement element) {
-        ((JavascriptExecutor) driver())
+        ((JavascriptExecutor) new SelUtils().driver())
                 .executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
     }
 

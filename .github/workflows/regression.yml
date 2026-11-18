@@ -3,6 +3,11 @@ name: Scheduled regression
 
 on:
   workflow_dispatch:
+    inputs:
+      workers:
+        description: TestNG workers (parallel test classes)
+        type: number
+        required: true
   schedule:
     # Run daily; calendar-day gate preserves the two-day interval.
     - cron: '0 4 * * *'
@@ -42,6 +47,18 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - name: Validate the TestNG worker count
+        id: workers
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          REQUESTED_WORKERS: ${{ inputs.workers }}
+        run: |
+          $workers = 0
+          if (-not [int]::TryParse($env:REQUESTED_WORKERS, [ref]$workers) -or $workers -lt 1) {
+            throw 'TestNG workers must be a positive whole number.'
+          }
+          "count=$workers" >> $env:GITHUB_OUTPUT
+
       - name: Check out source
         uses: actions/checkout@v7
         with:
@@ -63,6 +80,15 @@ jobs:
       - name: Compile framework and all test sources
         run: mvn --batch-mode --no-transfer-progress clean test-compile
 
+      - name: Run the regression suite
+        env:
+          TESTNG_WORKERS: ${{ steps.workers.outputs.count }}
+        run: |
+          $mavenArgs = @('--batch-mode', '--no-transfer-progress', '-Dapp.env=DEV', '-Dbrowser=CHROME', '-Dtestng.suite=testng-regression.xml')
+          if ($env:TESTNG_WORKERS) {
+            $mavenArgs += "-DthreadCount=$env:TESTNG_WORKERS"
+          }
+          mvn @mavenArgs test
       - name: Run the sequential regression suite
         run: >-
           mvn --batch-mode --no-transfer-progress

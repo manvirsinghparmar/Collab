@@ -10,7 +10,7 @@ import utilities.SelUtils;
 public class ContactDetailsPage extends BaseTest {
 
     public ContactDetailsPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//label[normalize-space()='Street 1']"
@@ -82,7 +82,7 @@ public class ContactDetailsPage extends BaseTest {
 
     public void selectCountry(String country) {
         SelUtils.clickElement(countryDropdown);
-        SelUtils.clickElement(wd.findElement(By.xpath("//div[@role='listbox']//span[normalize-space()='" + country + "']"))
+        SelUtils.clickElement(getDriver().findElement(By.xpath("//div[@role='listbox']//span[normalize-space()='" + country + "']"))
         );
     }
 

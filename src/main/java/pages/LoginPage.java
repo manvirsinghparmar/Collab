@@ -10,7 +10,7 @@ public class LoginPage extends BaseTest {
 
 
     public LoginPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
 

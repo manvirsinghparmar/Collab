@@ -28,7 +28,7 @@ public class LoginPageTest extends BaseTest {
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             DashboardPage dashboardPage = loginPage.clickOnlogin(config.username(), config.password());
             SelUtils.waitForUrlContains(config.dashboardUrl());
-            softly.assertThat("Login should open the dashboard", wd.getCurrentUrl(),
+            softly.assertThat("Login should open the dashboard", getDriver().getCurrentUrl(),
                     equalTo(config.dashboardUrl()));
         }
     }
@@ -41,7 +41,7 @@ public class LoginPageTest extends BaseTest {
             softly.assertThat("Invalid credentials should display an error",
                     loginPage.getLoginErrorMessage(), equalTo("Invalid credentials"));
             softly.assertThat("Invalid login should remain on the login page",
-                    wd.getCurrentUrl(), equalTo(config.loginUrl()));
+                    getDriver().getCurrentUrl(), equalTo(config.loginUrl()));
         }
     }
 

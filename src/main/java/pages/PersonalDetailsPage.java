@@ -9,7 +9,7 @@ import utilities.SelUtils;
 public class PersonalDetailsPage extends BaseTest {
 
     public PersonalDetailsPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//a[text()='Contact Details']")

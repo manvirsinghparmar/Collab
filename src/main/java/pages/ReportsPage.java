@@ -11,7 +11,7 @@ import java.util.List;
 public class ReportsPage extends BaseTest {
 
     public ReportsPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//input[contains(@placeholder, 'Type for hints...')]")

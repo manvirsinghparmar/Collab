@@ -19,7 +19,7 @@ import java.util.List;
 public class MyInfoPage extends BaseTest {
 
     public MyInfoPage() {
-        PageFactory.initElements(wd, this);
+        PageFactory.initElements(getDriver(), this);
     }
 
     @FindBy(xpath = "//a[@href='/web/index.php/pim/viewMyDetails']")

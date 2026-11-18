@@ -2,12 +2,12 @@ package basePackage.testPages;
 
 import basePackage.base.BaseTest;
 import hamcrestAssertion.HamcrestSoftAssertions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import pages.DashboardPage;
 import pages.LoginPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import utilities.SelUtils;
 
 import static org.hamcrest.Matchers.containsString;
 
@@ -30,11 +30,11 @@ public class DashBoardPageTest extends BaseTest {
                 loginPage.clickOnlogin(config.username(), config.password());
 
         dashboard.clickOnPIMLink();
-        wait.until(ExpectedConditions.urlContains("/pim/viewEmployeeList"));
+        SelUtils.waitForUrlContains("/pim/viewEmployeeList");
 
         try (HamcrestSoftAssertions softly = new HamcrestSoftAssertions()) {
             softly.assertThat("PIM link should open the employee list",
-                    wd.getCurrentUrl(), containsString("/pim/viewEmployeeList"));
+                    getDriver().getCurrentUrl(), containsString("/pim/viewEmployeeList"));
         }
 
     }
